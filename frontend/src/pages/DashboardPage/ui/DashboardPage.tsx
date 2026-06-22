@@ -46,6 +46,7 @@ export const DashboardPage: React.FC = () => {
         onClose={handleDeselectNode}
         open={!!selectedNodeId}
         size={340}
+        title="Информация об узле"
         styles={{ body: { padding: 0 } }}
         style={{ background: 'var(--bg-panel)', borderLeft: '1px solid var(--border-color)' }}
       >

@@ -2,7 +2,8 @@ import { Handle, Position } from '@xyflow/react';
 import { Flex, Progress } from 'antd';
 import { HelpCircle, Laptop, type LucideIcon, Network, Server, Shield, Split } from 'lucide-react';
 import type React from 'react';
-import { memo } from 'react';
+import { memo, useEffect, useState } from 'react';
+import { useAppSelector } from '@/app/providers/store';
 import type { DeviceNodeProps, DeviceType, Status, StatusStyle } from '@/shared/libs';
 import { getSeverityColor } from '@/shared/libs';
 import styles from './DeviceNode.module.scss';
@@ -41,31 +42,67 @@ const STATUS_THEMES: Record<Status, StatusStyle> = {
 export const DeviceNode: React.FC<DeviceNodeProps> = memo(
   ({ data, selected }) => {
     const { status = 'offline', label, ip, cpu } = data;
-    const statusColors = STATUS_THEMES[status];
+    const { color, glow } = STATUS_THEMES[status];
     const Icon = DEVICE_ICON[data.type] || HelpCircle;
+    const isEditMode = useAppSelector((state) => state.ui.isEditMode);
+
+    const [cpuHistory, setCpuHistory] = useState<number[]>([]);
+
+    useEffect(() => {
+      if (status === 'offline') {
+        setCpuHistory([]);
+        return;
+      }
+      setCpuHistory((prev) => {
+        const next = [...prev, cpu];
+        return next.slice(-12);
+      });
+    }, [cpu, status]);
+
+    const isCpuHistory = !!cpuHistory.length;
+
+    const sparklineWidth = 136;
+    const sparklineHeight = 24;
+    const sparklinePoints = cpuHistory
+      .map((val, idx) => {
+        const x = cpuHistory.length > 1 ? (idx / (cpuHistory.length - 1)) * sparklineWidth : 0;
+        const y = sparklineHeight - (val / 100) * sparklineHeight;
+        return `${x},${y}`;
+      })
+      .join(' ');
 
     return (
       <div
         className={`${styles.customNode} glass-panel ${selected ? styles.selected : ''}`}
         style={{
-          border: `1px solid var(--border-color)`,
+          border: selected ? `1.5px solid ${color}` : `1px solid var(--border-color)`,
           backgroundColor: 'var(--bg-card)',
           boxShadow: selected
-            ? `0 0 16px ${statusColors.glow}`
+            ? `0 0 20px ${glow}, inset 0 0 8px ${glow}`
             : '0 8px 32px 0 var(--panel-shadow)',
         }}
       >
-        {/* Target handles for all 4 sides so Dagre layout handles either TB or LR automatically */}
-        <Handle type="target" position={Position.Top} style={{ opacity: 0.8 }} />
-        <Handle type="target" position={Position.Left} style={{ opacity: 0.8 }} />
+        {/* Target handles — visible and connectable only in edit mode */}
+        <Handle
+          type="target"
+          position={Position.Top}
+          isConnectable={isEditMode}
+          style={{ opacity: isEditMode ? 1 : 0, transition: 'opacity 0.2s' }}
+        />
+        <Handle
+          type="target"
+          position={Position.Left}
+          isConnectable={isEditMode}
+          style={{ opacity: isEditMode ? 1 : 0, transition: 'opacity 0.2s' }}
+        />
 
         {/* Status glowing ring indicator */}
         <div
           className={styles.pulseRing}
           style={
             {
-              backgroundColor: statusColors.color,
-              '--pulse-color': statusColors.glow,
+              backgroundColor: color,
+              '--pulse-color': glow,
             } as React.CSSProperties
           }
         />
@@ -73,7 +110,7 @@ export const DeviceNode: React.FC<DeviceNodeProps> = memo(
         {/* Device Icon */}
         <div
           style={{
-            color: statusColors.color,
+            color: color,
             backgroundColor: `var(--btn-secondary-bg)`,
             padding: '10px',
             borderRadius: '50%',
@@ -127,6 +164,24 @@ export const DeviceNode: React.FC<DeviceNodeProps> = memo(
               <span style={{ color: getSeverityColor(cpu) }}>{cpu}%</span>
             </Flex>
             <Progress percent={cpu} strokeColor={getSeverityColor(cpu)} showInfo={false} />
+            {isCpuHistory && (
+              <div className={styles.sparklineWrapper}>
+                <svg
+                  width={sparklineWidth}
+                  height={sparklineHeight}
+                  style={{ overflow: 'visible' }}
+                >
+                  <title>История CPU</title>
+                  <polyline
+                    fill="none"
+                    stroke={color}
+                    strokeWidth="1.5"
+                    points={sparklinePoints}
+                    style={{ transition: 'points 0.3s ease' }}
+                  />
+                </svg>
+              </div>
+            )}
           </div>
         ) : (
           <div
@@ -141,9 +196,19 @@ export const DeviceNode: React.FC<DeviceNodeProps> = memo(
           </div>
         )}
 
-        {/* Source handles for all 4 sides */}
-        <Handle type="source" position={Position.Bottom} style={{ opacity: 0.8 }} />
-        <Handle type="source" position={Position.Right} style={{ opacity: 0.8 }} />
+        {/* Source handles — visible and connectable only in edit mode */}
+        <Handle
+          type="source"
+          position={Position.Bottom}
+          isConnectable={isEditMode}
+          style={{ opacity: isEditMode ? 1 : 0, transition: 'opacity 0.2s' }}
+        />
+        <Handle
+          type="source"
+          position={Position.Right}
+          isConnectable={isEditMode}
+          style={{ opacity: isEditMode ? 1 : 0, transition: 'opacity 0.2s' }}
+        />
       </div>
     );
   },

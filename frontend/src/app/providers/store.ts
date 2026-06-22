@@ -13,6 +13,7 @@ export interface UIState {
   layoutDirection: LayoutDirection; // Top-Bottom or Left-Right layout
   theme: Theme;
   isAlertsOpen: boolean;
+  isEditMode: boolean;
 }
 
 const initialUIState: UIState = {
@@ -23,6 +24,7 @@ const initialUIState: UIState = {
   layoutDirection: 'TB',
   theme: 'dark',
   isAlertsOpen: false,
+  isEditMode: false,
 };
 
 const uiSlice = createSlice({
@@ -59,6 +61,12 @@ const uiSlice = createSlice({
       state.selectedNodeId = null;
       state.selectedEdgeId = null;
     },
+    toggleEditMode: (state) => {
+      state.isEditMode = !state.isEditMode;
+    },
+    setEditMode: (state, action: PayloadAction<boolean>) => {
+      state.isEditMode = action.payload;
+    },
   },
 });
 
@@ -72,6 +80,8 @@ export const {
   setAlertsOpen,
   toggleAlerts,
   clearSelection,
+  toggleEditMode,
+  setEditMode,
 } = uiSlice.actions;
 
 export const store = configureStore({
