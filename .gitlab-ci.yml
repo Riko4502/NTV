@@ -61,7 +61,7 @@ test_frontend:
 # Шаг 5: Интеграционные E2E-тесты (Playwright)
 test_e2e:
   stage: test
-  image: mcr.microsoft.com/playwright:v1.55.0-noble
+  image: mcr.microsoft.com/playwright:v1.61.0-noble
   dependencies:
     - install_dependencies
   script:
