@@ -20,6 +20,7 @@ stages:
   - install
   - test
   - build
+  - deploy
 
 # Шаг 1: Установка зависимостей для всех компонентов
 install_dependencies:
@@ -34,15 +35,46 @@ install_dependencies:
     expire_in: 1 hour
 
 # Шаг 2: Проверка качества кода (Линтинг)
-lint_frontend:
+lint:
   stage: test
   dependencies:
     - install_dependencies
   script:
-    - cd frontend
     - npm run lint
 
-# Шаг 3: Сборка фронтенда (React + Vite)
+# Шаг 3: Модульные тесты бэкенда
+test_backend:
+  stage: test
+  dependencies:
+    - install_dependencies
+  script:
+    - npm run test --prefix backend
+
+# Шаг 4: Модульные тесты фронтенда
+test_frontend:
+  stage: test
+  dependencies:
+    - install_dependencies
+  script:
+    - npm run test --prefix frontend
+
+# Шаг 5: Интеграционные E2E-тесты (Playwright)
+test_e2e:
+  stage: test
+  image: mcr.microsoft.com/playwright:v1.42.1-jammy
+  dependencies:
+    - install_dependencies
+  script:
+    - npm run test:e2e
+  artifacts:
+    name: "playwright-report-$CI_COMMIT_REF_SLUG"
+    paths:
+      - playwright-report/
+      - test-results/
+    when: always
+    expire_in: 1 week
+
+# Шаг 6: Сборка фронтенда (React + Vite)
 build_frontend:
   stage: build
   dependencies:
@@ -56,7 +88,7 @@ build_frontend:
       - frontend/dist/
     expire_in: 1 week
 
-# Шаг 4: Сборка бэкенда (TypeScript)
+# Шаг 7: Сборка бэкенда (TypeScript)
 build_backend:
   stage: build
   dependencies:
@@ -69,3 +101,17 @@ build_backend:
     paths:
       - backend/dist/
     expire_in: 1 week
+
+# Шаг 8: Автодеплой фронтенда на Vercel (только для ветки main)
+deploy_vercel:
+  stage: deploy
+  image: node:20
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+  script:
+    - npm install -g vercel
+    - vercel pull --yes --environment=production --token=$VERCEL_TOKEN
+    - vercel build --prod --token=$VERCEL_TOKEN
+    - vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
+
+
