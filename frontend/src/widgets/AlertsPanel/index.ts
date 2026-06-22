@@ -1,0 +1,1 @@
+export { AlertsPanel } from './AlertsPanel';

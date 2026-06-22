@@ -1,0 +1,37 @@
+{
+  "name": "frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^6.2.5",
+    "@reduxjs/toolkit": "^2.2.5",
+    "@xyflow/react": "^12.0.4",
+    "antd": "^6.4.5",
+    "dagre": "^0.8.5",
+    "lucide-react": "^0.395.0",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "react-redux": "^9.1.2",
+    "react-virtuoso": "^4.7.1",
+    "reaviz": "^16.2.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.0",
+    "@types/dagre": "^0.7.52",
+    "@types/node": "^24.12.3",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "sass": "^1.72.0",
+    "typescript": "~6.0.2",
+    "vite": "^8.0.12"
+  }
+}
