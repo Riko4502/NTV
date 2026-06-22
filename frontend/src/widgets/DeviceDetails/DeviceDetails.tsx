@@ -1,5 +1,4 @@
 import {
-  CloseOutlined,
   LoadingOutlined,
   PoweroffOutlined,
   ThunderboltOutlined,
@@ -9,7 +8,6 @@ import { Alert, Button, Card } from 'antd';
 import { Cpu, HardDrive, Radio, Thermometer } from 'lucide-react';
 import { type FC, useEffect, useState } from 'react';
 import { Area, AreaSeries, AreaSparklineChart, Gradient, Line } from 'reaviz';
-import { selectNode, useAppDispatch } from '@/app/providers/store';
 import { registerWsCallback, sendWsMessage } from '@/shared/api';
 import type { DeviceData, DeviceType, Status } from '@/shared/libs';
 import styles from './DeviceDetails.module.scss';
@@ -32,8 +30,6 @@ const STATUS_COLOR: Record<Status, string> = {
 type DeviceDetailsProps = DeviceData;
 
 export const DeviceDetails: FC<DeviceDetailsProps> = (props) => {
-  const dispatch = useAppDispatch();
-
   const { id, label, ip, mac, type, status, cpu, ram, temp, traffic } = props;
 
   // States for Ping Action
@@ -114,16 +110,6 @@ export const DeviceDetails: FC<DeviceDetailsProps> = (props) => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
-      <div className={styles.panelHeader}>
-        <span>ИНФОРМАЦИЯ ОБ УЗЛЕ</span>
-        <Button
-          type="text"
-          icon={<CloseOutlined />}
-          onClick={() => dispatch(selectNode(null))}
-          style={{ color: 'var(--text-muted)', padding: '4px' }}
-        />
-      </div>
-
       <div className={styles.panelBody}>
         {/* Basic Meta Details */}
         <Card
@@ -407,7 +393,7 @@ export const DeviceDetails: FC<DeviceDetailsProps> = (props) => {
                 letterSpacing: '0.5px',
               }}
             >
-              Удалённые Команды (NOC Actions)
+              Удалённые Команды
             </span>
           }
           style={{
