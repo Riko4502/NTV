@@ -16,7 +16,9 @@ test.describe('NOC Network Topology Viewer E2E Tests', () => {
 
   test('should render network topology graph nodes', async ({ page }) => {
     // Ожидание загрузки узлов на холсте react-flow
-    const devWorkstationNode = page.locator('.react-flow__node').filter({ hasText: 'Dev Workstation' });
+    const devWorkstationNode = page
+      .locator('.react-flow__node')
+      .filter({ hasText: 'Dev Workstation' });
     await expect(devWorkstationNode).toBeVisible();
 
     const gwNode = page.locator('.react-flow__node').filter({ hasText: 'Internet Gateway' });
@@ -55,4 +57,3 @@ test.describe('NOC Network Topology Viewer E2E Tests', () => {
     await expect(ipLabel).toBeVisible();
   });
 });
-
