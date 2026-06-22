@@ -3,6 +3,7 @@ import { Flex, Progress } from 'antd';
 import { HelpCircle, Laptop, type LucideIcon, Network, Server, Shield, Split } from 'lucide-react';
 import type React from 'react';
 import { memo, useEffect, useState } from 'react';
+import { useAppSelector } from '@/app/providers/store';
 import type { DeviceNodeProps, DeviceType, Status, StatusStyle } from '@/shared/libs';
 import { getSeverityColor } from '@/shared/libs';
 import styles from './DeviceNode.module.scss';
@@ -43,6 +44,7 @@ export const DeviceNode: React.FC<DeviceNodeProps> = memo(
     const { status = 'offline', label, ip, cpu } = data;
     const { color, glow } = STATUS_THEMES[status];
     const Icon = DEVICE_ICON[data.type] || HelpCircle;
+    const isEditMode = useAppSelector((state) => state.ui.isEditMode);
 
     const [cpuHistory, setCpuHistory] = useState<number[]>([]);
 
@@ -80,9 +82,19 @@ export const DeviceNode: React.FC<DeviceNodeProps> = memo(
             : '0 8px 32px 0 var(--panel-shadow)',
         }}
       >
-        {/* Target handles for all 4 sides so Dagre layout handles either TB or LR automatically */}
-        <Handle type="target" position={Position.Top} style={{ opacity: 0.8 }} />
-        <Handle type="target" position={Position.Left} style={{ opacity: 0.8 }} />
+        {/* Target handles — visible and connectable only in edit mode */}
+        <Handle
+          type="target"
+          position={Position.Top}
+          isConnectable={isEditMode}
+          style={{ opacity: isEditMode ? 1 : 0, transition: 'opacity 0.2s' }}
+        />
+        <Handle
+          type="target"
+          position={Position.Left}
+          isConnectable={isEditMode}
+          style={{ opacity: isEditMode ? 1 : 0, transition: 'opacity 0.2s' }}
+        />
 
         {/* Status glowing ring indicator */}
         <div
@@ -184,9 +196,19 @@ export const DeviceNode: React.FC<DeviceNodeProps> = memo(
           </div>
         )}
 
-        {/* Source handles for all 4 sides */}
-        <Handle type="source" position={Position.Bottom} style={{ opacity: 0.8 }} />
-        <Handle type="source" position={Position.Right} style={{ opacity: 0.8 }} />
+        {/* Source handles — visible and connectable only in edit mode */}
+        <Handle
+          type="source"
+          position={Position.Bottom}
+          isConnectable={isEditMode}
+          style={{ opacity: isEditMode ? 1 : 0, transition: 'opacity 0.2s' }}
+        />
+        <Handle
+          type="source"
+          position={Position.Right}
+          isConnectable={isEditMode}
+          style={{ opacity: isEditMode ? 1 : 0, transition: 'opacity 0.2s' }}
+        />
       </div>
     );
   },

@@ -8,6 +8,7 @@ import { Alert, Button, Card } from 'antd';
 import { Cpu, HardDrive, Radio, Thermometer } from 'lucide-react';
 import { type FC, useEffect, useState } from 'react';
 import { Area, AreaSeries, AreaSparklineChart, Gradient, Line } from 'reaviz';
+import { useAppSelector } from '@/app/providers/store';
 import { registerWsCallback, sendWsMessage } from '@/shared/api';
 import type { DeviceData, DeviceType, Status } from '@/shared/libs';
 import styles from './DeviceDetails.module.scss';
@@ -31,6 +32,7 @@ type DeviceDetailsProps = DeviceData;
 
 export const DeviceDetails: FC<DeviceDetailsProps> = (props) => {
   const { id, label, ip, mac, type, status, cpu, ram, temp, traffic } = props;
+  const isEditMode = useAppSelector((state) => state.ui.isEditMode);
 
   // States for Ping Action
   const [isPinging, setIsPinging] = useState(false);
@@ -464,6 +466,32 @@ export const DeviceDetails: FC<DeviceDetailsProps> = (props) => {
             >
               {isOffline ? 'Инициализация запуска...' : 'Перезапустить устройство'}
             </Button>
+
+            {/* Delete Node Button — only in edit mode */}
+            {isEditMode && (
+              <>
+                <div
+                  style={{
+                    height: '1px',
+                    background: 'var(--border-color)',
+                    margin: '4px 0',
+                    opacity: 0.5,
+                  }}
+                />
+                <Button
+                  danger
+                  onClick={() => sendWsMessage('delete-node', { id })}
+                  style={{
+                    height: '36px',
+                    fontSize: '0.8rem',
+                    background: 'rgba(239, 68, 68, 0.08)',
+                    borderColor: 'rgba(239, 68, 68, 0.4)',
+                  }}
+                >
+                  🗑 Удалить устройство
+                </Button>
+              </>
+            )}
           </div>
         </Card>
       </div>
