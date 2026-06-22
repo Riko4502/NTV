@@ -48,40 +48,40 @@ export const AlertsPanel: React.FC = () => {
     sendWsMessage('clear-alerts');
   };
 
+  const handleAckSelected = (value: Alert) => {
+    dispatch(setAlertFilter(value));
+  };
+
   return (
     <Flex align="center" gap="10px" vertical style={{ height: '100%', overflow: 'hidden' }}>
-      <Flex
-        style={{
-          padding: '12px 16px',
-          width: '100%',
-        }}
-      >
+      <div style={{ padding: '16px', width: '100%' }}>
         <Segmented
           options={ALERT_FILTER_OPTIONS}
           value={activeFilter}
-          onChange={(val: Alert) => dispatch(setAlertFilter(val))}
+          onChange={handleAckSelected}
           block
         />
-      </Flex>
+      </div>
 
-      <Flex className={styles.panelBody}>
-        {filteredAlerts.length ? (
-          <Virtuoso
-            style={{ height: '100%', width: '100%' }}
-            data={filteredAlerts}
-            itemContent={(_index, alert: NetworkAlertData) => (
-              <AlertCard key={alert.id} {...alert} onAck={handleAck} onFocus={handleFocus} />
-            )}
-          />
-        ) : (
+      {filteredAlerts.length ? (
+        <Virtuoso
+          className={styles.panelBody}
+          style={{ width: '100%' }}
+          data={filteredAlerts}
+          itemContent={(_index, alert: NetworkAlertData) => (
+            <AlertCard key={alert.id} {...alert} onAck={handleAck} onFocus={handleFocus} />
+          )}
+        />
+      ) : (
+        <div className={styles.panelBody} style={{ width: '100%' }}>
           <EmptyState
             icon={<AlertTriangle size={24} style={{ opacity: 0.3 }} />}
             title="Инциденты отсутствуют"
           />
-        )}
-      </Flex>
+        </div>
+      )}
 
-      {alerts.length && (
+      {alerts.length > 0 && (
         <Flex
           style={{
             width: '100%',
