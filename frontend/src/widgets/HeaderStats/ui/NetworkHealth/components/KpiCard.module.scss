@@ -1,0 +1,23 @@
+.kpiCard {
+  background: var(--kpi-card-bg);
+  border-color: var(--border-color);
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.title {
+  font-size: 0.55rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.statistic {
+  :global {
+    .ant-statistic-content {
+      font-size: 0.9rem;
+      font-weight: 700;
+      font-family: var(--font-display);
+      line-height: 1.1;
+    }
+  }
+}

@@ -1,0 +1,72 @@
+image: node:20
+
+# Кеширование node_modules для ускорения последующих запусков
+cache:
+  key:
+    files:
+      - package-lock.json
+      - frontend/package-lock.json
+      - backend/package-lock.json
+  paths:
+    - node_modules/
+    - frontend/node_modules/
+    - backend/node_modules/
+    - .npm/
+
+before_script:
+  # Настраиваем локальную папку кэша для npm
+  - npm config set cache .npm --global
+
+stages:
+  - install
+  - test
+  - build
+
+# Шаг 1: Установка зависимостей для всех компонентов
+install_dependencies:
+  stage: install
+  script:
+    - npm run install:all
+  artifacts:
+    paths:
+      - node_modules/
+      - frontend/node_modules/
+      - backend/node_modules/
+    expire_in: 1 hour
+
+# Шаг 2: Проверка качества кода (Линтинг)
+lint_frontend:
+  stage: test
+  dependencies:
+    - install_dependencies
+  script:
+    - cd frontend
+    - npm run lint
+
+# Шаг 3: Сборка фронтенда (React + Vite)
+build_frontend:
+  stage: build
+  dependencies:
+    - install_dependencies
+  script:
+    - cd frontend
+    - npm run build
+  artifacts:
+    name: "frontend-build-$CI_COMMIT_REF_SLUG"
+    paths:
+      - frontend/dist/
+    expire_in: 1 week
+
+# Шаг 4: Сборка бэкенда (TypeScript)
+build_backend:
+  stage: build
+  dependencies:
+    - install_dependencies
+  script:
+    - cd backend
+    - npm run build
+  artifacts:
+    name: "backend-build-$CI_COMMIT_REF_SLUG"
+    paths:
+      - backend/dist/
+    expire_in: 1 week

@@ -1,0 +1,97 @@
+.searchContainer {
+  display: flex;
+  justify-content: center;
+  padding: 0 40px;
+}
+
+.header {
+  height: var(--header-height);
+  line-height: normal;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-panel);
+  display: grid;
+  grid-template-columns: 320px 1fr auto;
+  align-items: center;
+  padding: 0 20px;
+  z-index: 20;
+}
+
+.logoWrapper {
+  background-color: rgba(59, 130, 246, 0.1);
+  border: 1px solid var(--color-primary);
+  border-radius: 8px;
+  padding: 6px;
+  color: var(--color-primary);
+  box-shadow: 0 0 10px var(--color-primary-glow);
+}
+
+.logoText {
+  font-size: 0.65rem;
+  color: var(--color-primary);
+  letter-spacing: 2px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.searchInput {
+  width: 100%;
+  max-width: 400px;
+  height: 36px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+
+.divider {
+  width: 1px;
+  height: 24px;
+  background-color: var(--border-color);
+  margin-left: 4px;
+  margin-right: 4px;
+}
+
+.headerButton {
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justifyContent: center;
+  font-size: 1.1rem;
+  width: 32px;
+  height: 32px;
+}
+
+.bellBadge {
+  :global {
+    .ant-scroll-number {
+      border-color: transparent !important;
+      color: #fff !important;
+      background-color: transparent;
+      box-shadow: none;
+    }
+  }
+
+  &.hasAlerts {
+    :global {
+      .ant-scroll-number {
+        background-color: var(--color-error) !important;
+        box-shadow: 0 0 6px var(--color-error-glow) !important;
+      }
+    }
+  }
+}
+
+.bellButton {
+  color: var(--text-secondary);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &.bellButtonActive {
+    color: var(--color-primary);
+  }
+}
+
+.bellIconAlert {
+  color: var(--color-error) !important;
+}

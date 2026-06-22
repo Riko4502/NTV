@@ -1,0 +1,246 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap');
+
+:root {
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  --font-display: 'Outfit', sans-serif;
+
+  /* Colors */
+  --bg-main: #06060c;
+  --bg-card: rgba(15, 15, 27, 0.75);
+  --bg-card-hover: rgba(22, 22, 38, 0.85);
+  --bg-panel: rgba(10, 10, 18, 0.9);
+  
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-glow-primary: rgba(59, 130, 246, 0.3);
+  --border-color-active: rgba(59, 130, 246, 0.5);
+
+  --text-primary: #f4f4f7;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+
+  --color-primary: #3b82f6;
+  --color-primary-glow: rgba(59, 130, 246, 0.25);
+  
+  --color-success: #10b981;
+  --color-success-glow: rgba(16, 185, 129, 0.35);
+
+  --color-warning: #f59e0b;
+  --color-warning-glow: rgba(245, 158, 11, 0.35);
+
+  --color-error: #ef4444;
+  --color-error-glow: rgba(239, 68, 68, 0.35);
+
+  --color-offline: #6b7280;
+  --color-offline-glow: rgba(107, 114, 128, 0.25);
+
+  --header-height: 70px;
+
+  --bg-gradient: 
+    radial-gradient(at 0% 0%, rgba(20, 20, 50, 0.4) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(30, 10, 60, 0.35) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, rgba(10, 25, 55, 0.4) 0px, transparent 50%);
+
+  --btn-secondary-bg: rgba(255, 255, 255, 0.05);
+  --btn-secondary-hover-bg: rgba(255, 255, 255, 0.1);
+  --input-bg: rgba(0, 0, 0, 0.25);
+  --panel-shadow: rgba(0, 0, 0, 0.4);
+  --kpi-card-bg: rgba(255, 255, 255, 0.02);
+  --kpi-card-hover-bg: rgba(255, 255, 255, 0.05);
+}
+
+:root[data-theme="light"] {
+  --bg-main: #f1f5f9;
+  --bg-card: rgba(255, 255, 255, 0.75);
+  --bg-card-hover: rgba(255, 255, 255, 0.9);
+  --bg-panel: rgba(248, 250, 252, 0.95);
+  
+  --border-color: rgba(15, 23, 42, 0.08);
+  --border-glow-primary: rgba(59, 130, 246, 0.15);
+  --border-color-active: rgba(59, 130, 246, 0.4);
+
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+
+  --color-primary-glow: rgba(59, 130, 246, 0.15);
+  --color-success-glow: rgba(16, 185, 129, 0.15);
+  --color-warning-glow: rgba(245, 158, 11, 0.15);
+  --color-error-glow: rgba(239, 68, 68, 0.15);
+  --color-offline-glow: rgba(107, 114, 128, 0.25);
+
+  --bg-gradient: 
+    radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.08) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(139, 92, 246, 0.06) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, rgba(30, 58, 138, 0.03) 0px, transparent 50%);
+
+  --btn-secondary-bg: rgba(15, 23, 42, 0.05);
+  --btn-secondary-hover-bg: rgba(15, 23, 42, 0.1);
+  --input-bg: rgba(255, 255, 255, 0.7);
+  --panel-shadow: rgba(15, 23, 42, 0.08);
+  --kpi-card-bg: rgba(15, 23, 42, 0.02);
+  --kpi-card-hover-bg: rgba(15, 23, 42, 0.04);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  overflow: hidden;
+  background-image: var(--bg-gradient);
+  height: 100vh;
+  width: 100vw;
+}
+
+/* Global Glassmorphism Helper */
+.glass-panel {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px 0 var(--panel-shadow);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+  &:hover {
+    border-color: var(--border-color-active);
+  }
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(120, 120, 120, 0.2);
+  border-radius: 3px;
+  
+  &:hover {
+    background: rgba(120, 120, 120, 0.4);
+  }
+}
+
+/* Custom React Flow Node styling overrides */
+.react-flow__handle {
+  width: 8px !important;
+  height: 8px !important;
+  background: var(--color-primary) !important;
+  border: 2px solid var(--bg-main) !important;
+}
+
+.react-flow__handle-connecting {
+  background: var(--color-warning) !important;
+}
+
+.react-flow__handle-valid {
+  background: var(--color-success) !important;
+}
+
+.react-flow__minimap {
+  background-color: var(--bg-panel) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 10px !important;
+  backdrop-filter: blur(8px) !important;
+  overflow: hidden;
+}
+
+.react-flow__minimap-mask {
+  fill: rgba(0, 0, 0, 0.15) !important;
+}
+
+:root[data-theme="dark"] .react-flow__minimap-mask {
+  fill: rgba(0, 0, 0, 0.4) !important;
+}
+
+.react-flow__controls {
+  border: 1px solid var(--border-color) !important;
+  border-radius: 8px !important;
+  overflow: hidden;
+  box-shadow: 0 4px 12px var(--panel-shadow) !important;
+}
+
+.react-flow__controls-button {
+  background: var(--bg-card) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  fill: var(--text-primary) !important;
+  color: var(--text-primary) !important;
+  transition: all 0.2s !important;
+  
+  &:hover {
+    background: var(--color-primary-glow) !important;
+  }
+}
+
+.react-flow__edge-path {
+  stroke-dasharray: 5;
+  animation: dash 10s linear infinite;
+  transition: stroke 0.3s, stroke-width 0.3s;
+}
+
+@keyframes dash {
+  from {
+    stroke-dashoffset: 1000;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Ant Design Component Overrides / Customizations */
+.ant-layout {
+  background: transparent !important;
+}
+
+.ant-layout-sider {
+  background: var(--bg-panel) !important;
+  z-index: 10;
+}
+
+.ant-layout-header {
+  padding: 0 20px !important;
+  box-shadow: 0 2px 10px var(--panel-shadow);
+}
+
+.ant-card {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  
+  &:hover {
+    border-color: var(--border-color-active) !important;
+  }
+}
+
+/* Responsive Media Queries (Ant Design Layouts) */
+@media (max-width: 1023px) {
+  .mobile-menu-btn {
+    display: flex !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .ant-layout-header {
+    grid-template-columns: auto 1fr auto !important;
+    padding: 0 16px !important;
+    gap: 12px;
+  }
+
+  .kpi-container {
+    display: none !important;
+  }
+
+  .header-search-container {
+    display: flex !important;
+    padding: 0 !important;
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
