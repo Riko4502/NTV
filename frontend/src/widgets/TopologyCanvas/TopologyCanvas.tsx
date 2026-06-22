@@ -414,9 +414,7 @@ const CanvasInner: FC = () => {
         okText="Добавить"
         cancelText="Отмена"
         styles={{
-          content: { background: 'var(--bg-panel)', border: '1px solid var(--border-color)' },
-          header: { background: 'var(--bg-panel)', borderBottom: '1px solid var(--border-color)' },
-          footer: { background: 'var(--bg-panel)' },
+          container: { background: 'var(--bg-panel)', border: '1px solid var(--border-color)' },
         }}
       >
         <Form form={addNodeForm} layout="vertical" style={{ marginTop: 16 }}>
