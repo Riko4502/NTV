@@ -111,18 +111,56 @@ export const ConnectionEdge: FC<EdgeProps<EdgeBase>> = memo(
 
         {/* Dynamic Animated Flow Path overlay */}
         {edgeStyles.flowColor !== 'transparent' && (
-          <path
-            d={edgePath}
-            fill="none"
-            stroke={edgeStyles.flowColor}
-            strokeWidth={flowStrokeWidth}
-            strokeDasharray="6, 8"
-            style={{
-              animation: `dash ${edgeStyles.animationSpeed} linear infinite`,
-              filter: `drop-shadow(0px 0px 3px ${edgeStyles.flowColor})`,
-              pointerEvents: 'none',
-            }}
-          />
+          <>
+            <path
+              d={edgePath}
+              fill="none"
+              stroke={edgeStyles.flowColor}
+              strokeWidth={flowStrokeWidth}
+              strokeDasharray="6, 8"
+              style={{
+                animation: `dash ${edgeStyles.animationSpeed} linear infinite`,
+                filter: `drop-shadow(0px 0px 3px ${edgeStyles.flowColor})`,
+                pointerEvents: 'none',
+              }}
+            />
+            {/* Staggered Packet flow particles */}
+            <circle
+              r={isCoreLink ? 3.5 : 2.5}
+              fill={edgeStyles.flowColor}
+              style={{ filter: `drop-shadow(0px 0px 4px ${edgeStyles.flowColor})` }}
+            >
+              <animateMotion
+                dur={edgeStyles.animationSpeed}
+                repeatCount="indefinite"
+                path={edgePath}
+              />
+            </circle>
+            <circle
+              r={isCoreLink ? 3.5 : 2.5}
+              fill={edgeStyles.flowColor}
+              style={{ filter: `drop-shadow(0px 0px 4px ${edgeStyles.flowColor})` }}
+            >
+              <animateMotion
+                dur={edgeStyles.animationSpeed}
+                repeatCount="indefinite"
+                path={edgePath}
+                begin={`${parseFloat(edgeStyles.animationSpeed) / 3}s`}
+              />
+            </circle>
+            <circle
+              r={isCoreLink ? 3.5 : 2.5}
+              fill={edgeStyles.flowColor}
+              style={{ filter: `drop-shadow(0px 0px 4px ${edgeStyles.flowColor})` }}
+            >
+              <animateMotion
+                dur={edgeStyles.animationSpeed}
+                repeatCount="indefinite"
+                path={edgePath}
+                begin={`${(parseFloat(edgeStyles.animationSpeed) / 3) * 2}s`}
+              />
+            </circle>
+          </>
         )}
       </>
     );
