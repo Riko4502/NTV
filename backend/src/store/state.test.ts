@@ -22,7 +22,8 @@ describe('NetworkState Service', () => {
     const onlineNode = state.nodes.find((n) => n.status === 'online');
     expect(onlineNode).toBeDefined();
 
-    const nodeId = onlineNode?.id;
+    if (!onlineNode) return;
+    const nodeId = onlineNode.id;
 
     const topologySpy = vi.fn();
     const alertSpy = vi.fn();
@@ -45,7 +46,8 @@ describe('NetworkState Service', () => {
     const unacknowledgedAlert = state.alerts.find((a) => !a.acknowledged);
     expect(unacknowledgedAlert).toBeDefined();
 
-    const alertId = unacknowledgedAlert?.id;
+    if (!unacknowledgedAlert) return;
+    const alertId = unacknowledgedAlert.id;
     const alertsSpy = vi.fn();
 
     state.on('alerts-updated', alertsSpy);
