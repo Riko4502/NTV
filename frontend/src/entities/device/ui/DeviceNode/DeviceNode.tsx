@@ -40,11 +40,31 @@ const STATUS_THEMES: Record<Status, StatusStyle> = {
 };
 
 export const DeviceNode: FC<DeviceNodeProps> = memo(
+  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: heatmap metric calculations add complexity
   ({ data, selected }) => {
     const { status = 'offline', label, ip, cpu } = data;
     const { color, glow } = STATUS_THEMES[status];
     const Icon = DEVICE_ICON[data.type] || HelpCircle;
     const isEditMode = useAppSelector((state) => state.ui.isEditMode);
+    const heatmapMetric = useAppSelector((state) => state.ui.heatmapMetric);
+
+    // Heatmap mode override
+    let displayColor = color;
+    let displayGlow = glow;
+
+    if (status !== 'offline' && heatmapMetric && heatmapMetric !== 'none') {
+      const val = data[heatmapMetric];
+      if (typeof val === 'number') {
+        const metricColor = getSeverityColor(val);
+        displayColor = metricColor;
+        displayGlow =
+          metricColor === 'var(--color-error)'
+            ? 'var(--color-error-glow)'
+            : metricColor === 'var(--color-warning)'
+              ? 'var(--color-warning-glow)'
+              : 'var(--color-success-glow)';
+      }
+    }
 
     const [cpuHistory, setCpuHistory] = useState<number[]>([]);
 
@@ -75,10 +95,10 @@ export const DeviceNode: FC<DeviceNodeProps> = memo(
       <div
         className={`${styles.customNode} glass-panel ${selected ? styles.selected : ''}`}
         style={{
-          border: selected ? `1.5px solid ${color}` : `1px solid var(--border-color)`,
+          border: selected ? `1.5px solid ${displayColor}` : `1px solid var(--border-color)`,
           backgroundColor: 'var(--bg-card)',
           boxShadow: selected
-            ? `0 0 20px ${glow}, inset 0 0 8px ${glow}`
+            ? `0 0 20px ${displayGlow}, inset 0 0 8px ${displayGlow}`
             : '0 8px 32px 0 var(--panel-shadow)',
         }}
       >
@@ -100,8 +120,8 @@ export const DeviceNode: FC<DeviceNodeProps> = memo(
           className={styles.pulseRing}
           style={
             {
-              backgroundColor: color,
-              '--pulse-color': glow,
+              backgroundColor: displayColor,
+              '--pulse-color': displayGlow,
             } as CSSProperties
           }
         />
@@ -109,7 +129,7 @@ export const DeviceNode: FC<DeviceNodeProps> = memo(
         {/* Device Icon */}
         <div
           style={{
-            color: color,
+            color: displayColor,
             backgroundColor: `var(--btn-secondary-bg)`,
             padding: '10px',
             borderRadius: '50%',

@@ -8,6 +8,7 @@ import { DeviceNode } from '@/entities/device';
 import { matchesQuery } from '@/shared/libs/utils';
 import { Spinner } from '@/shared/ui';
 import { useTopologySync } from './hooks/useTopologySync';
+import { AddEdgeModal } from './ui/AddEdgeModal';
 import { AddNodeModal } from './ui/AddNodeModal';
 import { CanvasToolbar } from './ui/CanvasToolbar';
 
@@ -38,6 +39,9 @@ const CanvasInner: FC = () => {
     onEdgeClick,
     onPaneClick,
     onConnect,
+    connectModalData,
+    handleConnectSubmit,
+    handleConnectClose,
     handleInteractionStart,
     handleInteractionEnd,
     applyLayout,
@@ -46,15 +50,20 @@ const CanvasInner: FC = () => {
 
   const searchQuery = useAppSelector((state) => state.ui.searchQuery);
   const theme = useAppSelector((state) => state.ui.theme);
+  const hideClients = useAppSelector((state) => state.ui.hideClients);
   const gridColor = theme === 'dark' ? '#333' : '#cbd5e1';
 
   // Modal open state
   const [isAddNodeOpen, setIsAddNodeOpen] = useState(false);
 
-  // Filter nodes by search query
+  // Filter nodes by search query and type
   const filteredNodes = useMemo(() => {
-    if (!searchQuery) return nodes;
-    return nodes.map((node) => ({
+    let result = nodes;
+    if (hideClients) {
+      result = nodes.filter((node) => node.data?.type !== 'client');
+    }
+    if (!searchQuery) return result;
+    return result.map((node) => ({
       ...node,
       style: {
         ...node.style,
@@ -62,7 +71,18 @@ const CanvasInner: FC = () => {
         transition: 'opacity 0.3s',
       },
     }));
-  }, [nodes, searchQuery]);
+  }, [nodes, searchQuery, hideClients]);
+
+  // Filter edges connected to hidden client nodes
+  const filteredEdges = useMemo(() => {
+    if (!hideClients) return edges;
+    const clientNodeIds = nodes
+      .filter((node) => node.data?.type === 'client')
+      .map((node) => node.id);
+    return edges.filter(
+      (edge) => !clientNodeIds.includes(edge.source) && !clientNodeIds.includes(edge.target),
+    );
+  }, [edges, nodes, hideClients]);
 
   if (isLoading || !data || data.nodes.length === 0) {
     return <Spinner loading={true} tip="Инициализация сетевого холста..." />;
@@ -72,7 +92,7 @@ const CanvasInner: FC = () => {
     <div style={{ width: '100%', height: '100%', position: 'relative' }}>
       <ReactFlow
         nodes={filteredNodes}
-        edges={edges}
+        edges={filteredEdges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onNodeClick={onNodeClick}
@@ -95,10 +115,23 @@ const CanvasInner: FC = () => {
         onOpenAddNode={() => setIsAddNodeOpen(true)}
         onApplyLayout={applyLayout}
         onFitView={() => fitView({ padding: 0.1, duration: 600 })}
+        nodesData={data.nodes}
+        edgesData={data.edges}
       />
 
       {/* Add Node Modal */}
       <AddNodeModal open={isAddNodeOpen} onClose={() => setIsAddNodeOpen(false)} />
+
+      {/* Add Edge Modal */}
+      {connectModalData && (
+        <AddEdgeModal
+          open={!!connectModalData}
+          onClose={handleConnectClose}
+          onSubmit={handleConnectSubmit}
+          sourceLabel={connectModalData.sourceLabel}
+          targetLabel={connectModalData.targetLabel}
+        />
+      )}
 
       <style>{`
         @keyframes spin {

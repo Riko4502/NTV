@@ -5,6 +5,7 @@ import { AnalyticsPage } from '@/pages/AnalyticsPage/ui/AnalyticsPage';
 import { DashboardPage } from '@/pages/DashboardPage/ui/DashboardPage';
 import { AlertsPanel } from '@/widgets/AlertsPanel';
 import { HeaderStats } from '@/widgets/HeaderStats';
+import { Sidebar } from '@/widgets/Sidebar';
 import { toggleAlerts, useAppDispatch, useAppSelector } from '../providers/store';
 import { getAntdThemeConfig } from '../styles/themeConfig';
 
@@ -31,10 +32,19 @@ export const AppContent: FC = () => {
       >
         <HeaderStats />
 
-        <Routes>
-          <Route path="/" element={<DashboardPage />} />
-          <Route path="/analytics" element={<AnalyticsPage />} />
-        </Routes>
+        <Layout
+          style={{ flexDirection: 'row', flex: 1, overflow: 'hidden', background: 'transparent' }}
+        >
+          <Sidebar />
+          <Layout.Content
+            style={{ flex: 1, overflow: 'hidden', position: 'relative', background: 'transparent' }}
+          >
+            <Routes>
+              <Route path="/" element={<DashboardPage />} />
+              <Route path="/analytics" element={<AnalyticsPage />} />
+            </Routes>
+          </Layout.Content>
+        </Layout>
 
         <Drawer
           placement="left"

@@ -14,6 +14,8 @@ export interface UIState {
   theme: Theme;
   isAlertsOpen: boolean;
   isEditMode: boolean;
+  hideClients: boolean;
+  heatmapMetric: 'none' | 'cpu' | 'ram' | 'temp';
 }
 
 const getInitialTheme = (): Theme => {
@@ -35,6 +37,8 @@ const initialUIState: UIState = {
   theme: getInitialTheme(),
   isAlertsOpen: false,
   isEditMode: false,
+  hideClients: false,
+  heatmapMetric: 'none',
 };
 
 const uiSlice = createSlice({
@@ -79,6 +83,12 @@ const uiSlice = createSlice({
     setEditMode: (state, action: PayloadAction<boolean>) => {
       state.isEditMode = action.payload;
     },
+    toggleHideClients: (state) => {
+      state.hideClients = !state.hideClients;
+    },
+    setHeatmapMetric: (state, action: PayloadAction<UIState['heatmapMetric']>) => {
+      state.heatmapMetric = action.payload;
+    },
   },
 });
 
@@ -94,6 +104,8 @@ export const {
   clearSelection,
   toggleEditMode,
   setEditMode,
+  toggleHideClients,
+  setHeatmapMetric,
 } = uiSlice.actions;
 
 export const store = configureStore({

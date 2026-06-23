@@ -7,6 +7,8 @@ import type {
   DeleteNodePayload,
   DisconnectNodesPayload,
   GetMetricsHistoryPayload,
+  NetworkEdge,
+  NetworkNode,
   PingNodePayload,
   RebootNodePayload,
 } from '../types';
@@ -63,6 +65,30 @@ export const wsHandlers: Record<string, WSHandler> = {
   'delete-node': (_ws, payload) => {
     const p = payload as DeleteNodePayload;
     networkState.deleteNode(p.nodeId);
+  },
+
+  'trigger-ddos': (_ws, payload) => {
+    const p = payload as { nodeId: string };
+    networkState.triggerDdos(p.nodeId);
+  },
+
+  'trigger-overheat': (_ws, payload) => {
+    const p = payload as { nodeId: string };
+    networkState.triggerOverheat(p.nodeId);
+  },
+
+  'trigger-latency': (_ws, payload) => {
+    const p = payload as { edgeId: string };
+    networkState.triggerLatencySpike(p.edgeId);
+  },
+
+  'recover-all': () => {
+    networkState.recoverAll();
+  },
+
+  'set-topology': (_ws, payload) => {
+    const p = payload as { nodes: NetworkNode[]; edges: NetworkEdge[] };
+    networkState.setTopology(p);
   },
 
   'get-metrics-history': (ws, payload) => {

@@ -12,6 +12,7 @@ import type { TopologyState } from '@/shared/api';
 import { sendWsMessage, useStreamTopologyQuery } from '@/shared/api';
 import { useLayout } from '@/shared/hooks';
 import type { EdgeBase, LayoutDirection, NodeBase } from '@/shared/libs';
+import type { TopologyConnectModalState } from '../models';
 
 export const useTopologySync = () => {
   const dispatch = useAppDispatch();
@@ -29,6 +30,7 @@ export const useTopologySync = () => {
 
   const [nodes, setNodes] = useState<NodeBase[]>([]);
   const [edges, setEdges] = useState<EdgeBase[]>([]);
+  const [connectModalData, setConnectModalData] = useState<TopologyConnectModalState | null>(null);
 
   const applyLayout = useCallback(
     (direction: LayoutDirection) => {
@@ -176,12 +178,34 @@ export const useTopologySync = () => {
 
   const onConnect = useCallback((connection: Connection) => {
     if (connection.source && connection.target) {
-      sendWsMessage('connect-nodes', {
+      const srcNode = latestDataRef.current?.nodes.find((n) => n.id === connection.source);
+      const tgtNode = latestDataRef.current?.nodes.find((n) => n.id === connection.target);
+
+      setConnectModalData({
         source: connection.source,
         target: connection.target,
-        bandwidth: 1,
+        sourceLabel: srcNode?.label || connection.source,
+        targetLabel: tgtNode?.label || connection.target,
       });
     }
+  }, []);
+
+  const handleConnectSubmit = useCallback(
+    (bandwidth: number) => {
+      if (connectModalData) {
+        sendWsMessage('connect-nodes', {
+          source: connectModalData.source,
+          target: connectModalData.target,
+          bandwidth,
+        });
+        setConnectModalData(null);
+      }
+    },
+    [connectModalData],
+  );
+
+  const handleConnectClose = useCallback(() => {
+    setConnectModalData(null);
   }, []);
 
   useEffect(() => {
@@ -204,6 +228,9 @@ export const useTopologySync = () => {
     onEdgeClick,
     onPaneClick,
     onConnect,
+    connectModalData,
+    handleConnectSubmit,
+    handleConnectClose,
     handleInteractionStart,
     handleInteractionEnd,
     applyLayout,

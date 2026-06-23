@@ -60,7 +60,7 @@ export const ConnectionEdge: FC<EdgeProps<EdgeBase>> = memo(
       selected,
     } = props;
 
-    const [edgePath] = getBezierPath({
+    const [edgePath, labelX, labelY] = getBezierPath({
       sourceX,
       sourceY,
       sourcePosition,
@@ -161,6 +161,35 @@ export const ConnectionEdge: FC<EdgeProps<EdgeBase>> = memo(
               />
             </circle>
           </>
+        )}
+
+        {/* Connection details badge overlay */}
+        {edgeStatus !== 'inactive' && (
+          <g transform={`translate(${labelX - 35}, ${labelY - 10})`}>
+            <rect
+              width={70}
+              height={20}
+              rx={4}
+              fill="var(--bg-panel)"
+              stroke="var(--border-color)"
+              strokeWidth={1}
+              style={{ filter: 'drop-shadow(0px 2px 4px rgba(0,0,0,0.5))' }}
+            />
+            <text
+              x={35}
+              y={13}
+              textAnchor="middle"
+              fill="var(--text-primary)"
+              style={{
+                fontSize: '8px',
+                fontFamily: 'monospace',
+                fontWeight: 600,
+                pointerEvents: 'none',
+              }}
+            >
+              {bandwidth}G | {currentUsage}M
+            </text>
+          </g>
         )}
       </>
     );

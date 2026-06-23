@@ -477,6 +477,140 @@ export class NetworkState extends EventEmitter {
     return result;
   }
 
+  public triggerDdos(nodeId: string): void {
+    const node = this.nodes.find((n) => n.id === nodeId);
+    if (!node || node.status === 'offline') return;
+
+    node.cpu = 99;
+    node.ram = 92;
+    node.status = 'error';
+
+    this.edges.forEach((edge) => {
+      if (edge.source === nodeId || edge.target === nodeId) {
+        edge.currentUsage = edge.bandwidth * 1000 - 15;
+        edge.status = 'congested';
+        edge.latency = Math.floor(Math.random() * 40) + 110;
+      }
+    });
+
+    const alertId = `a-ddos-${Date.now()}`;
+    const alert: NetworkAlert = {
+      id: alertId,
+      timestamp: new Date().toISOString(),
+      nodeId,
+      nodeLabel: node.label,
+      severity: 'critical',
+      message: `КРИТИЧЕСКОЕ СОБЫТИЕ: Обнаружена DDoS-атака на устройство ${node.label} (${node.ip})! Нагрузка CPU 99%!`,
+      acknowledged: false,
+    };
+    this.alerts.unshift(alert);
+
+    this.emit('topology-changed', { nodes: this.nodes, edges: this.edges });
+    this.emit('new-alert', alert);
+  }
+
+  public triggerOverheat(nodeId: string): void {
+    const node = this.nodes.find((n) => n.id === nodeId);
+    if (!node || node.status === 'offline') return;
+
+    node.temp = 85;
+    node.cpu = Math.max(node.cpu, 75);
+    node.status = 'error';
+
+    const alertId = `a-heat-${Date.now()}`;
+    const alert: NetworkAlert = {
+      id: alertId,
+      timestamp: new Date().toISOString(),
+      nodeId,
+      nodeLabel: node.label,
+      severity: 'critical',
+      message: `ОПАСНОСТЬ ПЕРЕГРЕВА: Температура устройства ${node.label} поднялась до 85°C! Вентилятор охлаждения неисправен!`,
+      acknowledged: false,
+    };
+    this.alerts.unshift(alert);
+
+    this.emit('topology-changed', { nodes: this.nodes, edges: this.edges });
+    this.emit('new-alert', alert);
+  }
+
+  public triggerLatencySpike(edgeId: string): void {
+    const edge = this.edges.find((e) => e.id === edgeId);
+    if (!edge) return;
+
+    edge.latency = 165;
+    edge.status = 'congested';
+
+    const srcNode = this.nodes.find((n) => n.id === edge.source);
+    const tgtNode = this.nodes.find((n) => n.id === edge.target);
+
+    const alertId = `a-lat-${Date.now()}`;
+    const alert: NetworkAlert = {
+      id: alertId,
+      timestamp: new Date().toISOString(),
+      nodeId: edge.source,
+      nodeLabel: srcNode?.label || 'Link',
+      severity: 'warning',
+      message: `Деградация линка: Зафиксирована высокая задержка (165 мс) на канале ${srcNode?.label || 'Source'} <-> ${tgtNode?.label || 'Target'}.`,
+      acknowledged: false,
+    };
+    this.alerts.unshift(alert);
+
+    this.emit('topology-changed', { nodes: this.nodes, edges: this.edges });
+    this.emit('new-alert', alert);
+  }
+
+  public recoverAll(): void {
+    this.nodes.forEach((node) => {
+      if (node.status === 'offline') return;
+      node.cpu = Math.floor(Math.random() * 20) + 10;
+      node.ram = Math.floor(Math.random() * 20) + 30;
+      node.temp = node.type === 'server' ? 42 : 36;
+      node.status = 'online';
+    });
+
+    this.edges.forEach((edge) => {
+      if (edge.status === 'inactive') return;
+      edge.currentUsage = Math.floor(Math.random() * 40) + 15;
+      edge.latency = edge.source.includes('dev') || edge.target.includes('dev') ? 5 : 2;
+      edge.status = 'active';
+    });
+
+    const alertId = `a-rec-all-${Date.now()}`;
+    const alert: NetworkAlert = {
+      id: alertId,
+      timestamp: new Date().toISOString(),
+      nodeId: '',
+      nodeLabel: 'Система',
+      severity: 'info',
+      message: `Все аварийные метрики узлов и каналов успешно возвращены в штатный режим.`,
+      acknowledged: false,
+    };
+    this.alerts.unshift(alert);
+
+    this.emit('topology-changed', { nodes: this.nodes, edges: this.edges });
+    this.emit('new-alert', alert);
+  }
+
+  public setTopology(payload: { nodes: NetworkNode[]; edges: NetworkEdge[] }): void {
+    this.nodes = JSON.parse(JSON.stringify(payload.nodes));
+    this.edges = JSON.parse(JSON.stringify(payload.edges));
+
+    const alertId = `a-set-top-${Date.now()}`;
+    const alert: NetworkAlert = {
+      id: alertId,
+      timestamp: new Date().toISOString(),
+      nodeId: '',
+      nodeLabel: 'Система',
+      severity: 'info',
+      message: `Топология сети успешно восстановлена из резервной копии JSON.`,
+      acknowledged: false,
+    };
+    this.alerts.unshift(alert);
+
+    this.emit('topology-changed', { nodes: this.nodes, edges: this.edges });
+    this.emit('new-alert', alert);
+  }
+
   public cleanup(): void {
     for (const timeout of this.rebootsInProgress.values()) {
       clearTimeout(timeout);
