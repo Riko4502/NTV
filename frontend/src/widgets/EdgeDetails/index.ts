@@ -1,0 +1,1 @@
+export { EdgeDetails } from './EdgeDetails';

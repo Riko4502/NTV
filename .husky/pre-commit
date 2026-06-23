@@ -1,0 +1,16 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "=== Running pre-commit checks ==="
+
+echo "1. Formatting & Linting (Biome)..."
+npx biome check --write . || exit 1
+
+echo "2. Type Checking (TypeScript)..."
+npm run typecheck || exit 1
+
+echo "3. Running Unit Tests..."
+npm run test --prefix backend || exit 1
+npm run test --prefix frontend || exit 1
+
+echo "=== All checks passed! Committing... ==="

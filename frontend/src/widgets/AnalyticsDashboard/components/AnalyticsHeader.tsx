@@ -3,9 +3,9 @@ import { Button, Card, DatePicker, Flex, Select, Space, Switch, Tag, Typography 
 import type { Dayjs } from 'dayjs';
 
 import type { FC } from 'react';
+import { formatInterval } from '@/shared/libs';
 import type { MetricType } from '../types';
 import { AnalyticsExportButton } from './AnalyticsExportButton';
-import { formatInterval } from '@/shared/libs';
 
 interface ChartItem {
   key: Date | number;

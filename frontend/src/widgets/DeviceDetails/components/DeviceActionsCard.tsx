@@ -1,5 +1,5 @@
 import { LoadingOutlined, PoweroffOutlined, ThunderboltOutlined } from '@ant-design/icons';
-import { Button, Card } from 'antd';
+import { Button, Card, Flex, Tooltip } from 'antd';
 import type { FC } from 'react';
 import { sendWsMessage } from '@/shared/api';
 
@@ -9,6 +9,7 @@ interface DeviceActionsCardProps {
   isEditMode: boolean;
   isPinging: boolean;
   pingLatency: number | null;
+  pingHistory: number[];
   onPing: () => void;
   onReboot: () => void;
 }
@@ -19,6 +20,7 @@ export const DeviceActionsCard: FC<DeviceActionsCardProps> = ({
   isEditMode,
   isPinging,
   pingLatency,
+  pingHistory,
   onPing,
   onReboot,
 }) => {
@@ -89,6 +91,52 @@ export const DeviceActionsCard: FC<DeviceActionsCardProps> = ({
             </div>
           )}
         </div>
+
+        {/* Ping History Dots */}
+        {pingHistory.length > 0 && (
+          <Flex vertical gap="6px" style={{ marginTop: '4px', marginBottom: '8px' }}>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+              История пинг-тестов:
+            </span>
+            <Flex gap="6px" align="center">
+              {pingHistory.map((latency, idx) => {
+                let color = 'var(--color-offline)';
+                let tooltipText = '';
+
+                if (latency === -1) {
+                  color = 'var(--color-error)';
+                  tooltipText = 'Таймаут';
+                } else if (latency < 30) {
+                  color = 'var(--color-success)';
+                  tooltipText = `${latency} ms (Отлично)`;
+                } else if (latency <= 100) {
+                  color = 'var(--color-warning)';
+                  tooltipText = `${latency} ms (Норма)`;
+                } else {
+                  color = '#fa8c16';
+                  tooltipText = `${latency} ms (Задержка)`;
+                }
+
+                return (
+                  // biome-ignore lint/suspicious/noArrayIndexKey: pingHistory is simple order-preserving list of status dots
+                  <Tooltip key={idx} title={tooltipText}>
+                    <div
+                      style={{
+                        width: '12px',
+                        height: '12px',
+                        borderRadius: '50%',
+                        backgroundColor: color,
+                        boxShadow: `0 0 6px ${color}`,
+                        cursor: 'help',
+                        transition: 'all 0.2s',
+                      }}
+                    />
+                  </Tooltip>
+                );
+              })}
+            </Flex>
+          </Flex>
+        )}
 
         {/* Reboot Device Button */}
         <Button

@@ -1,7 +1,5 @@
 import { Cpu, HardDrive, Radio, Thermometer } from 'lucide-react';
 
-
-
 export const PERIOD_CONFIG: Record<string, { minutes: number; stepMs: number }> = {
   '1m': { minutes: 1, stepMs: 10 * 1000 },
   '3m': { minutes: 3, stepMs: 30 * 1000 },

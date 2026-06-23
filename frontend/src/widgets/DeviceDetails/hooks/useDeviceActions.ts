@@ -1,10 +1,17 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { registerWsCallback, sendWsMessage } from '@/shared/api';
 import type { Status } from '@/shared/libs';
 
 export const useDeviceActions = (id: string, status: Status) => {
   const [isPinging, setIsPinging] = useState(false);
   const [pingLatency, setPingLatency] = useState<number | null>(null);
+  const [pingHistory, setPingHistory] = useState<number[]>([]);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: reset state when active node changes
+  useEffect(() => {
+    setPingLatency(null);
+    setPingHistory([]);
+  }, [id]);
 
   const handlePing = () => {
     if (status === 'offline') return;
@@ -21,7 +28,9 @@ export const useDeviceActions = (id: string, status: Status) => {
       const payload = msg.payload as { timestamp?: string } | undefined;
       if (msg.type === 'pong' && payload?.timestamp === correlationId) {
         const endTime = performance.now();
-        setPingLatency(Math.round(endTime - startTime));
+        const latency = Math.round(endTime - startTime);
+        setPingLatency(latency);
+        setPingHistory((prev) => [...prev, latency].slice(-8));
         setIsPinging(false);
         cleanup();
       }
@@ -33,6 +42,7 @@ export const useDeviceActions = (id: string, status: Status) => {
         if (pinging) {
           setIsPinging(false);
           setPingLatency(-1);
+          setPingHistory((prev) => [...prev, -1].slice(-8));
         }
         return false;
       });
@@ -43,5 +53,5 @@ export const useDeviceActions = (id: string, status: Status) => {
     sendWsMessage('reboot-node', { nodeId: id });
   };
 
-  return { isPinging, pingLatency, handlePing, handleReboot };
+  return { isPinging, pingLatency, pingHistory, handlePing, handleReboot };
 };

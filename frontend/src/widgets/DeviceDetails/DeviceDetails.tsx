@@ -25,7 +25,10 @@ export const DeviceDetails: FC<DeviceDetailsProps> = (props) => {
     status,
   });
 
-  const { isPinging, pingLatency, handlePing, handleReboot } = useDeviceActions(id, status);
+  const { isPinging, pingLatency, pingHistory, handlePing, handleReboot } = useDeviceActions(
+    id,
+    status,
+  );
 
   const isOffline = status === 'offline';
 
@@ -85,6 +88,7 @@ export const DeviceDetails: FC<DeviceDetailsProps> = (props) => {
           isEditMode={isEditMode}
           isPinging={isPinging}
           pingLatency={pingLatency}
+          pingHistory={pingHistory}
           onPing={handlePing}
           onReboot={handleReboot}
         />

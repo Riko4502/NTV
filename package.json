@@ -11,12 +11,15 @@
     "lint:fix": "biome check --write .",
     "format": "biome format .",
     "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui"
+    "test:e2e:ui": "playwright test --ui",
+    "prepare": "husky",
+    "typecheck": "npm run typecheck --prefix backend && npm run typecheck --prefix frontend"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.0",
     "@playwright/test": "^1.42.1",
     "concurrently": "^8.2.2",
+    "husky": "^9.1.7",
     "rollup-plugin-visualizer": "^7.0.1",
     "sass": "^1.101.0",
     "vite-plugin-svgr": "^5.2.0",
