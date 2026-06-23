@@ -91,7 +91,7 @@ test.describe('NOC New Sections E2E Tests', () => {
     await expect(mttrLabel).toBeVisible();
 
     // Verify download buttons
-    const downloadPdfBtn = page.locator('button').filter({ hasText: 'Скачать текстовый отчет' });
+    const downloadPdfBtn = page.locator('button').filter({ hasText: 'Печать отчета (PDF)' });
     const downloadCsvBtn = page.locator('button').filter({ hasText: 'Экспорт SLA в CSV' });
     await expect(downloadPdfBtn).toBeVisible();
     await expect(downloadCsvBtn).toBeVisible();
