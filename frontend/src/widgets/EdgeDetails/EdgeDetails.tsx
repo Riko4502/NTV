@@ -1,3 +1,4 @@
+import { Flex } from 'antd';
 import type { FC } from 'react';
 import { useAppSelector } from '@/app/providers/store';
 import type { ConnectionEdgeDto } from '@/entities/connection/model/types';
@@ -7,7 +8,6 @@ import { EdgeActionsCard } from './components/EdgeActionsCard';
 import { EdgeParamsCard } from './components/EdgeParamsCard';
 import { EdgeTrafficCard } from './components/EdgeTrafficCard';
 import { EdgeVisualLinkCard } from './components/EdgeVisualLinkCard';
-import { Flex } from 'antd';
 
 interface EdgeDetailsProps {
   edge: ConnectionEdgeDto;
