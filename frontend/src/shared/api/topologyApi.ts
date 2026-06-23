@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { NetworkAlertData } from '../../entities/alert/model/types';
 import type { ConnectionEdgeDto } from '../../entities/connection/model/types';
 import type { NodeDto } from '../../entities/device/model/types';
-import type { ConnectionEdgeStatus, Status } from '../libs';
+import type { AddNodePayload, ConnectionEdgeStatus, Status } from '../libs';
 
 export type WsMessageType =
   | 'init'
@@ -55,10 +55,10 @@ export interface MetricPoint {
 
 export type MetricsHistory = Record<string, MetricPoint[]>;
 
-interface PingPongPayload {
-  timestamp: string;
-  nodeId?: string;
-  latency?: number;
+export interface ConnectNodesPayload {
+  source: string;
+  target: string;
+  bandwidth?: number;
 }
 
 type MessageCallback = (data: WsMessage) => void;
@@ -86,10 +86,10 @@ export const registerWsCallback = (callback: MessageCallback): (() => void) => {
 
 export const topologyApi = createApi({
   reducerPath: 'topologyApi',
-  baseQuery: fetchBaseQuery({ baseUrl: '/' }),
+  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3001/api/' }),
   endpoints: (builder) => ({
     streamTopology: builder.query<TopologyState, void>({
-      queryFn: () => ({ data: { nodes: [], edges: [], alerts: [] } }),
+      query: () => 'topology',
 
       async onCacheEntryAdded(_arg, { updateCachedData, cacheDataLoaded, cacheEntryRemoved }) {
         const socketUrl = 'ws://localhost:3001';
@@ -128,6 +128,122 @@ export const topologyApi = createApi({
         ws?.close();
         ws = null;
       },
+    }),
+
+    addNode: builder.mutation<{ success: boolean; node: NodeDto }, AddNodePayload>({
+      query: (body) => ({
+        url: 'nodes',
+        method: 'POST',
+        body,
+      }),
+    }),
+
+    deleteNode: builder.mutation<{ success: boolean }, { nodeId: string }>({
+      query: ({ nodeId }) => ({
+        url: `nodes/${nodeId}`,
+        method: 'DELETE',
+      }),
+    }),
+
+    rebootNode: builder.mutation<{ success: boolean }, { nodeId: string }>({
+      query: ({ nodeId }) => ({
+        url: `nodes/${nodeId}/reboot`,
+        method: 'POST',
+      }),
+    }),
+
+    pingNode: builder.mutation<{ success: boolean; latency: number }, { nodeId: string }>({
+      query: ({ nodeId }) => ({
+        url: `nodes/${nodeId}/ping`,
+        method: 'POST',
+      }),
+    }),
+
+    connectNodes: builder.mutation<{ success: boolean }, ConnectNodesPayload>({
+      query: (body) => ({
+        url: 'connections',
+        method: 'POST',
+        body,
+      }),
+    }),
+
+    disconnectNodes: builder.mutation<{ success: boolean }, { edgeId: string }>({
+      query: ({ edgeId }) => ({
+        url: `connections/${edgeId}`,
+        method: 'DELETE',
+      }),
+    }),
+
+    ackAlert: builder.mutation<{ success: boolean }, { alertId?: string }>({
+      query: (body) => ({
+        url: 'alerts/ack',
+        method: 'POST',
+        body,
+      }),
+    }),
+
+    clearAlerts: builder.mutation<{ success: boolean }, void>({
+      query: () => ({
+        url: 'alerts',
+        method: 'DELETE',
+      }),
+    }),
+
+    recoverAll: builder.mutation<{ success: boolean }, void>({
+      query: () => ({
+        url: 'recover-all',
+        method: 'POST',
+      }),
+    }),
+
+    setTopology: builder.mutation<
+      { success: boolean },
+      { nodes: NodeDto[]; edges: ConnectionEdgeDto[] }
+    >({
+      query: (body) => ({
+        url: 'topology',
+        method: 'POST',
+        body,
+      }),
+    }),
+
+    getMetricsHistory: builder.query<MetricsHistory, { nodeId?: string }>({
+      query: (arg) => ({
+        url: 'metrics/history',
+        params: arg?.nodeId ? { nodeId: arg.nodeId } : undefined,
+      }),
+    }),
+
+    getThresholds: builder.query<
+      {
+        cpuWarning: number;
+        cpuCritical: number;
+        tempLimit: number;
+        ramWarning: number;
+        telemetryInterval: number;
+        noiseLevel: number;
+      },
+      void
+    >({
+      query: () => 'settings/thresholds',
+    }),
+
+    updateThresholds: builder.mutation<
+      { success: boolean },
+      {
+        cpuWarning: number;
+        cpuCritical: number;
+        tempLimit: number;
+        ramWarning: number;
+        telemetryInterval: number;
+        noiseLevel: number;
+      }
+    >({
+      query: (body) => ({
+        url: 'settings/thresholds',
+        method: 'POST',
+        body,
+      }),
     }),
   }),
 });
@@ -178,12 +294,10 @@ function applyMessageToDraft(draft: TopologyState, { type, payload }: WsMessage)
     }
 
     case 'metrics-history': {
-      const _history = payload as MetricsHistory;
       break;
     }
 
     case 'pong': {
-      const _ping = payload as PingPongPayload;
       break;
     }
 
@@ -192,4 +306,19 @@ function applyMessageToDraft(draft: TopologyState, { type, payload }: WsMessage)
   }
 }
 
-export const { useStreamTopologyQuery } = topologyApi;
+export const {
+  useStreamTopologyQuery,
+  useAddNodeMutation,
+  useDeleteNodeMutation,
+  useRebootNodeMutation,
+  usePingNodeMutation,
+  useConnectNodesMutation,
+  useDisconnectNodesMutation,
+  useAckAlertMutation,
+  useClearAlertsMutation,
+  useRecoverAllMutation,
+  useSetTopologyMutation,
+  useGetMetricsHistoryQuery,
+  useGetThresholdsQuery,
+  useUpdateThresholdsMutation,
+} = topologyApi;

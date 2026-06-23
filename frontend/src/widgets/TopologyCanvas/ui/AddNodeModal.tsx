@@ -1,7 +1,7 @@
 import { Form, Input, Modal, Select } from 'antd';
 
 import type { FC } from 'react';
-import { sendWsMessage } from '@/shared/api';
+import { useAddNodeMutation } from '@/shared/api';
 
 const DEVICE_TYPE_OPTIONS = [
   { value: 'router', label: 'Маршрутизатор' },
@@ -18,16 +18,17 @@ interface AddNodeModalProps {
 
 export const AddNodeModal: FC<AddNodeModalProps> = ({ open, onClose }) => {
   const [form] = Form.useForm();
+  const [addNode] = useAddNodeMutation();
 
   const handleAdd = () => {
     form
       .validateFields()
-      .then((values: { label: string; type: string; ip?: string }) => {
-        sendWsMessage('add-node', {
+      .then(async (values: { label: string; type: string; ip?: string }) => {
+        await addNode({
           label: values.label,
-          type: values.type,
+          type: values.type as 'router' | 'switch' | 'server' | 'client' | 'firewall',
           ip: values.ip || undefined,
-        });
+        }).unwrap();
         form.resetFields();
         onClose();
       })

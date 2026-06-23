@@ -15,7 +15,7 @@ import { useDeviceTelemetryHistory } from './hooks/useDeviceTelemetryHistory';
 type DeviceDetailsProps = DeviceData;
 
 export const DeviceDetails: FC<DeviceDetailsProps> = (props) => {
-  const { id, label, ip, mac, type, status, cpu, ram, temp, traffic } = props;
+  const { id, status, cpu, ram, temp, traffic } = props;
   const isEditMode = useAppSelector((state) => state.ui.isEditMode);
 
   const { cpuHistory, ramHistory, tempHistory } = useDeviceTelemetryHistory({
@@ -25,17 +25,15 @@ export const DeviceDetails: FC<DeviceDetailsProps> = (props) => {
     status,
   });
 
-  const { isPinging, pingLatency, pingHistory, handlePing, handleReboot } = useDeviceActions(
-    id,
-    status,
-  );
+  const { isPinging, pingLatency, pingHistory, handlePing, handleReboot, handleDelete } =
+    useDeviceActions(id, status);
 
   const isOffline = status === 'offline';
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
       <div className={styles.panelBody}>
-        <DeviceMetaCard label={label} type={type} ip={ip} mac={mac} status={status} />
+        <DeviceMetaCard {...props} />
 
         {!isOffline ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -68,7 +66,7 @@ export const DeviceDetails: FC<DeviceDetailsProps> = (props) => {
           </div>
         ) : (
           <Alert
-            message="Устройство отключено"
+            title="Устройство отключено"
             description="Устройство отключено от питания. Телеметрическая статистика недоступна."
             type="error"
             showIcon
@@ -83,7 +81,6 @@ export const DeviceDetails: FC<DeviceDetailsProps> = (props) => {
         )}
 
         <DeviceActionsCard
-          nodeId={id}
           isOffline={isOffline}
           isEditMode={isEditMode}
           isPinging={isPinging}
@@ -91,6 +88,7 @@ export const DeviceDetails: FC<DeviceDetailsProps> = (props) => {
           pingHistory={pingHistory}
           onPing={handlePing}
           onReboot={handleReboot}
+          onDelete={handleDelete}
         />
       </div>
     </div>

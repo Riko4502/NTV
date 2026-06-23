@@ -244,3 +244,76 @@ body {
     justify-content: flex-end;
   }
 }
+
+@media print {
+  .print-only-header {
+    display: block !important;
+  }
+
+  .ant-layout-sider,
+  .ant-layout-header,
+  .mobile-menu-btn,
+  .ant-btn,
+  aside,
+  header,
+  .ant-card:has(.anticon-line-chart),
+  .ant-card:has(button) {
+    display: none !important;
+  }
+
+  body, 
+  .ant-layout,
+  main,
+  #root,
+  .ant-layout-content {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-family: var(--font-sans) !important;
+    overflow: visible !important;
+    height: auto !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .ant-col {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 0 0 100% !important;
+  }
+
+  .ant-card {
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    page-break-inside: avoid;
+    margin-bottom: 20px !important;
+  }
+
+  .ant-table {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  .ant-table-thead > tr > th {
+    background: #f8fafc !important;
+    color: #0f172a !important;
+    border-bottom: 2px solid #cbd5e1 !important;
+  }
+
+  .ant-table-tbody > tr > td {
+    border-bottom: 1px solid #e2e8f0 !important;
+  }
+
+  .ant-progress-text {
+    color: #000000 !important;
+  }
+
+  /* Reset shadows and force black text on elements */
+  * {
+    text-shadow: none !important;
+    box-shadow: none !important;
+    color: #000000 !important;
+  }
+}

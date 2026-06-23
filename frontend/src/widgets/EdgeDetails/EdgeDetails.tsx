@@ -2,11 +2,12 @@ import type { FC } from 'react';
 import { useAppSelector } from '@/app/providers/store';
 import type { ConnectionEdgeDto } from '@/entities/connection/model/types';
 import type { NodeDto } from '@/entities/device/model/types';
-import { sendWsMessage } from '@/shared/api';
+import { useDisconnectNodesMutation } from '@/shared/api';
 import { EdgeActionsCard } from './components/EdgeActionsCard';
 import { EdgeParamsCard } from './components/EdgeParamsCard';
 import { EdgeTrafficCard } from './components/EdgeTrafficCard';
 import { EdgeVisualLinkCard } from './components/EdgeVisualLinkCard';
+import { Flex } from 'antd';
 
 interface EdgeDetailsProps {
   edge: ConnectionEdgeDto;
@@ -34,6 +35,7 @@ const STATUS_CONFIG = {
 
 export const EdgeDetails: FC<EdgeDetailsProps> = ({ edge, nodes, onClose }) => {
   const isEditMode = useAppSelector((state) => state.ui.isEditMode);
+  const [disconnectNodes] = useDisconnectNodesMutation();
 
   const sourceNode = nodes.find((n) => n.id === edge.source);
   const targetNode = nodes.find((n) => n.id === edge.target);
@@ -42,19 +44,22 @@ export const EdgeDetails: FC<EdgeDetailsProps> = ({ edge, nodes, onClose }) => {
   const maxMbps = edge.bandwidth * 1000;
   const usagePercent = Math.min(100, Math.round((edge.currentUsage / maxMbps) * 100));
 
-  const handleDelete = () => {
-    sendWsMessage('disconnect-nodes', { edgeId: edge.id });
-    onClose();
+  const handleDelete = async () => {
+    try {
+      await disconnectNodes({ edgeId: edge.id }).unwrap();
+      onClose();
+    } catch (err) {
+      console.error('Failed to disconnect nodes:', err);
+    }
   };
 
   return (
-    <div
+    <Flex
+      gap={20}
+      vertical
       style={{
-        display: 'flex',
-        flexDirection: 'column',
         height: '100%',
         padding: '20px',
-        gap: '20px',
         overflowY: 'auto',
       }}
     >
@@ -83,6 +88,6 @@ export const EdgeDetails: FC<EdgeDetailsProps> = ({ edge, nodes, onClose }) => {
       />
 
       <EdgeActionsCard isEditMode={isEditMode} onDelete={handleDelete} />
-    </div>
+    </Flex>
   );
 };

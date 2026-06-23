@@ -85,7 +85,7 @@ export const AnalyticsChart: FC<AnalyticsChartProps> = ({
   showThreshold,
 }) => {
   const xAxisDomain = useMemo(() => {
-    const minutes = PERIOD_MINUTES[timePeriod];
+    const minutes = (PERIOD_MINUTES as Record<string, number>)[timePeriod];
     if (!minutes) return undefined;
 
     const maxTime = Date.now();

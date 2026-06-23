@@ -1,7 +1,7 @@
 import { Button, Card, Divider, Drawer, Flex } from 'antd';
 import { CheckCircle2, Flame, ShieldAlert, Zap } from 'lucide-react';
 import type { FC } from 'react';
-import { sendWsMessage, useStreamTopologyQuery } from '@/shared/api';
+import { sendWsMessage, useRecoverAllMutation, useStreamTopologyQuery } from '@/shared/api';
 
 interface SimulatorPanelProps {
   open: boolean;
@@ -10,6 +10,7 @@ interface SimulatorPanelProps {
 
 export const SimulatorPanel: FC<SimulatorPanelProps> = ({ open, onClose }) => {
   const { data } = useStreamTopologyQuery();
+  const [recoverAll] = useRecoverAllMutation();
   const nodes = data?.nodes || [];
   const edges = data?.edges || [];
 
@@ -29,8 +30,12 @@ export const SimulatorPanel: FC<SimulatorPanelProps> = ({ open, onClose }) => {
     sendWsMessage('trigger-latency', { edgeId });
   };
 
-  const handleRecoverAll = () => {
-    sendWsMessage('recover-all');
+  const handleRecoverAll = async () => {
+    try {
+      await recoverAll().unwrap();
+    } catch (err) {
+      console.error('Failed to recover all:', err);
+    }
   };
 
   return (

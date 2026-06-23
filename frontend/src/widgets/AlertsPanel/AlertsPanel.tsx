@@ -6,7 +6,11 @@ import { Virtuoso } from 'react-virtuoso';
 import { selectNode, setAlertFilter, useAppDispatch, useAppSelector } from '@/app/providers/store';
 import type { NetworkAlertData } from '@/entities/alert/model/types';
 import { AlertCard } from '@/entities/alert/ui/AlertCard/AlertCard';
-import { sendWsMessage, useStreamTopologyQuery } from '@/shared/api/topologyApi';
+import {
+  useAckAlertMutation,
+  useClearAlertsMutation,
+  useStreamTopologyQuery,
+} from '@/shared/api/topologyApi';
 import type { Alert } from '@/shared/libs';
 import { EmptyState } from '@/shared/ui';
 import styles from './AlertsPanel.module.scss';
@@ -22,6 +26,9 @@ export const AlertsPanel: FC = () => {
   const dispatch = useAppDispatch();
   const { data } = useStreamTopologyQuery();
 
+  const [ackAlert] = useAckAlertMutation();
+  const [clearAlerts] = useClearAlertsMutation();
+
   const activeFilter = useAppSelector((state) => state.ui.alertFilter);
 
   const alerts = data?.alerts || [];
@@ -31,20 +38,32 @@ export const AlertsPanel: FC = () => {
     return alerts.filter((alert) => alert.severity === activeFilter);
   }, [alerts, activeFilter]);
 
-  const handleAck = (alertId: string) => {
-    sendWsMessage('ack-alert', { alertId });
+  const handleAck = async (alertId: string) => {
+    try {
+      await ackAlert({ alertId }).unwrap();
+    } catch (err) {
+      console.error('Failed to ack alert:', err);
+    }
   };
 
   const handleFocus = (nodeId: string) => {
     dispatch(selectNode(nodeId));
   };
 
-  const handleAckAll = () => {
-    sendWsMessage('ack-all-alerts');
+  const handleAckAll = async () => {
+    try {
+      await ackAlert({}).unwrap();
+    } catch (err) {
+      console.error('Failed to ack all alerts:', err);
+    }
   };
 
-  const handleClear = () => {
-    sendWsMessage('clear-alerts');
+  const handleClear = async () => {
+    try {
+      await clearAlerts().unwrap();
+    } catch (err) {
+      console.error('Failed to clear alerts:', err);
+    }
   };
 
   const handleAckSelected = (value: Alert) => {
@@ -78,7 +97,7 @@ export const AlertsPanel: FC = () => {
         )}
       </div>
 
-      {alerts.length > 0 && (
+      {!!alerts.length && (
         <Flex
           style={{
             width: '100%',

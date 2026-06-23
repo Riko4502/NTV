@@ -1,16 +1,20 @@
 import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
+import { RouterProvider } from 'react-router-dom';
 import { store } from './providers/store';
-import { AppContent } from './ui/AppContent';
 import './styles/index.scss';
-import type { FC } from 'react';
+import { type FC, useMemo } from 'react';
+import { createRouter } from './router';
 
-export const App: FC = () => {
+interface AppProps {
+  basename?: string;
+}
+
+export const App: FC<AppProps> = ({ basename }) => {
+  const router = useMemo(() => createRouter(basename), [basename]);
+
   return (
     <Provider store={store}>
-      <BrowserRouter>
-        <AppContent />
-      </BrowserRouter>
+      <RouterProvider router={router} />
     </Provider>
   );
 };

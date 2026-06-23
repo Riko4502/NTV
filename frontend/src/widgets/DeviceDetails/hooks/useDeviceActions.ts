@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { registerWsCallback, sendWsMessage } from '@/shared/api';
+import { useDeleteNodeMutation, usePingNodeMutation, useRebootNodeMutation } from '@/shared/api';
 import type { Status } from '@/shared/libs';
 
 export const useDeviceActions = (id: string, status: Status) => {
@@ -7,51 +7,50 @@ export const useDeviceActions = (id: string, status: Status) => {
   const [pingLatency, setPingLatency] = useState<number | null>(null);
   const [pingHistory, setPingHistory] = useState<number[]>([]);
 
+  const [pingNode] = usePingNodeMutation();
+  const [rebootNode] = useRebootNodeMutation();
+  const [deleteNode] = useDeleteNodeMutation();
+
   // biome-ignore lint/correctness/useExhaustiveDependencies: reset state when active node changes
   useEffect(() => {
     setPingLatency(null);
     setPingHistory([]);
   }, [id]);
 
-  const handlePing = () => {
+  const handlePing = async () => {
     if (status === 'offline') return;
 
     setIsPinging(true);
     setPingLatency(null);
 
-    const startTime = performance.now();
-    const correlationId = `${id}-${Date.now()}`;
-
-    sendWsMessage('ping-node', { nodeId: id, timestamp: correlationId });
-
-    const cleanup = registerWsCallback((msg) => {
-      const payload = msg.payload as { timestamp?: string } | undefined;
-      if (msg.type === 'pong' && payload?.timestamp === correlationId) {
-        const endTime = performance.now();
-        const latency = Math.round(endTime - startTime);
-        setPingLatency(latency);
-        setPingHistory((prev) => [...prev, latency].slice(-8));
-        setIsPinging(false);
-        cleanup();
-      }
-    });
-
-    setTimeout(() => {
-      cleanup();
-      setIsPinging((pinging) => {
-        if (pinging) {
-          setIsPinging(false);
-          setPingLatency(-1);
-          setPingHistory((prev) => [...prev, -1].slice(-8));
-        }
-        return false;
-      });
-    }, 4000);
+    try {
+      const response = await pingNode({ nodeId: id }).unwrap();
+      const latency = response.latency;
+      setPingLatency(latency);
+      setPingHistory((prev) => [...prev, latency].slice(-8));
+    } catch (_) {
+      setPingLatency(-1);
+      setPingHistory((prev) => [...prev, -1].slice(-8));
+    } finally {
+      setIsPinging(false);
+    }
   };
 
-  const handleReboot = () => {
-    sendWsMessage('reboot-node', { nodeId: id });
+  const handleReboot = async () => {
+    try {
+      await rebootNode({ nodeId: id }).unwrap();
+    } catch (err) {
+      console.error('Failed to reboot node:', err);
+    }
   };
 
-  return { isPinging, pingLatency, pingHistory, handlePing, handleReboot };
+  const handleDelete = async () => {
+    try {
+      await deleteNode({ nodeId: id }).unwrap();
+    } catch (err) {
+      console.error('Failed to delete node:', err);
+    }
+  };
+
+  return { isPinging, pingLatency, pingHistory, handlePing, handleReboot, handleDelete };
 };

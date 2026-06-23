@@ -9,7 +9,7 @@ import { applyEdgeChanges, applyNodeChanges, MarkerType, useReactFlow } from '@x
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { selectEdge, selectNode, useAppDispatch, useAppSelector } from '@/app/providers/store';
 import type { TopologyState } from '@/shared/api';
-import { sendWsMessage, useStreamTopologyQuery } from '@/shared/api';
+import { useConnectNodesMutation, useStreamTopologyQuery } from '@/shared/api';
 import { useLayout } from '@/shared/hooks';
 import type { EdgeBase, LayoutDirection, NodeBase } from '@/shared/libs';
 import type { TopologyConnectModalState } from '../models';
@@ -190,18 +190,24 @@ export const useTopologySync = () => {
     }
   }, []);
 
+  const [connectNodes] = useConnectNodesMutation();
+
   const handleConnectSubmit = useCallback(
-    (bandwidth: number) => {
+    async (bandwidth: number) => {
       if (connectModalData) {
-        sendWsMessage('connect-nodes', {
-          source: connectModalData.source,
-          target: connectModalData.target,
-          bandwidth,
-        });
+        try {
+          await connectNodes({
+            source: connectModalData.source,
+            target: connectModalData.target,
+            bandwidth,
+          }).unwrap();
+        } catch (err) {
+          console.error('Failed to connect nodes:', err);
+        }
         setConnectModalData(null);
       }
     },
-    [connectModalData],
+    [connectModalData, connectNodes],
   );
 
   const handleConnectClose = useCallback(() => {

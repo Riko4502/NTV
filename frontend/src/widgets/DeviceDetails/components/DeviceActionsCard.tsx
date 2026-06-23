@@ -1,10 +1,8 @@
 import { LoadingOutlined, PoweroffOutlined, ThunderboltOutlined } from '@ant-design/icons';
 import { Button, Card, Flex, Tooltip } from 'antd';
 import type { FC } from 'react';
-import { sendWsMessage } from '@/shared/api';
 
 interface DeviceActionsCardProps {
-  nodeId: string;
   isOffline: boolean;
   isEditMode: boolean;
   isPinging: boolean;
@@ -12,10 +10,10 @@ interface DeviceActionsCardProps {
   pingHistory: number[];
   onPing: () => void;
   onReboot: () => void;
+  onDelete: () => void;
 }
 
 export const DeviceActionsCard: FC<DeviceActionsCardProps> = ({
-  nodeId,
   isOffline,
   isEditMode,
   isPinging,
@@ -23,6 +21,7 @@ export const DeviceActionsCard: FC<DeviceActionsCardProps> = ({
   pingHistory,
   onPing,
   onReboot,
+  onDelete,
 }) => {
   return (
     <Card
@@ -168,7 +167,7 @@ export const DeviceActionsCard: FC<DeviceActionsCardProps> = ({
             />
             <Button
               danger
-              onClick={() => sendWsMessage('delete-node', { id: nodeId })}
+              onClick={onDelete}
               style={{
                 height: '36px',
                 fontSize: '0.8rem',

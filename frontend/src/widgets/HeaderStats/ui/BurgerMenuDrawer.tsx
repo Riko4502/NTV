@@ -1,11 +1,11 @@
 import { BulbFilled, BulbOutlined, SearchOutlined } from '@ant-design/icons';
 import { Button, Card, Drawer, Flex, Input } from 'antd';
-import { Activity, Bell, TrendingUp } from 'lucide-react';
-
+import { Activity, Bell } from 'lucide-react';
 import type { FC } from 'react';
 import { NavLink } from 'react-router-dom';
 import { setSearchQuery, toggleAlerts, toggleTheme, useAppDispatch } from '@/app/providers/store';
 import type { Theme } from '@/shared/libs';
+import { NAV_ITEMS } from '@/widgets/Sidebar/constants';
 import styles from '../HeaderStats.module.scss';
 
 interface BurgerMenuDrawerProps {
@@ -70,26 +70,19 @@ export const BurgerMenuDrawer: FC<BurgerMenuDrawerProps> = ({
         >
           Навигация
         </span>
-        <NavLink
-          to="/"
-          onClick={onClose}
-          className={({ isActive }) =>
-            `${styles.drawerNavLink} ${isActive ? styles.drawerNavLinkActive : ''}`
-          }
-        >
-          <Activity size={16} style={{ marginRight: '8px' }} />
-          Топология
-        </NavLink>
-        <NavLink
-          to="/analytics"
-          onClick={onClose}
-          className={({ isActive }) =>
-            `${styles.drawerNavLink} ${isActive ? styles.drawerNavLinkActive : ''}`
-          }
-        >
-          <TrendingUp size={16} style={{ marginRight: '8px' }} />
-          Аналитика
-        </NavLink>
+        {NAV_ITEMS.map((item) => (
+          <NavLink
+            key={item.id}
+            to={item.path}
+            onClick={onClose}
+            className={({ isActive }) =>
+              `${styles.drawerNavLink} ${isActive ? styles.drawerNavLinkActive : ''}`
+            }
+          >
+            <item.icon size={16} style={{ marginRight: '8px' }} />
+            {item.label}
+          </NavLink>
+        ))}
       </Flex>
 
       {/* Mobile Search */}

@@ -10,6 +10,14 @@ export class NetworkState extends EventEmitter {
   public alerts: NetworkAlert[];
   public metricsHistory: Map<string, MetricPoint[]>;
   private rebootsInProgress: Map<string, NodeJS.Timeout>;
+  public thresholds: {
+    cpuWarning: number;
+    cpuCritical: number;
+    tempLimit: number;
+    ramWarning: number;
+    telemetryInterval: number;
+    noiseLevel: number;
+  };
 
   private static readonly HISTORY_LIMIT = 60; // ~5 min at 5s interval
 
@@ -21,6 +29,14 @@ export class NetworkState extends EventEmitter {
     this.alerts = JSON.parse(JSON.stringify(initialAlerts));
     this.rebootsInProgress = new Map();
     this.metricsHistory = new Map();
+    this.thresholds = {
+      cpuWarning: 80,
+      cpuCritical: 90,
+      tempLimit: 75,
+      ramWarning: 85,
+      telemetryInterval: 5000,
+      noiseLevel: 5,
+    };
   }
 
   public rebootNode(nodeId: string): void {
@@ -304,9 +320,13 @@ export class NetworkState extends EventEmitter {
       node.traffic = Math.max(1, Math.floor(node.traffic + trafficDelta));
 
       // Node statuses based on load thresholds
-      if (node.cpu > 90 || node.temp > 75) {
+      if (node.cpu > this.thresholds.cpuCritical || node.temp > this.thresholds.tempLimit) {
         node.status = 'error';
-      } else if (node.cpu > 80 || node.temp > 65 || node.ram > 85) {
+      } else if (
+        node.cpu > this.thresholds.cpuWarning ||
+        node.temp > this.thresholds.tempLimit - 10 ||
+        node.ram > this.thresholds.ramWarning
+      ) {
         node.status = 'warning';
       } else {
         node.status = 'online';

@@ -1,4 +1,12 @@
-import { Activity, type LucideIcon, TrendingUp } from 'lucide-react';
+import {
+  Activity,
+  FileText,
+  type LucideIcon,
+  Server,
+  Settings,
+  ShieldAlert,
+  TrendingUp,
+} from 'lucide-react';
 
 export interface NavItem {
   id: string;
@@ -10,4 +18,8 @@ export interface NavItem {
 export const NAV_ITEMS: NavItem[] = [
   { id: 'topology', path: '/', label: 'Топология', icon: Activity },
   { id: 'analytics', path: '/analytics', label: 'Аналитика', icon: TrendingUp },
+  { id: 'devices', path: '/devices', label: 'Устройства', icon: Server },
+  { id: 'alerts', path: '/alerts', label: 'Инциденты', icon: ShieldAlert },
+  { id: 'reports', path: '/reports', label: 'Отчеты', icon: FileText },
+  { id: 'settings', path: '/settings', label: 'Настройки', icon: Settings },
 ] as const;

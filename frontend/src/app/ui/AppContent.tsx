@@ -1,8 +1,6 @@
-import { ConfigProvider, Drawer, Layout } from 'antd';
+import { ConfigProvider, Drawer, Layout, Spin } from 'antd';
 import { type FC, useEffect } from 'react';
-import { Route, Routes } from 'react-router-dom';
-import { AnalyticsPage } from '@/pages/AnalyticsPage/ui/AnalyticsPage';
-import { DashboardPage } from '@/pages/DashboardPage/ui/DashboardPage';
+import { Outlet, useNavigation } from 'react-router-dom';
 import { AlertsPanel } from '@/widgets/AlertsPanel';
 import { HeaderStats } from '@/widgets/HeaderStats';
 import { Sidebar } from '@/widgets/Sidebar';
@@ -11,8 +9,12 @@ import { getAntdThemeConfig } from '../styles/themeConfig';
 
 export const AppContent: FC = () => {
   const dispatch = useAppDispatch();
+  const navigation = useNavigation();
+
   const theme = useAppSelector((state) => state.ui.theme);
   const isAlertsOpen = useAppSelector((state) => state.ui.isAlertsOpen);
+
+  const isLoading = navigation.state === 'loading';
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -39,10 +41,7 @@ export const AppContent: FC = () => {
           <Layout.Content
             style={{ flex: 1, overflow: 'hidden', position: 'relative', background: 'transparent' }}
           >
-            <Routes>
-              <Route path="/" element={<DashboardPage />} />
-              <Route path="/analytics" element={<AnalyticsPage />} />
-            </Routes>
+            {isLoading ? <Spin /> : <Outlet />}
           </Layout.Content>
         </Layout>
 

@@ -3,7 +3,7 @@ import { Cpu, HardDrive, Radio, Thermometer } from 'lucide-react';
 
 import type { FC } from 'react';
 import type { NodeDto } from '@/entities/device/model/types';
-import type { MetricPoint } from '@/shared/api/useMetricsHistory';
+import type { MetricPoint } from '@/shared/api';
 
 interface DeviceMetricCardProps {
   node: NodeDto;

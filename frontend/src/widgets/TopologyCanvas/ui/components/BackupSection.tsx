@@ -1,7 +1,7 @@
 import { EllipsisOutlined } from '@ant-design/icons';
 import { Button, Dropdown, type MenuProps } from 'antd';
 import { type FC, useRef } from 'react';
-import { sendWsMessage } from '@/shared/api';
+import { useSetTopologyMutation } from '@/shared/api';
 import type { ConnectionEdgeDto, DeviceData } from '@/shared/libs';
 import { FILE_OPERATIONS } from '../constants';
 
@@ -12,6 +12,7 @@ interface BackupSectionProps {
 
 export const BackupSection: FC<BackupSectionProps> = ({ nodesData, edgesData }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [setTopology] = useSetTopologyMutation();
 
   const handleExport = () => {
     const exportData = {
@@ -38,11 +39,11 @@ export const BackupSection: FC<BackupSectionProps> = ({ nodesData, edgesData }) 
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = (event) => {
+    reader.onload = async (event) => {
       try {
         const parsed = JSON.parse(event.target?.result as string);
         if (parsed && Array.isArray(parsed.nodes) && Array.isArray(parsed.edges)) {
-          sendWsMessage('set-topology', parsed);
+          await setTopology(parsed).unwrap();
         } else {
           alert('Неверный формат файла топологии.');
         }

@@ -1,6 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { sendWsMessage } from '@/shared/api';
 import { DeviceActionsCard } from './DeviceActionsCard';
 
 // Mock the shared api module
@@ -11,7 +10,7 @@ vi.mock('@/shared/api', () => ({
 
 describe('DeviceActionsCard Component', () => {
   const defaultProps = {
-    nodeId: 'node-1',
+    _nodeId: 'node-1',
     isOffline: false,
     isEditMode: false,
     isPinging: false,
@@ -19,6 +18,7 @@ describe('DeviceActionsCard Component', () => {
     pingHistory: [] as number[],
     onPing: vi.fn(),
     onReboot: vi.fn(),
+    onDelete: vi.fn(),
   };
 
   it('should render the Card title and buttons', () => {
@@ -72,14 +72,15 @@ describe('DeviceActionsCard Component', () => {
     expect(container?.childNodes.length).toBe(4);
   });
 
-  it('should display Delete Node Button only in Edit Mode and call sendWsMessage', () => {
-    render(<DeviceActionsCard {...defaultProps} isEditMode={true} />);
+  it('should display Delete Node Button only in Edit Mode and call onDelete', () => {
+    const onDeleteMock = vi.fn();
+    render(<DeviceActionsCard {...defaultProps} isEditMode={true} onDelete={onDeleteMock} />);
 
     const deleteBtn = screen.getByText('🗑 Удалить устройство');
     expect(deleteBtn).toBeInTheDocument();
 
     fireEvent.click(deleteBtn);
-    expect(sendWsMessage).toHaveBeenCalledWith('delete-node', { id: 'node-1' });
+    expect(onDeleteMock).toHaveBeenCalledTimes(1);
   });
 
   it('should display initialization status when rebooting (device is offline)', () => {
