@@ -1,8 +1,7 @@
 import { CheckOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Button, Flex, Segmented } from 'antd';
 import { AlertTriangle } from 'lucide-react';
-import type React from 'react';
-import { useMemo } from 'react';
+import { type FC, useMemo } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import { selectNode, setAlertFilter, useAppDispatch, useAppSelector } from '@/app/providers/store';
 import type { NetworkAlertData } from '@/entities/alert/model/types';
@@ -19,7 +18,7 @@ const ALERT_FILTER_OPTIONS: { label: string; value: Alert }[] = [
   { label: 'Информация', value: 'info' },
 ];
 
-export const AlertsPanel: React.FC = () => {
+export const AlertsPanel: FC = () => {
   const dispatch = useAppDispatch();
   const { data } = useStreamTopologyQuery();
 
@@ -63,23 +62,21 @@ export const AlertsPanel: React.FC = () => {
         />
       </div>
 
-      {filteredAlerts.length ? (
-        <Virtuoso
-          className={styles.panelBody}
-          style={{ width: '100%' }}
-          data={filteredAlerts}
-          itemContent={(_index, alert: NetworkAlertData) => (
-            <AlertCard key={alert.id} {...alert} onAck={handleAck} onFocus={handleFocus} />
-          )}
-        />
-      ) : (
-        <div className={styles.panelBody} style={{ width: '100%' }}>
+      <div className={styles.panelBody}>
+        {filteredAlerts.length ? (
+          <Virtuoso
+            data={filteredAlerts}
+            itemContent={(_index, alert: NetworkAlertData) => (
+              <AlertCard key={alert.id} {...alert} onAck={handleAck} onFocus={handleFocus} />
+            )}
+          />
+        ) : (
           <EmptyState
             icon={<AlertTriangle size={24} style={{ opacity: 0.3 }} />}
             title="Инциденты отсутствуют"
           />
-        </div>
-      )}
+        )}
+      </div>
 
       {alerts.length > 0 && (
         <Flex

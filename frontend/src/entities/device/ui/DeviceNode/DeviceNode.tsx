@@ -1,8 +1,8 @@
 import { Handle, Position } from '@xyflow/react';
 import { Flex, Progress } from 'antd';
 import { HelpCircle, Laptop, type LucideIcon, Network, Server, Shield, Split } from 'lucide-react';
-import type React from 'react';
-import { memo, useEffect, useState } from 'react';
+
+import { type CSSProperties, type FC, memo, useEffect, useState } from 'react';
 import { useAppSelector } from '@/app/providers/store';
 import type { DeviceNodeProps, DeviceType, Status, StatusStyle } from '@/shared/libs';
 import { getSeverityColor } from '@/shared/libs';
@@ -39,7 +39,7 @@ const STATUS_THEMES: Record<Status, StatusStyle> = {
   },
 };
 
-export const DeviceNode: React.FC<DeviceNodeProps> = memo(
+export const DeviceNode: FC<DeviceNodeProps> = memo(
   ({ data, selected }) => {
     const { status = 'offline', label, ip, cpu } = data;
     const { color, glow } = STATUS_THEMES[status];
@@ -82,7 +82,6 @@ export const DeviceNode: React.FC<DeviceNodeProps> = memo(
             : '0 8px 32px 0 var(--panel-shadow)',
         }}
       >
-        {/* Target handles — visible and connectable only in edit mode */}
         <Handle
           type="target"
           position={Position.Top}
@@ -103,7 +102,7 @@ export const DeviceNode: React.FC<DeviceNodeProps> = memo(
             {
               backgroundColor: color,
               '--pulse-color': glow,
-            } as React.CSSProperties
+            } as CSSProperties
           }
         />
 

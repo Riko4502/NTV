@@ -17,7 +17,7 @@ export const KpiCard: FC<KpiCardProps> = ({ title, value, valueColor, prefix, su
         className={styles.statistic}
         title={<span className={styles.title}>{title}</span>}
         value={value}
-        valueStyle={{
+        style={{
           color: valueColor || 'var(--text-primary)',
         }}
         prefix={prefix}

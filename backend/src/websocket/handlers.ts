@@ -6,6 +6,7 @@ import type {
   ConnectNodesPayload,
   DeleteNodePayload,
   DisconnectNodesPayload,
+  GetMetricsHistoryPayload,
   PingNodePayload,
   RebootNodePayload,
 } from '../types';
@@ -62,5 +63,16 @@ export const wsHandlers: Record<string, WSHandler> = {
   'delete-node': (_ws, payload) => {
     const p = payload as DeleteNodePayload;
     networkState.deleteNode(p.nodeId);
+  },
+
+  'get-metrics-history': (ws, payload) => {
+    const p = payload as GetMetricsHistoryPayload;
+    const history = networkState.getMetricsHistory(p?.nodeId);
+    ws.send(
+      JSON.stringify({
+        type: 'metrics-history',
+        payload: history,
+      }),
+    );
   },
 };

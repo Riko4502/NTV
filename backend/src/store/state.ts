@@ -1,14 +1,17 @@
 /** biome-ignore-all lint/suspicious/noConsole: console.log is used for status logging */
 /** biome-ignore-all lint/complexity/noExcessiveCognitiveComplexity: simulation methods have higher complexity */
 import { EventEmitter } from 'events';
-import type { NetworkAlert, NetworkEdge, NetworkNode } from '../types';
+import type { MetricPoint, NetworkAlert, NetworkEdge, NetworkNode } from '../types';
 import { initialAlerts, initialEdges, initialNodes } from './mockData';
 
 export class NetworkState extends EventEmitter {
   public nodes: NetworkNode[];
   public edges: NetworkEdge[];
   public alerts: NetworkAlert[];
+  public metricsHistory: Map<string, MetricPoint[]>;
   private rebootsInProgress: Map<string, NodeJS.Timeout>;
+
+  private static readonly HISTORY_LIMIT = 60; // ~5 min at 5s interval
 
   constructor() {
     super();
@@ -17,6 +20,7 @@ export class NetworkState extends EventEmitter {
     this.edges = JSON.parse(JSON.stringify(initialEdges));
     this.alerts = JSON.parse(JSON.stringify(initialAlerts));
     this.rebootsInProgress = new Map();
+    this.metricsHistory = new Map();
   }
 
   public rebootNode(nodeId: string): void {
@@ -355,6 +359,24 @@ export class NetworkState extends EventEmitter {
       }
     });
 
+    // Накапливаем историю метрик
+    const now = new Date().toISOString();
+    this.nodes.forEach((node) => {
+      const point: MetricPoint = {
+        timestamp: now,
+        cpu: node.cpu,
+        ram: node.ram,
+        temp: node.temp,
+        traffic: node.traffic,
+      };
+      const history = this.metricsHistory.get(node.id) || [];
+      history.push(point);
+      if (history.length > NetworkState.HISTORY_LIMIT) {
+        history.shift();
+      }
+      this.metricsHistory.set(node.id, history);
+    });
+
     // Emit the update
     this.emit('metrics-update', {
       nodes: this.nodes.map((n) => ({
@@ -442,6 +464,17 @@ export class NetworkState extends EventEmitter {
 
     this.alerts.unshift(newAlert);
     this.emit('new-alert', newAlert);
+  }
+
+  public getMetricsHistory(nodeId?: string): Record<string, MetricPoint[]> {
+    if (nodeId) {
+      return { [nodeId]: this.metricsHistory.get(nodeId) || [] };
+    }
+    const result: Record<string, MetricPoint[]> = {};
+    this.metricsHistory.forEach((points, id) => {
+      result[id] = points;
+    });
+    return result;
   }
 
   public cleanup(): void {

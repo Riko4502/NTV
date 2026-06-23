@@ -10,7 +10,7 @@
   border-bottom: 1px solid var(--border-color);
   background: var(--bg-panel);
   display: grid;
-  grid-template-columns: 320px 1fr auto;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
   padding: 0 20px;
   z-index: 20;
@@ -95,3 +95,107 @@
 .bellIconAlert {
   color: var(--color-error) !important;
 }
+
+.navContainer {
+  display: flex;
+  gap: 8px;
+  margin-left: 20px;
+}
+
+.navLink {
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  transition: all 0.2s ease-in-out;
+  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    color: var(--text-primary);
+    background-color: rgba(120, 120, 120, 0.08);
+  }
+
+  &.navLinkActive {
+    color: var(--color-primary);
+    background-color: rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.25);
+    font-weight: 600;
+  }
+}
+
+.burgerButton {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  width: 32px;
+  height: 32px;
+  margin-right: 8px;
+  border-radius: 6px;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    color: var(--text-primary);
+    background-color: rgba(120, 120, 120, 0.08);
+  }
+}
+
+.drawerNavLink {
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 10px 16px;
+  border-radius: 8px;
+  color: var(--text-secondary);
+  transition: all 0.2s ease-in-out;
+  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    color: var(--text-primary);
+    background-color: rgba(120, 120, 120, 0.08);
+  }
+
+  &.drawerNavLinkActive {
+    color: var(--color-primary);
+    background-color: rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.25);
+    font-weight: 600;
+  }
+}
+
+.networkHealthWrapper {
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 992px) {
+  .navContainer {
+    display: none !important;
+  }
+
+  .searchContainer {
+    display: none !important;
+  }
+
+  .networkHealthWrapper {
+    display: none !important;
+  }
+
+  .divider {
+    display: none !important;
+  }
+}
+
+.mobileOnly {
+  @media (min-width: 993px) {
+    display: none !important;
+  }
+}
+

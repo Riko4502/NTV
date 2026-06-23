@@ -1,71 +1,39 @@
-import { BulbFilled, BulbOutlined, SearchOutlined } from '@ant-design/icons';
-import { Badge, Button, Flex, Input, Layout, Tooltip } from 'antd';
-import { Activity, Bell } from 'lucide-react';
-import type React from 'react';
-import { useMemo } from 'react';
-import {
-  setSearchQuery,
-  toggleAlerts,
-  toggleTheme,
-  useAppDispatch,
-  useAppSelector,
-} from '@/app/providers/store';
+import { BulbFilled, BulbOutlined } from '@ant-design/icons';
+import { Badge, Button, Flex, Layout, Tooltip } from 'antd';
+import { Activity, Bell, Menu } from 'lucide-react';
+
+import { type FC, useState } from 'react';
+import { toggleAlerts, toggleTheme, useAppDispatch, useAppSelector } from '@/app/providers/store';
 import { useStreamTopologyQuery } from '@/shared/api';
 import styles from './HeaderStats.module.scss';
+import { useNocStats } from './hooks/useNocStats';
+import { BurgerMenuDrawer } from './ui/BurgerMenuDrawer';
 import { NetworkHealth } from './ui/NetworkHealth';
 
-export const HeaderStats: React.FC = () => {
+export const HeaderStats: FC = () => {
   const dispatch = useAppDispatch();
   const searchQuery = useAppSelector((state) => state.ui.searchQuery);
   const theme = useAppSelector((state) => state.ui.theme);
   const isAlertsOpen = useAppSelector((state) => state.ui.isAlertsOpen);
   const { data } = useStreamTopologyQuery();
 
+  const [menuOpen, setMenuOpen] = useState(false);
+
   const nodes = data?.nodes || [];
   const edges = data?.edges || [];
   const alerts = data?.alerts || [];
 
-  // Calculate live NOC stats
-  const stats = useMemo(() => {
-    if (nodes.length === 0) {
-      return { health: 100, trafficGbps: '0.00', activeIncidents: 0, onlineRatio: '0/0' };
-    }
-
-    let totalScore = 0;
-    let onlineCount = 0;
-    nodes.forEach((node) => {
-      if (node.status === 'online') {
-        totalScore += 100;
-        onlineCount++;
-      } else if (node.status === 'warning') {
-        totalScore += 70;
-        onlineCount++;
-      } else if (node.status === 'error') {
-        totalScore += 30;
-        onlineCount++;
-      }
-    });
-
-    const health = Math.round(totalScore / nodes.length);
-
-    const totalTrafficMbps = edges.reduce((acc, edge) => {
-      return acc + (edge.status !== 'inactive' ? edge.currentUsage : 0);
-    }, 0);
-    const trafficGbps = (totalTrafficMbps / 1000).toFixed(2);
-
-    const activeIncidents = alerts.filter(
-      (a) => !a.acknowledged && (a.severity === 'critical' || a.severity === 'warning'),
-    ).length;
-
-    const onlineRatio = `${onlineCount}/${nodes.length}`;
-
-    return { health, trafficGbps, activeIncidents, onlineRatio };
-  }, [nodes, edges, alerts]);
+  const stats = useNocStats(nodes, edges, alerts);
 
   return (
     <Layout.Header className={styles.header}>
-      {/* Title block */}
       <Flex align="center" gap="10px">
+        <Button
+          type="text"
+          icon={<Menu size={20} />}
+          onClick={() => setMenuOpen(true)}
+          className={styles.burgerButton}
+        />
         <Flex align="center" justify="center" className={styles.logoWrapper}>
           <Activity size={20} />
         </Flex>
@@ -74,25 +42,13 @@ export const HeaderStats: React.FC = () => {
         </Flex>
       </Flex>
 
-      {/* Global search */}
-      <div className={styles.searchContainer}>
-        <Input
-          placeholder="Поиск по устройствам или IP-адресу..."
-          value={searchQuery}
-          onChange={(e) => dispatch(setSearchQuery(e.target.value))}
-          prefix={<SearchOutlined style={{ color: 'var(--text-muted)' }} />}
-          allowClear
-          className={styles.searchInput}
-        />
-      </div>
-
-      {/* Real-time stats panel */}
       <Flex className="kpi-container" justify="flex-end" align="center" gap="10px">
-        <NetworkHealth />
+        <div className={styles.networkHealthWrapper}>
+          <NetworkHealth />
+        </div>
 
         <div className={styles.divider} />
 
-        {/* Theme Switcher */}
         <Tooltip
           title={theme === 'dark' ? 'Переключить на светлую тему' : 'Переключить на тёмную тему'}
         >
@@ -121,6 +77,15 @@ export const HeaderStats: React.FC = () => {
           </Badge>
         </Tooltip>
       </Flex>
+
+      {/* Responsive Burger Drawer */}
+      <BurgerMenuDrawer
+        open={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        searchQuery={searchQuery}
+        theme={theme}
+        stats={stats}
+      />
     </Layout.Header>
   );
 };

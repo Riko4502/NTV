@@ -31,6 +31,14 @@ export interface NetworkAlert {
   acknowledged: boolean;
 }
 
+export interface MetricPoint {
+  timestamp: string;
+  cpu: number;
+  ram: number;
+  temp: number;
+  traffic: number;
+}
+
 export interface PingNodePayload {
   nodeId: string;
   timestamp: unknown;
@@ -64,4 +72,8 @@ export interface DisconnectNodesPayload {
 
 export interface DeleteNodePayload {
   nodeId: string;
+}
+
+export interface GetMetricsHistoryPayload {
+  nodeId?: string;
 }

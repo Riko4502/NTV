@@ -16,13 +16,23 @@ export interface UIState {
   isEditMode: boolean;
 }
 
+const getInitialTheme = (): Theme => {
+  if (typeof window !== 'undefined') {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light' || savedTheme === 'dark') {
+      return savedTheme;
+    }
+  }
+  return 'light';
+};
+
 const initialUIState: UIState = {
   selectedNodeId: null,
   selectedEdgeId: null,
   searchQuery: '',
   alertFilter: 'all',
   layoutDirection: 'TB',
-  theme: 'dark',
+  theme: getInitialTheme(),
   isAlertsOpen: false,
   isEditMode: false,
 };
@@ -49,7 +59,9 @@ const uiSlice = createSlice({
       state.layoutDirection = action.payload;
     },
     toggleTheme: (state) => {
-      state.theme = state.theme === 'dark' ? 'light' : 'dark';
+      const theme = state.theme === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('theme', theme);
+      state.theme = theme;
     },
     setAlertsOpen: (state, action: PayloadAction<boolean>) => {
       state.isAlertsOpen = action.payload;

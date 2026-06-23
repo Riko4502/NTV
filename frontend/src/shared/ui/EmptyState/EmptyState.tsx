@@ -19,7 +19,7 @@ export const EmptyState: FC<EmptyState> = ({ icon, title, description }) => {
         height: '100%',
       }}
     >
-      <Flex flex="column" align="center" gap="12px">
+      <Flex orientation="vertical" align="center" gap="12px">
         <Typography.Text>{icon}</Typography.Text>
         <Typography.Text style={{ fontSize: '0.9rem' }}>{title}</Typography.Text>
         <Typography.Text>{description}</Typography.Text>
