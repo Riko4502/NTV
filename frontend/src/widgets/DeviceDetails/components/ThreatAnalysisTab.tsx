@@ -1,6 +1,6 @@
 import { AlertOutlined } from '@ant-design/icons';
 import { Button, Card, Col, Flex, message, Row, Statistic, Table } from 'antd';
-import type { CSSProperties, FC } from 'react';
+import type { FC } from 'react';
 import { useSimulateThreatMutation } from '@/shared/api';
 import type { SeverityType, ThreatEvent } from '@/shared/libs';
 import styles from '../DeviceDetails.module.scss';
@@ -55,7 +55,7 @@ export const ThreatAnalysisTab: FC<ThreatAnalysisTabProps> = ({
           <Card size="small" className={styles.statsCard}>
             <Statistic
               title={<span className={styles.statsTitle}>Всего угроз</span>}
-              value={<span className={styles.totalStatsValue}>{totalCount}</span>}
+              value={totalCount}
             />
           </Card>
         </Col>
@@ -63,7 +63,7 @@ export const ThreatAnalysisTab: FC<ThreatAnalysisTabProps> = ({
           <Card size="small" className={styles.statsCard}>
             <Statistic
               title={<span className={styles.statsTitle}>Заблокировано</span>}
-              value={<span className={styles.blockedStatsValue}>{blockRate}%</span>}
+              value={`${blockRate}%`}
             />
           </Card>
         </Col>
@@ -71,14 +71,8 @@ export const ThreatAnalysisTab: FC<ThreatAnalysisTabProps> = ({
           <Card size="small" className={styles.statsCard}>
             <Statistic
               title={<span className={styles.statsTitle}>Уровень риска</span>}
-              value={
-                <span
-                  className={styles.riskStatsValue}
-                  style={{ '--risk-color': statusColor } as CSSProperties}
-                >
-                  {statusLabel}
-                </span>
-              }
+              value={statusLabel}
+              style={{ color: statusColor }}
             />
           </Card>
         </Col>
