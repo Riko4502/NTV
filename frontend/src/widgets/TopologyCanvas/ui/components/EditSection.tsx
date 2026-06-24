@@ -1,5 +1,6 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Tooltip } from 'antd';
+import { Pencil } from 'lucide-react';
 import type { FC } from 'react';
 import { toggleEditMode, useAppDispatch, useAppSelector } from '@/app/providers/store';
 import styles from '../../TopologyCanvas.module.scss';
@@ -12,6 +13,8 @@ export const EditSection: FC<EditSectionProps> = ({ onOpenAddNode }) => {
   const dispatch = useAppDispatch();
   const isEditMode = useAppSelector((state) => state.ui.isEditMode);
 
+  const icon = !isEditMode ? <Pencil size={14} /> : void 0;
+
   return (
     <>
       <Tooltip
@@ -20,10 +23,11 @@ export const EditSection: FC<EditSectionProps> = ({ onOpenAddNode }) => {
         <Button
           onClick={() => dispatch(toggleEditMode())}
           type={isEditMode ? 'primary' : 'default'}
+          icon={icon}
           danger={isEditMode}
           className={`${styles.toolbarBtn} ${isEditMode ? styles.editActive : ''}`}
         >
-          {isEditMode ? 'Отмена' : 'Редактировать'}
+          {isEditMode ? 'Отмена' : ''}
         </Button>
       </Tooltip>
 

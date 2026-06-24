@@ -32,9 +32,11 @@ test.describe('NOC Interactive Features E2E Tests', () => {
     const headerSlidersBtn = page.locator('[data-test-id="simulator-btn"]');
     await expect(headerSlidersBtn).toBeVisible();
     await headerSlidersBtn.click();
-await expect(page.locator('.ant-drawer')).toBeVisible({ timeout: 30000 });
+    await expect(page.locator('.ant-drawer')).toBeVisible({ timeout: 30000 });
     // Check if the simulator drawer is visible
-    const drawerTitle = page.locator('[data-testid="simulator-drawer"] .ant-drawer-title').filter({ hasText: 'Симулятор Сетевых Инцидентов' });
+    const drawerTitle = page
+      .locator('[data-testid="simulator-drawer"] .ant-drawer-title')
+      .filter({ hasText: 'Симулятор Сетевых Инцидентов' });
     await expect(drawerTitle).toBeVisible({ timeout: 30000 });
 
     // Trigger DDoS attack on the Internet Gateway node
