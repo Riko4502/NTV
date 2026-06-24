@@ -59,6 +59,7 @@ export const SimulatorPanel: FC<SimulatorPanelProps> = ({ open, onClose }) => {
         body: styles.drawerBody,
         header: styles.drawerHeader,
       }}
+      data-testid="simulator-drawer"
     >
       <Button
         type="primary"

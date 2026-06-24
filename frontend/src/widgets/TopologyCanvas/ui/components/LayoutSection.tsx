@@ -54,6 +54,7 @@ export const LayoutSection: FC<LayoutSectionProps> = ({
       <Tooltip title="Симулятор инцидентов">
         <Button
           icon={<Sliders size={16} />}
+          data-test-id="simulator-btn"
           onClick={() => setSimulatorOpen(true)}
           className={styles.toolbarBtn}
         />

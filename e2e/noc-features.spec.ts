@@ -29,13 +29,13 @@ test.describe('NOC Interactive Features E2E Tests', () => {
   test('should open incident simulator drawer and trigger DDoS', async ({ page }) => {
     // Open the simulator panel via the sliders icon in the header stats
     // The button contains Lucide Sliders svg
-    const headerSlidersBtn = page.locator('header button').nth(1);
+    const headerSlidersBtn = page.locator('[data-test-id="simulator-btn"]');
     await expect(headerSlidersBtn).toBeVisible();
     await headerSlidersBtn.click();
-
+await expect(page.locator('.ant-drawer')).toBeVisible({ timeout: 30000 });
     // Check if the simulator drawer is visible
-    const drawerTitle = page.locator('text=Симулятор Сетевых Инцидентов');
-    await expect(drawerTitle).toBeVisible();
+    const drawerTitle = page.locator('[data-testid="simulator-drawer"] .ant-drawer-title').filter({ hasText: 'Симулятор Сетевых Инцидентов' });
+    await expect(drawerTitle).toBeVisible({ timeout: 30000 });
 
     // Trigger DDoS attack on the Internet Gateway node
     const gatewayCard = page.locator('.ant-card').filter({ hasText: 'Internet Gateway' }).first();
@@ -46,8 +46,8 @@ test.describe('NOC Interactive Features E2E Tests', () => {
     await ddosBtn.click();
 
     // Close the drawer using the close button
-    const closeBtn = page.locator('.ant-drawer-close');
-    await expect(closeBtn).toBeVisible();
+    const closeBtn = page.locator('.ant-drawer .ant-drawer-close');
+    await expect(closeBtn).toBeVisible({ timeout: 20000 });
     await closeBtn.click();
     await expect(drawerTitle).not.toBeVisible();
 
@@ -87,7 +87,7 @@ test.describe('NOC Interactive Features E2E Tests', () => {
     await expect(burgerButton).not.toBeVisible();
 
     // Click collapse button (the only button in sidebar)
-    const collapseButton = sidebar.locator('button');
+    const collapseButton = sidebar.locator('button[class*="collapseButton"]').first();
     await expect(collapseButton).toBeVisible();
     await collapseButton.click();
 
