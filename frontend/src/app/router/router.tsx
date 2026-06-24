@@ -1,4 +1,5 @@
 import { createBrowserRouter, type RouteObject } from 'react-router-dom';
+import { ErrorPage } from '@/pages/ErrorPage/ui/ErrorPage';
 import { RouteErrorFallback } from '@/shared/ui';
 import { OnlyPublic } from './OnlyPublic';
 import { paths } from './paths';
@@ -91,25 +92,16 @@ export const routes: RouteObject[] = [
       {
         path: paths.forbidden,
         handle: { crumb: 'Доступ ограничен' },
-        lazy: async () => {
-          const { ErrorPage } = await import('@/pages/ErrorPage/ui/ErrorPage');
-          return { Component: () => <ErrorPage code="403" /> };
-        },
+        element: <ErrorPage code="403" />,
       },
       {
         path: paths.notFound,
         handle: { crumb: 'Страница не найдена' },
-        lazy: async () => {
-          const { ErrorPage } = await import('@/pages/ErrorPage/ui/ErrorPage');
-          return { Component: () => <ErrorPage code="404" /> };
-        },
+        element: <ErrorPage code="404" />,
       },
       {
         path: '*',
-        lazy: async () => {
-          const { ErrorPage } = await import('@/pages/ErrorPage/ui/ErrorPage');
-          return { Component: () => <ErrorPage code="404" /> };
-        },
+        element: <ErrorPage code="404" />,
       },
     ],
   },

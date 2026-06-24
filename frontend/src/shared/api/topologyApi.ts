@@ -1,8 +1,16 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { logout } from '@/app/providers/store';
 import type { NetworkAlertData } from '../../entities/alert/model/types';
 import type { ConnectionEdgeDto } from '../../entities/connection/model/types';
 import type { NodeDto } from '../../entities/device/model/types';
-import type { AddNodePayload, ConnectionEdgeStatus, FirewallRuleFormData, Status } from '../libs';
+import type {
+  AddNodePayload,
+  ConnectionEdgeStatus,
+  FirewallRuleFormData,
+  LoginRequest,
+  LoginResponse,
+  Status,
+} from '../libs';
 
 export type WsMessageType =
   | 'init'
@@ -293,6 +301,28 @@ export const topologyApi = createApi({
         body,
       }),
     }),
+
+    login: builder.mutation<LoginResponse, LoginRequest>({
+      query: (body) => ({
+        url: 'login',
+        method: 'POST',
+        body,
+      }),
+    }),
+
+    logout: builder.mutation<{ success: boolean }, void>({
+      query: () => ({
+        url: 'logout',
+        method: 'POST',
+      }),
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled.then(() => {
+            dispatch(logout());
+          });
+        } catch {}
+      },
+    }),
   }),
 });
 
@@ -374,4 +404,6 @@ export const {
   useDeleteFirewallRuleMutation,
   useToggleFirewallRuleMutation,
   useSimulateThreatMutation,
+  useLoginMutation,
+  useLogoutMutation,
 } = topologyApi;

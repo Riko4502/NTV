@@ -2,8 +2,8 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { configureStore, createSlice } from '@reduxjs/toolkit';
 import type { TypedUseSelectorHook } from 'react-redux';
 import { useDispatch, useSelector } from 'react-redux';
-import { topologyApi } from '../../shared/api/topologyApi';
-import type { Alert, LayoutDirection, Theme } from '../../shared/libs';
+import { topologyApi } from '@/shared/api/topologyApi';
+import type { Alert, LayoutDirection, Theme } from '@/shared/libs';
 
 export interface UIState {
   selectedNodeId: string | null;

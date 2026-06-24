@@ -21,8 +21,10 @@ export const ErrorPage: FC<ErrorPageProps> = ({ code = '404', error }) => {
   const glowColor = `var(--color-${config.colorScheme})`;
   const glowBg = `var(--color-${config.colorScheme}-glow)`;
 
-  // biome-ignore lint/suspicious/noExplicitAny: error object can be anything depending on boundary
-  const stack = error?.stack || (error as any)?.reason || null;
+  const stack =
+    (error as unknown as { stack?: string; reason?: string })?.stack ||
+    (error as unknown as { reason?: string })?.reason ||
+    null;
 
   return (
     <div

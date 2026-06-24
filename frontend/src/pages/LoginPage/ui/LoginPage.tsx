@@ -10,6 +10,8 @@ import {
   useAppSelector,
 } from '@/app/providers/store';
 import { getAntdThemeConfig } from '@/app/styles/themeConfig';
+import { useLoginMutation } from '@/shared/api';
+import type { LoginRequest } from '@/shared/libs';
 import styles from './LoginPage.module.scss';
 
 export const LoginPage: FC = () => {
@@ -17,6 +19,7 @@ export const LoginPage: FC = () => {
   const dispatch = useAppDispatch();
   const error = useAppSelector((state) => state.auth.error);
   const theme = useAppSelector((state) => state.ui.theme);
+  const [login] = useLoginMutation();
 
   useEffect(() => {
     dispatch(clearError());
@@ -29,18 +32,19 @@ export const LoginPage: FC = () => {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
 
-  const onFinish = (values: Record<string, string>) => {
+  const onFinish = async (values: LoginRequest) => {
     setLoading(true);
     dispatch(clearError());
-
-    setTimeout(() => {
-      if (values.username === 'admin' && values.password === 'admin') {
-        dispatch(loginSuccess('admin'));
-      } else {
-        dispatch(loginFailure('Неверное имя пользователя или пароль'));
-      }
+    try {
+      const response = await login(values).unwrap();
+      dispatch(loginSuccess(response.token ?? 'demo-token'));
+    } catch (err) {
+      const errorData = err as { data?: { message?: string }; message?: string };
+      const errMsg = errorData?.data?.message || errorData?.message || 'Сетевая ошибка';
+      dispatch(loginFailure(errMsg));
+    } finally {
       setLoading(false);
-    }, 800);
+    }
   };
 
   return (
@@ -80,7 +84,7 @@ export const LoginPage: FC = () => {
 
           {error && (
             <Alert
-              message={error}
+              title={error}
               type="error"
               showIcon
               className={styles.alert}

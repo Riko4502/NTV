@@ -19,6 +19,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.19.2",
+    "express-validator": "^7.3.2",
     "ws": "^8.17.0"
   },
   "devDependencies": {

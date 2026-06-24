@@ -2,6 +2,7 @@
 import cors from 'cors';
 import express from 'express';
 import { createServer } from 'http';
+import authRouter from './routes/auth';
 import { networkState } from './store/state';
 import { initWebSocketServer } from './websocket/server';
 
@@ -13,6 +14,7 @@ const httpServer = createServer(app);
 
 // Initialize WebSocket server
 initWebSocketServer(httpServer);
+app.use('/api', authRouter);
 
 const PORT = 3001;
 

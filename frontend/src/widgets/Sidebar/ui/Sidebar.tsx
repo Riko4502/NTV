@@ -1,17 +1,17 @@
 import { Button, Tooltip } from 'antd';
 import { ChevronLeft, ChevronRight, LogOut } from 'lucide-react';
 import { type FC, useState } from 'react';
-import { logout, useAppDispatch } from '@/app/providers/store';
+import { useLogoutMutation } from '@/shared/api';
 import { NAV_ITEMS } from '../constants';
 import { SidebarItem } from './components';
 import styles from './Sidebar.module.scss';
 
 export const Sidebar: FC = () => {
   const [collapsed, setCollapsed] = useState(false);
-  const dispatch = useAppDispatch();
+  const [logout] = useLogoutMutation();
 
-  const handleLogout = () => {
-    dispatch(logout());
+  const handleLogout = async () => {
+    await logout();
   };
 
   const navLinks = NAV_ITEMS.map((item) => (
