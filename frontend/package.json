@@ -39,6 +39,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
     "happy-dom": "^13.8.3",
+    "jsdom": "^29.1.1",
     "sass": "^1.72.0",
     "typescript": "~6.0.2",
     "vite": "^8.0.12",
