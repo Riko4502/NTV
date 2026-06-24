@@ -1,4 +1,4 @@
-import { ConfigProvider, Drawer, Layout, Spin } from 'antd';
+import { ConfigProvider, Drawer, Flex, Layout, Spin } from 'antd';
 import { type FC, useEffect } from 'react';
 import { Outlet, useNavigation } from 'react-router-dom';
 import { AlertsPanel } from '@/widgets/AlertsPanel';
@@ -29,7 +29,13 @@ export const AppContent: FC = () => {
         <Layout className={styles.layoutInner}>
           <Sidebar />
           <Layout.Content className={styles.content}>
-            {isLoading ? <Spin /> : <Outlet />}
+            {isLoading ? (
+              <Flex justify="center" align="center" style={{ height: '100%' }}>
+                <Spin size="large" description="Загрузка..." />
+              </Flex>
+            ) : (
+              <Outlet />
+            )}
           </Layout.Content>
         </Layout>
 
