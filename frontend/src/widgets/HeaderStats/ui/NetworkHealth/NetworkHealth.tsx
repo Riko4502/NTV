@@ -1,6 +1,6 @@
 import { Space } from 'antd';
 import { Activity, AlertTriangle, Server, TrendingUp } from 'lucide-react';
-import { type FC, useMemo } from 'react';
+import { type CSSProperties, type FC, useMemo } from 'react';
 import { useStreamTopologyQuery } from '@/shared/api';
 import { getHealthColor } from '@/shared/libs';
 import { KpiCard } from './components/KpiCard';
@@ -52,21 +52,24 @@ export const NetworkHealth: FC = () => {
 
   const healthColor = getHealthColor(stats.health);
 
-  const activeAlertsColor =
-    stats.activeIncidents > 0 ? 'var(--color-error)' : 'var(--text-secondary)';
+  const activeAlertsColor = stats.activeIncidents ? 'var(--color-error)' : 'var(--text-secondary)';
 
   return (
     <Space size={8}>
-      {/* Network Health */}
       <KpiCard
         title="Здоровье сети"
         value={stats.health}
         valueColor={healthColor}
-        prefix={<Activity size={12} className={styles.kpiIcon} style={{ color: healthColor }} />}
+        prefix={
+          <Activity
+            size={12}
+            className={styles.kpiIcon}
+            style={{ '--icon-color': healthColor } as CSSProperties}
+          />
+        }
         suffix={<span className={styles.suffix}>%</span>}
       />
 
-      {/* Live Traffic */}
       <KpiCard
         title="Общий трафик"
         value={stats.trafficGbps}
@@ -75,13 +78,12 @@ export const NetworkHealth: FC = () => {
           <TrendingUp
             size={12}
             className={styles.kpiIcon}
-            style={{ color: 'var(--color-success)' }}
+            style={{ '--icon-color': 'var(--color-success)' } as CSSProperties}
           />
         }
         suffix={<span className={styles.suffix}>Gbps</span>}
       />
 
-      {/* Active Alerts */}
       <KpiCard
         title="Активные сбои"
         value={stats.activeIncidents}
@@ -90,18 +92,21 @@ export const NetworkHealth: FC = () => {
           <AlertTriangle
             size={12}
             className={styles.kpiIcon}
-            style={{ color: activeAlertsColor }}
+            style={{ '--icon-color': activeAlertsColor } as CSSProperties}
           />
         }
       />
 
-      {/* Node online stats */}
       <KpiCard
         title="Устройства"
         value={stats.onlineRatio}
         valueColor="var(--color-primary)"
         prefix={
-          <Server size={12} className={styles.kpiIcon} style={{ color: 'var(--color-primary)' }} />
+          <Server
+            size={12}
+            className={styles.kpiIcon}
+            style={{ '--icon-color': 'var(--color-primary)' } as CSSProperties}
+          />
         }
       />
     </Space>

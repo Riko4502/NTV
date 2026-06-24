@@ -13,6 +13,7 @@ interface CanvasToolbarProps {
   onFitView: () => void;
   nodesData: DeviceData[];
   edgesData: ConnectionEdgeDto[];
+  setSimulatorOpen: (open: boolean) => void;
 }
 
 export const CanvasToolbar: FC<CanvasToolbarProps> = ({
@@ -21,28 +22,25 @@ export const CanvasToolbar: FC<CanvasToolbarProps> = ({
   onFitView,
   nodesData,
   edgesData,
+  setSimulatorOpen,
 }) => {
   return (
     <Flex
       justify="center"
       align="center"
       gap={8}
-      className={styles.glassPanel}
-      style={{ flexWrap: 'wrap', padding: '8px 12px' }}
+      className={`${styles.glassPanel} ${styles.toolbarWrapper}`}
     >
       <SearchFilterSection />
 
-      <div
-        style={{
-          width: '1px',
-          height: '20px',
-          background: 'var(--border-color)',
-          margin: '0 4px',
-        }}
-      />
+      <div className={styles.toolbarDivider} />
 
       <EditSection onOpenAddNode={onOpenAddNode} />
-      <LayoutSection onApplyLayout={onApplyLayout} onFitView={onFitView} />
+      <LayoutSection
+        onApplyLayout={onApplyLayout}
+        onFitView={onFitView}
+        setSimulatorOpen={setSimulatorOpen}
+      />
       <BackupSection nodesData={nodesData} edgesData={edgesData} />
     </Flex>
   );

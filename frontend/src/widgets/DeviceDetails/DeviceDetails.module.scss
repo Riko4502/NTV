@@ -1,3 +1,10 @@
+.detailsRoot {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
 .panelBody {
   flex: 1;
   overflow-y: auto;
@@ -6,4 +13,400 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+
+.firewallBtn {
+  width: 100%;
+  margin-top: 16px !important;
+  height: 40px !important;
+}
+
+.spacer {
+  height: 16px;
+}
+
+.metricsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.offlineAlert {
+  background: rgba(239, 68, 68, 0.08) !important;
+  border-color: rgba(239, 68, 68, 0.25) !important;
+  border-radius: 8px !important;
+  color: var(--text-primary) !important;
+
+  :global(.ant-alert-message),
+  :global(.ant-alert-description) {
+    color: var(--text-primary) !important;
+  }
+}
+
+.card {
+  background: var(--bg-card) !important;
+  border-color: var(--border-color) !important;
+  border-radius: 8px !important;
+
+  :global(.ant-card-body) {
+    padding: 12px !important;
+  }
+}
+
+.metaCard {
+  border-left: 4px solid var(--status-color) !important;
+
+  :global(.ant-card-body) {
+    padding: 16px !important;
+  }
+}
+
+.cardTitle {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.actionsCard {
+  margin-top: auto !important;
+
+  :global(.ant-card-body) {
+    padding: 16px !important;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+.actionsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pingRow {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.pingBtn {
+  flex: 1;
+  height: 36px !important;
+  font-size: 0.8rem !important;
+}
+
+.rttDisplay {
+  font-size: 0.8rem;
+  font-family: monospace;
+  padding: 8px;
+  border-radius: 6px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-color);
+  color: var(--rtt-color);
+  min-width: 70px;
+  text-align: center;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pingHistoryWrapper {
+  margin-top: 4px;
+  margin-bottom: 8px;
+}
+
+.historyLabel {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.historyDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--dot-color);
+  box-shadow: 0 0 6px var(--dot-color);
+  cursor: help;
+  transition: all 0.2s;
+}
+
+.rebootBtn {
+  height: 36px !important;
+  font-size: 0.8rem !important;
+
+  &.offlineInit {
+    background-color: rgba(16, 185, 129, 0.1) !important;
+    color: var(--color-success) !important;
+    border-color: rgba(16, 185, 129, 0.3) !important;
+  }
+}
+
+.deleteDivider {
+  height: 1px;
+  background: var(--border-color);
+  margin: 4px 0;
+  opacity: 0.5;
+}
+
+.deleteBtn {
+  height: 36px !important;
+  font-size: 0.8rem !important;
+  background: rgba(239, 68, 68, 0.08) !important;
+  border-color: rgba(239, 68, 68, 0.4) !important;
+  color: var(--color-error) !important;
+
+  &:hover {
+    background: rgba(239, 68, 68, 0.15) !important;
+  }
+}
+
+.headerFlex {
+  margin-bottom: 4px;
+}
+
+.headerLeft {
+  flex: 1;
+  min-width: 0;
+  margin-right: 8px;
+}
+
+.metaTitle {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  margin: 0;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+.metaSubtitle {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  display: block;
+  margin-top: 2px;
+}
+
+.editBtn {
+  color: var(--text-secondary) !important;
+  padding: 4px !important;
+}
+
+.metaList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-family: monospace;
+  margin-top: 12px;
+}
+
+.metaRow {
+  display: flex;
+  justify-content: space-between;
+}
+
+.metaLabel {
+  color: var(--text-secondary);
+}
+
+.metaValue {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.metaDivider {
+  height: 1px;
+  background: var(--border-color);
+  margin: 4px 0;
+  opacity: 0.5;
+}
+
+.statusText {
+  color: var(--status-color);
+  font-weight: bold;
+}
+
+.chartHeaderFlex {
+  margin-bottom: 8px;
+}
+
+.titleFlex {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.metricIcon {
+  color: var(--icon-color);
+}
+
+.metricValue {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--metric-color);
+}
+
+.emptyChartFlex {
+  height: 64px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.trafficCard {
+  :global(.ant-card-body) {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+  }
+}
+
+.trafficTitle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.trafficIcon {
+  color: var(--color-success);
+}
+
+.trafficValue {
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: monospace;
+}
+
+.modalBody {
+  padding-top: 12px !important;
+}
+
+.ruleName {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.ruleParams {
+  font-size: 0.75rem;
+  font-family: monospace;
+  color: var(--text-secondary);
+}
+
+.tag {
+  margin: 0 !important;
+}
+
+.tabContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+}
+
+.tabHeaderRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.tabSegmented {
+  flex: 1;
+}
+
+.transparentTable {
+  background: transparent !important;
+}
+
+.configPre {
+  flex: 1;
+  background: #121214 !important;
+  color: var(--config-color) !important;
+  padding: 12px;
+  border-radius: 6px;
+  font-family: monospace;
+  font-size: 0.75rem;
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.timestampText {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.threatType {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.threatSource {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-family: monospace;
+}
+
+.threatStatusText {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--status-color);
+}
+
+.statsCard {
+  background: rgba(255, 255, 255, 0.02) !important;
+  border-color: var(--border-color) !important;
+  text-align: center;
+
+  :global(.ant-card-body) {
+    padding: 8px !important;
+  }
+}
+
+.statsTitle {
+  font-size: 0.7rem;
+}
+
+.totalStatsValue {
+  font-size: 1.1rem !important;
+  color: var(--text-primary) !important;
+  font-weight: 600 !important;
+}
+
+.blockedStatsValue {
+  font-size: 1.1rem !important;
+  color: var(--color-success) !important;
+  font-weight: 600 !important;
+}
+
+.riskStatsValue {
+  font-size: 0.9rem !important;
+  color: var(--risk-color) !important;
+  font-weight: 700 !important;
+}
+
+.simulateBtn {
+  height: 36px !important;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+}
+
+.logListContainer {
+  flex: 1;
+  min-height: 0;
+}
+
+.logTitle {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }

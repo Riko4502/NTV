@@ -4,6 +4,7 @@ import type { Dayjs } from 'dayjs';
 
 import type { FC } from 'react';
 import { formatInterval } from '@/shared/libs';
+import styles from '../AnalyticsDashboard.module.scss';
 import type { MetricType } from '../types';
 import { AnalyticsExportButton } from './AnalyticsExportButton';
 
@@ -67,48 +68,32 @@ export const AnalyticsHeader: FC<AnalyticsHeaderProps> = ({
   activeTab,
 }) => {
   return (
-    <Card
-      size="small"
-      style={{
-        background: 'var(--bg-panel)',
-        borderColor: 'var(--border-color)',
-        borderRadius: '12px',
-        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
-      }}
-    >
+    <Card size="small" className={styles.headerCard}>
       <Flex justify="space-between" align="center" wrap="wrap" gap="16px">
         <div>
-          <Typography.Title
-            level={5}
-            style={{
-              margin: 0,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-            }}
-          >
+          <Typography.Title level={5} className={styles.titleText}>
             Исторические метрики
             <Tag color="processing" variant="filled">
               Обновление: {formatInterval(refreshInterval)}
             </Tag>
           </Typography.Title>
-          <p style={{ margin: '4px 0 0 0', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+          <p className={styles.descText}>
             Мониторинг производительности и трафика в реальном времени.
           </p>
         </div>
 
-        <Space size="middle" style={{ flexWrap: 'wrap' }}>
+        <Space size="middle" className={styles.spaceWrap}>
           <Button
             type="default"
             icon={<ReloadOutlined />}
             onClick={onRefresh}
             title="Обновить данные сейчас"
-            style={{ borderRadius: '6px' }}
+            className={styles.reloadBtn}
           >
             Обновить
           </Button>
 
-          <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Порог:</span>
+          <span className={styles.labelText}>Порог:</span>
           <Switch
             checked={showThreshold}
             onChange={onShowThresholdChange}
@@ -116,18 +101,18 @@ export const AnalyticsHeader: FC<AnalyticsHeaderProps> = ({
             unCheckedChildren="Выкл"
           />
 
-          <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Обновление:</span>
+          <span className={styles.labelText}>Обновление:</span>
           <Select
             value={refreshInterval}
             onChange={onRefreshIntervalChange}
-            style={{ width: '90px' }}
+            className={styles.updateSelect}
             options={REFRESH_INTERVAL_OPTIONS}
           />
-          <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Период:</span>
+          <span className={styles.labelText}>Период:</span>
           <Select
             value={timePeriod}
             onChange={onTimePeriodChange}
-            style={{ width: '170px' }}
+            className={styles.periodSelect}
             options={TIME_OPTIONS}
           />
           {timePeriod === 'custom' && (
@@ -139,14 +124,14 @@ export const AnalyticsHeader: FC<AnalyticsHeaderProps> = ({
                 onCustomDateRangeChange(dates ? [dates[0], dates[1]] : null);
               }}
               placeholder={['Начало', 'Конец']}
-              style={{ width: '320px' }}
+              className={styles.datePicker}
             />
           )}
-          <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Устройства:</span>
+          <span className={styles.labelText}>Устройства:</span>
           <Select
             mode="multiple"
             placeholder="Все активные устройства"
-            style={{ minWidth: '240px', maxWidth: '300px' }}
+            className={styles.devicesSelect}
             value={selectedNodeIds}
             onChange={onChange}
             allowClear

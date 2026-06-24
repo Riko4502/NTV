@@ -1,0 +1,250 @@
+.loginContainer {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--bg-main);
+  background-image: var(--bg-gradient);
+  font-family: var(--font-sans);
+}
+
+/* Background gradient blobs */
+.blob1, .blob2 {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  z-index: 1;
+  opacity: 0.45;
+  pointer-events: none;
+  animation: float 20s infinite alternate ease-in-out;
+}
+
+.blob1 {
+  top: -10%;
+  left: 10%;
+  width: 35vw;
+  height: 35vw;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.4) 0%, rgba(168, 85, 247, 0) 70%);
+}
+
+.blob2 {
+  bottom: -10%;
+  right: 10%;
+  width: 40vw;
+  height: 40vw;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.35) 0%, rgba(6, 182, 212, 0) 70%);
+  animation-delay: -5s;
+}
+
+@keyframes float {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(5%, 10%) scale(1.1);
+  }
+  100% {
+    transform: translate(-5%, -5%) scale(0.95);
+  }
+}
+
+/* Theme Switcher */
+.themeToggle {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  z-index: 10;
+}
+
+.themeBtn {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-color) !important;
+  background: var(--bg-card) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--text-primary) !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+  &:hover {
+    border-color: var(--border-color-active) !important;
+    background: var(--bg-card-hover) !important;
+    transform: scale(1.05);
+  }
+  
+  .toggleIcon {
+    color: var(--text-primary);
+  }
+}
+
+/* Glassmorphism Auth Card */
+.loginCard {
+  width: 100%;
+  max-width: 400px;
+  padding: 40px;
+  z-index: 5;
+  box-sizing: border-box;
+  animation: cardAppear 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes cardAppear {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.cardHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.logoWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
+  background: var(--color-primary-glow);
+  border: 1px solid var(--border-glow-primary);
+  margin-bottom: 16px;
+  box-shadow: 0 0 20px 0 var(--color-primary-glow);
+  animation: logoPulse 3s infinite ease-in-out;
+}
+
+@keyframes logoPulse {
+  0%, 100% {
+    box-shadow: 0 0 15px 0 var(--color-primary-glow);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 25px 5px var(--color-primary-glow);
+    transform: scale(1.03);
+  }
+}
+
+.logoIcon {
+  color: var(--color-primary);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0 0 4px 0;
+  letter-spacing: -0.5px;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.alert {
+  margin-bottom: 20px;
+  border-radius: 8px;
+}
+
+.form {
+  :global {
+    .ant-form-item {
+      margin-bottom: 20px;
+    }
+  }
+}
+
+.inputIcon {
+  color: var(--text-muted);
+  margin-right: 8px;
+  transition: color 0.3s;
+}
+
+.input {
+  background: var(--input-bg) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-primary) !important;
+  border-radius: 8px !important;
+  transition: all 0.3s !important;
+
+  &:focus-within {
+    border-color: var(--border-color-active) !important;
+    box-shadow: 0 0 0 2px var(--color-primary-glow) !important;
+    
+    .inputIcon {
+      color: var(--color-primary);
+    }
+  }
+  
+  input {
+    background: transparent !important;
+    color: var(--text-primary) !important;
+  }
+}
+
+.submitBtn {
+  height: 44px !important;
+  font-weight: 600 !important;
+  border-radius: 8px !important;
+  background: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 4px 12px var(--color-primary-glow) !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px 2px var(--color-primary-glow) !important;
+  }
+  
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
+.credentialsTip {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 24px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px dashed var(--border-color);
+  font-size: 12px;
+  color: var(--text-secondary);
+  text-align: center;
+  
+  strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+}
+
+:root[data-theme="light"] {
+  .blob1 {
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(168, 85, 247, 0) 70%);
+  }
+  
+  .blob2 {
+    background: radial-gradient(circle, rgba(147, 51, 234, 0.1) 0%, rgba(6, 182, 212, 0) 70%);
+  }
+
+  .credentialsTip {
+    background: rgba(15, 23, 42, 0.02);
+  }
+}

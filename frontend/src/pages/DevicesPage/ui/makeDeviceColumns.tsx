@@ -1,12 +1,14 @@
 import {
   DeleteOutlined,
-  HddOutlined,
+  EditOutlined,
   PoweroffOutlined,
   ThunderboltOutlined,
 } from '@ant-design/icons';
-import { Button, Progress, Tag } from 'antd';
+import { Button, Flex, Tag } from 'antd';
+import { Link } from 'react-router-dom';
 import type { DeviceData, DeviceType } from '@/shared/libs';
 import { STATUS_BADGES, TYPE_TAGS } from './constants';
+import styles from './DevicesPage.module.scss';
 
 interface MakeDeviceColumnsProps {
   pingingNodeId: string | null;
@@ -14,6 +16,7 @@ interface MakeDeviceColumnsProps {
   handlePing: (nodeId: string, nodeLabel: string) => void;
   handleReboot: (nodeId: string, nodeLabel: string) => void;
   handleDelete: (nodeId: string, nodeLabel: string) => void;
+  handleEdit: (device: DeviceData) => void;
 }
 
 export const makeDeviceColumns = ({
@@ -22,31 +25,32 @@ export const makeDeviceColumns = ({
   handlePing,
   handleReboot,
   handleDelete,
+  handleEdit,
 }: MakeDeviceColumnsProps) => [
   {
     title: 'Устройство',
     dataIndex: 'label',
     key: 'label',
     sorter: (a: DeviceData, b: DeviceData) => a.label.localeCompare(b.label),
-    render: (text: string, record: DeviceData) => (
-      <div>
-        <div
-          style={{
-            fontWeight: 600,
-            color: 'var(--text-primary)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-          }}
-        >
-          <HddOutlined size={14} style={{ color: 'var(--color-primary)' }} />
-          {text}
+    render: (value: string, record: DeviceData) => {
+      const isFirewall = record.type === 'firewall';
+
+      return (
+        <div>
+          <div className={styles.labelWrapper}>
+            {isFirewall ? <Link to={`/devices/${record.id}/firewall`}>{value}</Link> : value}
+          </div>
+          <Flex align="center" gap={6} className={styles.subRow}>
+            <span className={styles.ipSpan}>{record.ip}</span>
+            {(record.vendor || record.model) && (
+              <span className={styles.vendorSpan}>
+                {record.vendor} {record.model} {record.version ? `[${record.version}]` : ''}
+              </span>
+            )}
+          </Flex>
         </div>
-        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontFamily: 'monospace' }}>
-          {record.ip}
-        </span>
-      </div>
-    ),
+      );
+    },
   },
   {
     title: 'Тип',
@@ -69,70 +73,12 @@ export const makeDeviceColumns = ({
     },
   },
   {
-    title: 'CPU',
-    dataIndex: 'cpu',
-    key: 'cpu',
-    sorter: (a: DeviceData, b: DeviceData) => (a.cpu || 0) - (b.cpu || 0),
-    render: (cpu: number, record: DeviceData) => {
-      if (record.status === 'offline') return '-';
-      let status: 'success' | 'active' | 'exception' = 'success';
-      if (cpu > 90) status = 'exception';
-      else if (cpu > 70) status = 'active';
-      return (
-        <Progress
-          percent={cpu}
-          size="small"
-          status={status}
-          strokeColor={cpu > 80 ? 'var(--color-error)' : undefined}
-          style={{ flex: 1, marginBottom: 0 }}
-        />
-      );
-    },
-  },
-  {
-    title: 'RAM',
-    dataIndex: 'ram',
-    key: 'ram',
-    sorter: (a: DeviceData, b: DeviceData) => (a.ram || 0) - (b.ram || 0),
-    render: (ram: number, record: DeviceData) => {
-      if (record.status === 'offline') return '-';
-      return (
-        <Progress
-          percent={ram}
-          size="small"
-          strokeColor={ram > 85 ? 'var(--color-warning)' : undefined}
-          style={{ flex: 1, marginBottom: 0 }}
-        />
-      );
-    },
-  },
-  {
-    title: 'Темп.',
-    dataIndex: 'temp',
-    key: 'temp',
-    sorter: (a: DeviceData, b: DeviceData) => (a.temp || 0) - (b.temp || 0),
-    render: (temp: number, record: DeviceData) => {
-      if (record.status === 'offline') return '-';
-      const isHot = temp > 70;
-      return (
-        <span
-          style={{
-            color: isHot ? 'var(--color-error)' : 'var(--text-primary)',
-            fontWeight: isHot ? 600 : 400,
-          }}
-        >
-          {temp}°C
-        </span>
-      );
-    },
-  },
-  {
     title: 'Команды',
     key: 'actions',
     render: (_: unknown, record: DeviceData) => {
       const isOffline = record.status === 'offline';
       return (
-        <div style={{ display: 'flex', gap: '8px' }}>
+        <Flex gap={8}>
           <Button
             type="primary"
             size="small"
@@ -149,18 +95,27 @@ export const makeDeviceColumns = ({
             icon={<PoweroffOutlined />}
             onClick={() => handleReboot(record.id, record.label)}
           >
-            {isOffline ? 'Запуск' : 'Ре reboot'}
+            {isOffline ? 'Запуск' : 'Ребут'}
           </Button>
           {isEditMode && (
-            <Button
-              type="text"
-              danger
-              size="small"
-              icon={<DeleteOutlined />}
-              onClick={() => handleDelete(record.id, record.label)}
-            />
+            <Flex gap={4}>
+              <Button
+                type="text"
+                size="small"
+                icon={<EditOutlined />}
+                onClick={() => handleEdit(record)}
+                className={styles.editBtn}
+              />
+              <Button
+                type="text"
+                danger
+                size="small"
+                icon={<DeleteOutlined />}
+                onClick={() => handleDelete(record.id, record.label)}
+              />
+            </Flex>
           )}
-        </div>
+        </Flex>
       );
     },
   },

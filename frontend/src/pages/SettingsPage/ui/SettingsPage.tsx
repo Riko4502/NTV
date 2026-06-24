@@ -6,20 +6,19 @@ import { TelemetryParamsCard } from './components/TelemetryParamsCard';
 import { ThresholdsCard } from './components/ThresholdsCard';
 import { INITIAL_SETTING } from './constants';
 import { useSettings } from './hooks/useSettings';
+import styles from './SettingsPage.module.scss';
 
 export const SettingsPage: FC = () => {
   const { form, saving, handleFinish, handleResetSimulation } = useSettings();
 
   return (
-    <Layout
-      style={{ height: '100%', background: 'transparent', padding: '24px', overflowY: 'auto' }}
-    >
+    <Layout className={styles.pageLayout}>
       <Form
         form={form}
         layout="vertical"
         initialValues={INITIAL_SETTING}
         onFinish={handleFinish}
-        style={{ maxWidth: '800px' }}
+        className={styles.form}
       >
         <Row gutter={[20, 20]}>
           <Col span={24}>
@@ -41,7 +40,7 @@ export const SettingsPage: FC = () => {
                 htmlType="submit"
                 icon={<SaveOutlined />}
                 loading={saving}
-                style={{ height: '40px', fontWeight: 600 }}
+                className={styles.saveBtn}
               >
                 Сохранить конфигурацию
               </Button>

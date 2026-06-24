@@ -1,6 +1,7 @@
 import { Card } from 'antd';
 import { Radio } from 'lucide-react';
 import type { FC } from 'react';
+import styles from '../DeviceDetails.module.scss';
 
 interface DeviceTrafficCardProps {
   traffic: number;
@@ -8,37 +9,12 @@ interface DeviceTrafficCardProps {
 
 export const DeviceTrafficCard: FC<DeviceTrafficCardProps> = ({ traffic }) => {
   return (
-    <Card
-      size="small"
-      style={{
-        background: 'var(--bg-card)',
-        borderColor: 'var(--border-color)',
-        borderRadius: '8px',
-      }}
-      styles={{
-        body: {
-          padding: '12px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        },
-      }}
-    >
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '6px',
-          fontSize: '0.85rem',
-          fontWeight: 600,
-        }}
-      >
-        <Radio size={14} style={{ color: 'var(--color-success)' }} />
+    <Card size="small" className={`${styles.card} ${styles.trafficCard}`}>
+      <div className={styles.trafficTitle}>
+        <Radio size={14} className={styles.trafficIcon} />
         <span>Использование трафика</span>
       </div>
-      <span style={{ fontSize: '0.85rem', fontWeight: 600, fontFamily: 'monospace' }}>
-        {traffic} Mbps
-      </span>
+      <span className={styles.trafficValue}>{traffic} Mbps</span>
     </Card>
   );
 };

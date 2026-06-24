@@ -1,6 +1,11 @@
-import { Card } from 'antd';
-import type { FC } from 'react';
+import { EditOutlined } from '@ant-design/icons';
+import { Button, Card, Flex, message } from 'antd';
+import type { CSSProperties, FC } from 'react';
+import { useState } from 'react';
+import { useUpdateNodeMutation } from '@/shared/api';
 import type { DeviceType, Status } from '@/shared/libs';
+import styles from '../DeviceDetails.module.scss';
+import { EditDeviceModal } from './EditDeviceModal';
 
 const DEVICE_LABLE: Record<DeviceType, string> = {
   router: 'Маршрутизатор',
@@ -18,77 +23,93 @@ const STATUS_COLOR: Record<Status, string> = {
 };
 
 interface DeviceMetaCardProps {
+  id: string;
   label: string;
   type: DeviceType;
   ip: string;
   mac: string;
   status: Status;
+  vendor?: string;
+  model?: string;
+  version?: string;
 }
 
-export const DeviceMetaCard: FC<DeviceMetaCardProps> = ({ label, type, ip, mac, status }) => {
+export const DeviceMetaCard: FC<DeviceMetaCardProps> = (props) => {
+  const { id, label, type, ip, mac, status, vendor, model, version } = props;
   const statusColor = STATUS_COLOR[status];
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [updateNode] = useUpdateNodeMutation();
+
+  const handleEditFinish = async (values: {
+    label: string;
+    ip: string;
+    mac: string;
+    vendor: string;
+    model: string;
+    version: string;
+  }) => {
+    try {
+      await updateNode({ nodeId: id, ...values }).unwrap();
+      setIsEditModalOpen(false);
+      message.success('Параметры устройства успешно обновлены');
+    } catch {
+      message.error('Не удалось обновить параметры устройства');
+    }
+  };
 
   return (
     <Card
       size="small"
-      style={{
-        borderLeft: `4px solid ${statusColor}`,
-        backgroundColor: 'var(--bg-card)',
-        borderColor: 'var(--border-color)',
-        borderRadius: '8px',
-      }}
-      styles={{ body: { padding: '16px' } }}
+      className={`${styles.card} ${styles.metaCard}`}
+      style={{ '--status-color': statusColor } as CSSProperties}
     >
-      <h2
-        style={{
-          fontFamily: 'var(--font-display)',
-          fontSize: '1.25rem',
-          marginBottom: '4px',
-          lineHeight: 1.2,
-        }}
-      >
-        {label}
-      </h2>
-      <span
-        style={{
-          fontSize: '0.75rem',
-          color: 'var(--text-muted)',
-          display: 'block',
-          marginBottom: '12px',
-        }}
-      >
-        {DEVICE_LABLE[type] || 'Неизвестно'}
-      </span>
+      <Flex justify="space-between" align="flex-start" className={styles.headerFlex}>
+        <div className={styles.headerLeft}>
+          <h2 className={styles.metaTitle}>{label}</h2>
+          <span className={styles.metaSubtitle}>{DEVICE_LABLE[type] || 'Неизвестно'}</span>
+        </div>
+        <Button
+          type="text"
+          icon={<EditOutlined />}
+          onClick={() => setIsEditModalOpen(true)}
+          className={styles.editBtn}
+        />
+      </Flex>
 
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '6px',
-          fontSize: '0.8rem',
-          fontFamily: 'monospace',
-        }}
-      >
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <span style={{ color: 'var(--text-secondary)' }}>IP:</span>
-          <span>{ip}</span>
+      <div className={styles.metaList}>
+        <div className={styles.metaRow}>
+          <span className={styles.metaLabel}>Вендор:</span>
+          <span className={styles.metaValue}>{vendor || '-'}</span>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <span style={{ color: 'var(--text-secondary)' }}>MAC:</span>
-          <span>{mac}</span>
+        <div className={styles.metaRow}>
+          <span className={styles.metaLabel}>Модель:</span>
+          <span className={styles.metaValue}>{model || '-'}</span>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <span style={{ color: 'var(--text-secondary)' }}>Статус:</span>
-          <span
-            style={{
-              color: statusColor,
-              fontWeight: 'bold',
-            }}
-          >
-            {status}
-          </span>
+        <div className={styles.metaRow}>
+          <span className={styles.metaLabel}>Версия ПО:</span>
+          <span className={styles.metaValue}>{version || '-'}</span>
+        </div>
+        <div className={styles.metaDivider} />
+        <div className={styles.metaRow}>
+          <span className={styles.metaLabel}>IP:</span>
+          <span className={styles.metaValue}>{ip}</span>
+        </div>
+        <div className={styles.metaRow}>
+          <span className={styles.metaLabel}>MAC:</span>
+          <span className={styles.metaValue}>{mac}</span>
+        </div>
+        <div className={styles.metaRow}>
+          <span className={styles.metaLabel}>Статус:</span>
+          <span className={styles.statusText}>{status}</span>
         </div>
       </div>
+
+      <EditDeviceModal
+        isOpen={isEditModalOpen}
+        onCancel={() => setIsEditModalOpen(false)}
+        device={props}
+        onFinish={handleEditFinish}
+      />
     </Card>
   );
 };

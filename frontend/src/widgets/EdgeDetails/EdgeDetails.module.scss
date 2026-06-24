@@ -1,0 +1,122 @@
+.detailsContainer {
+  height: 100%;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.card {
+  background: var(--bg-card) !important;
+  border-color: var(--border-color) !important;
+  border-radius: 8px !important;
+
+  :global(.ant-card-body) {
+    padding: 16px !important;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+.actionsCard {
+  margin-top: auto !important;
+}
+
+.cardTitle {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.flexContainer {
+  padding: 8px 0;
+}
+
+.nodeWrapper {
+  width: 40%;
+}
+
+.nodeLabel {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: center;
+  word-break: break-all;
+  display: block;
+}
+
+.nodeIp {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  font-family: monospace;
+  display: block;
+}
+
+.centerWrapper {
+  width: 20%;
+  position: relative;
+}
+
+.arrowIcon {
+  color: var(--line-color);
+}
+
+.visualLine {
+  width: 100%;
+  height: 2px;
+  background: var(--line-color);
+  margin-top: 4px;
+  box-shadow: 0 0 8px var(--line-color);
+}
+
+.paramLabel {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.paramValue {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.latencyValue {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--latency-color);
+}
+
+.trafficFlex {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.progressWrapper {
+  margin-top: 8px;
+}
+
+.progressFlex {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.usagePercent {
+  color: var(--usage-color);
+  font-weight: 600;
+}
+
+.deleteBtn {
+  height: 36px !important;
+  font-size: 0.8rem !important;
+  width: 100%;
+  font-weight: 500;
+}
+
+.helperText {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin: 0;
+}

@@ -1,9 +1,10 @@
 import { AimOutlined, CheckOutlined } from '@ant-design/icons';
 import { Button, Card, Flex, Tooltip, Typography } from 'antd';
 import { AlertTriangle, Info } from 'lucide-react';
-import { type FC, useCallback } from 'react';
+import { type CSSProperties, type FC, useCallback } from 'react';
 import { getTimeString } from '@/shared/libs';
 import type { NetworkAlertData } from '../../model/types';
+import styles from './AlertCard.module.scss';
 
 const SEVERITY_STYLE = {
   critical: {
@@ -48,39 +49,34 @@ export const AlertCard: FC<AlertCardProps> = ({ id, severity, onAck, onFocus, ..
   return (
     <Card
       size="small"
-      style={{
-        border: `1px solid ${acknowledged ? 'var(--border-color)' : border}`,
-        backgroundColor: acknowledged ? 'rgba(255, 255, 255, 0.01)' : background,
-        borderRadius: '8px',
-        marginBottom: '10px',
-        transition: 'all 0.2s',
-        boxShadow: acknowledged ? 'none' : `0 2px 8px var(--panel-shadow)`,
-      }}
+      className={styles.alertCard}
+      style={
+        {
+          '--alert-border': acknowledged ? '1px solid var(--border-color)' : `1px solid ${border}`,
+          '--alert-bg': acknowledged ? 'rgba(255, 255, 255, 0.01)' : background,
+          '--alert-shadow': acknowledged ? 'none' : '0 2px 8px var(--panel-shadow)',
+        } as CSSProperties
+      }
     >
-      <Flex justify="space-between" align="center" style={{ marginBottom: '8px' }}>
-        <Flex align="center" gap={6} style={{ color, fontWeight: 600, fontSize: '0.75rem' }}>
+      <Flex justify="space-between" align="center" className={styles.header}>
+        <Flex
+          align="center"
+          gap={6}
+          className={styles.severityText}
+          style={{ '--severity-color': color } as CSSProperties}
+        >
           <Icon size={14} />
           <Typography.Text>{severity.toUpperCase()}</Typography.Text>
         </Flex>
-        <Typography.Text style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
-          {formattedTime}
-        </Typography.Text>
+        <Typography.Text className={styles.timeText}>{formattedTime}</Typography.Text>
       </Flex>
 
-      <Typography.Text
-        style={{ fontSize: '0.8rem', color: 'var(--text-primary)', lineHeight: 1.4 }}
-      >
-        {message}
-      </Typography.Text>
+      <Typography.Text className={styles.messageText}>{message}</Typography.Text>
 
-      <Flex justify="space-between" align="center" style={{ marginTop: '4px' }}>
+      <Flex justify="space-between" align="center" className={styles.footer}>
         <Flex align="center" gap={4}>
-          <Typography.Text style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>
-            Узел:
-          </Typography.Text>
-          <Typography.Text style={{ fontFamily: 'monospace', color: 'var(--text-primary)' }}>
-            {nodeLabel}
-          </Typography.Text>
+          <Typography.Text className={styles.nodeLabel}>Узел:</Typography.Text>
+          <Typography.Text className={styles.nodeValue}>{nodeLabel}</Typography.Text>
         </Flex>
 
         <Flex gap={6} align="center">
@@ -93,7 +89,7 @@ export const AlertCard: FC<AlertCardProps> = ({ id, severity, onAck, onFocus, ..
               <Button
                 type="text"
                 size="small"
-                icon={<CheckOutlined style={{ color: 'var(--color-success)' }} />}
+                icon={<CheckOutlined className={styles.successIcon} />}
                 onClick={handleAck}
               />
             </Tooltip>

@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { NetworkAlertData } from '../../entities/alert/model/types';
 import type { ConnectionEdgeDto } from '../../entities/connection/model/types';
 import type { NodeDto } from '../../entities/device/model/types';
-import type { AddNodePayload, ConnectionEdgeStatus, Status } from '../libs';
+import type { AddNodePayload, ConnectionEdgeStatus, FirewallRuleFormData, Status } from '../libs';
 
 export type WsMessageType =
   | 'init'
@@ -135,6 +135,54 @@ export const topologyApi = createApi({
         url: 'nodes',
         method: 'POST',
         body,
+      }),
+    }),
+
+    updateNode: builder.mutation<
+      { success: boolean; node: NodeDto },
+      {
+        nodeId: string;
+        label: string;
+        ip: string;
+        mac: string;
+        vendor: string;
+        model: string;
+        version: string;
+      }
+    >({
+      query: ({ nodeId, ...body }) => ({
+        url: `nodes/${nodeId}`,
+        method: 'PUT',
+        body,
+      }),
+    }),
+
+    addFirewallRule: builder.mutation<{ success: boolean }, FirewallRuleFormData>({
+      query: ({ nodeId, ...body }) => ({
+        url: `nodes/${nodeId}/firewall/rules`,
+        method: 'POST',
+        body,
+      }),
+    }),
+
+    deleteFirewallRule: builder.mutation<{ success: boolean }, { nodeId: string; ruleId: string }>({
+      query: ({ nodeId, ruleId }) => ({
+        url: `nodes/${nodeId}/firewall/rules/${ruleId}`,
+        method: 'DELETE',
+      }),
+    }),
+
+    toggleFirewallRule: builder.mutation<{ success: boolean }, { nodeId: string; ruleId: string }>({
+      query: ({ nodeId, ruleId }) => ({
+        url: `nodes/${nodeId}/firewall/rules/${ruleId}/toggle`,
+        method: 'POST',
+      }),
+    }),
+
+    simulateThreat: builder.mutation<{ success: boolean }, { nodeId: string }>({
+      query: ({ nodeId }) => ({
+        url: `nodes/${nodeId}/firewall/threats/simulate`,
+        method: 'POST',
       }),
     }),
 
@@ -321,4 +369,9 @@ export const {
   useGetMetricsHistoryQuery,
   useGetThresholdsQuery,
   useUpdateThresholdsMutation,
+  useUpdateNodeMutation,
+  useAddFirewallRuleMutation,
+  useDeleteFirewallRuleMutation,
+  useToggleFirewallRuleMutation,
+  useSimulateThreatMutation,
 } = topologyApi;

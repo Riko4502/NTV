@@ -144,32 +144,6 @@
     background-color: rgba(120, 120, 120, 0.08);
   }
 }
-
-.drawerNavLink {
-  text-decoration: none;
-  font-size: 0.9rem;
-  font-weight: 500;
-  padding: 10px 16px;
-  border-radius: 8px;
-  color: var(--text-secondary);
-  transition: all 0.2s ease-in-out;
-  border: 1px solid transparent;
-  display: flex;
-  align-items: center;
-
-  &:hover {
-    color: var(--text-primary);
-    background-color: rgba(120, 120, 120, 0.08);
-  }
-
-  &.drawerNavLinkActive {
-    color: var(--color-primary);
-    background-color: rgba(59, 130, 246, 0.1);
-    border-color: rgba(59, 130, 246, 0.25);
-    font-weight: 600;
-  }
-}
-
 .networkHealthWrapper {
   display: flex;
   align-items: center;

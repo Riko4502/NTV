@@ -5,6 +5,7 @@ import { useStreamTopologyQuery } from '@/shared/api';
 import { DeviceDetails } from '@/widgets/DeviceDetails';
 import { EdgeDetails } from '@/widgets/EdgeDetails';
 import { TopologyCanvas } from '@/widgets/TopologyCanvas';
+import styles from './DashboardPage.module.scss';
 
 export const DashboardPage: FC = () => {
   const dispatch = useAppDispatch();
@@ -23,8 +24,8 @@ export const DashboardPage: FC = () => {
   const isOpen = !!selectedNodeId || !!selectedEdgeId;
 
   return (
-    <Layout style={{ height: '100%', background: 'transparent' }}>
-      <Layout.Content style={{ position: 'relative', height: '100%', overflow: 'hidden' }}>
+    <Layout className={styles.pageLayout}>
+      <Layout.Content className={styles.contentWrapper}>
         <TopologyCanvas />
       </Layout.Content>
       <Drawer
@@ -33,8 +34,8 @@ export const DashboardPage: FC = () => {
         open={isOpen}
         size={340}
         title={selectedNodeId ? 'Информация об узле' : 'Информация о соединении'}
-        styles={{ body: { padding: 0 } }}
-        style={{ background: 'var(--bg-panel)', borderLeft: '1px solid var(--border-color)' }}
+        classNames={{ body: styles.drawerBody }}
+        className={styles.drawer}
       >
         {selectedNode && <DeviceDetails {...selectedNode} />}
         {selectedEdge && data && (

@@ -1,0 +1,37 @@
+.pageLayout {
+  height: 100%;
+  background: transparent !important;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.form {
+  max-width: 800px;
+}
+
+.saveBtn {
+  height: 40px !important;
+  font-weight: 600 !important;
+}
+
+.card {
+  background: var(--bg-panel) !important;
+  border-color: var(--border-color) !important;
+}
+
+.descText {
+  margin-bottom: 16px;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.inputNumber {
+  width: 200px !important;
+}
+
+.thresholdTitle {
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

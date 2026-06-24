@@ -9,7 +9,10 @@ class NetworkState extends events_1.EventEmitter {
     nodes;
     edges;
     alerts;
+    metricsHistory;
     rebootsInProgress;
+    thresholds;
+    static HISTORY_LIMIT = 60; // ~5 min at 5s interval
     constructor() {
         super();
         // Clone structures to avoid mutating imported constants directly
@@ -17,6 +20,15 @@ class NetworkState extends events_1.EventEmitter {
         this.edges = JSON.parse(JSON.stringify(mockData_1.initialEdges));
         this.alerts = JSON.parse(JSON.stringify(mockData_1.initialAlerts));
         this.rebootsInProgress = new Map();
+        this.metricsHistory = new Map();
+        this.thresholds = {
+            cpuWarning: 80,
+            cpuCritical: 90,
+            tempLimit: 75,
+            ramWarning: 85,
+            telemetryInterval: 5000,
+            noiseLevel: 5,
+        };
     }
     rebootNode(nodeId) {
         const node = this.nodes.find((n) => n.id === nodeId);
@@ -123,6 +135,11 @@ class NetworkState extends events_1.EventEmitter {
             ram: 10,
             temp: 30,
             traffic: 0,
+            vendor: payload.vendor || 'Generic',
+            model: payload.model || 'Device Model',
+            version: payload.version || 'v1.0.0',
+            rules: payload.type === 'firewall' ? [] : undefined,
+            threats: payload.type === 'firewall' ? [] : undefined,
         };
         this.nodes.push(newNode);
         // Info alert
@@ -138,6 +155,165 @@ class NetworkState extends events_1.EventEmitter {
         this.alerts.unshift(alert);
         this.emit('topology-changed', { nodes: this.nodes, edges: this.edges });
         this.emit('new-alert', alert);
+    }
+    updateNode(nodeId, payload) {
+        const node = this.nodes.find((n) => n.id === nodeId);
+        if (!node)
+            return;
+        const oldLabel = node.label;
+        if (payload.label !== undefined)
+            node.label = payload.label;
+        if (payload.ip !== undefined)
+            node.ip = payload.ip;
+        if (payload.mac !== undefined)
+            node.mac = payload.mac;
+        if (payload.vendor !== undefined)
+            node.vendor = payload.vendor;
+        if (payload.model !== undefined)
+            node.model = payload.model;
+        if (payload.version !== undefined)
+            node.version = payload.version;
+        // Add info alert
+        const alert = {
+            id: `a-update-${Date.now()}`,
+            timestamp: new Date().toISOString(),
+            nodeId: node.id,
+            nodeLabel: node.label,
+            severity: 'info',
+            message: `Изменены параметры устройства ${oldLabel}: имя=${node.label}, IP=${node.ip}, MAC=${node.mac}, Вендор=${node.vendor}, Модель=${node.model}, Версия=${node.version}`,
+            acknowledged: false,
+        };
+        this.alerts.unshift(alert);
+        // Update any alerts that might reference this node's old label
+        this.alerts.forEach((a) => {
+            if (a.nodeId === nodeId) {
+                a.nodeLabel = node.label;
+            }
+        });
+        this.emit('topology-changed', { nodes: this.nodes, edges: this.edges });
+        this.emit('new-alert', alert);
+    }
+    addFirewallRule(nodeId, rule) {
+        const node = this.nodes.find((n) => n.id === nodeId);
+        if (node?.type !== 'firewall')
+            return;
+        if (!node.rules)
+            node.rules = [];
+        const newRule = {
+            id: `r-${Date.now()}`,
+            ...rule,
+            status: 'active',
+        };
+        node.rules.push(newRule);
+        const alert = {
+            id: `a-rule-add-${Date.now()}`,
+            timestamp: new Date().toISOString(),
+            nodeId: node.id,
+            nodeLabel: node.label,
+            severity: 'info',
+            message: `На МСЭ ${node.label} добавлено новое правило: ${rule.name} (${rule.protocol} ${rule.source} -> ${rule.destination}:${rule.port} [${rule.action}])`,
+            acknowledged: false,
+        };
+        this.alerts.unshift(alert);
+        this.emit('topology-changed', { nodes: this.nodes, edges: this.edges });
+        this.emit('new-alert', alert);
+    }
+    deleteFirewallRule(nodeId, ruleId) {
+        const node = this.nodes.find((n) => n.id === nodeId);
+        if (!node || !node.rules)
+            return;
+        const ruleIndex = node.rules.findIndex((r) => r.id === ruleId);
+        if (ruleIndex !== -1) {
+            const rule = node.rules[ruleIndex];
+            node.rules.splice(ruleIndex, 1);
+            const alert = {
+                id: `a-rule-del-${Date.now()}`,
+                timestamp: new Date().toISOString(),
+                nodeId: node.id,
+                nodeLabel: node.label,
+                severity: 'info',
+                message: `На МСЭ ${node.label} удалено правило: ${rule.name}`,
+                acknowledged: false,
+            };
+            this.alerts.unshift(alert);
+            this.emit('topology-changed', { nodes: this.nodes, edges: this.edges });
+            this.emit('new-alert', alert);
+        }
+    }
+    toggleFirewallRule(nodeId, ruleId) {
+        const node = this.nodes.find((n) => n.id === nodeId);
+        if (!node || !node.rules)
+            return;
+        const rule = node.rules.find((r) => r.id === ruleId);
+        if (rule) {
+            rule.status = rule.status === 'active' ? 'inactive' : 'active';
+            const alert = {
+                id: `a-rule-toggle-${Date.now()}`,
+                timestamp: new Date().toISOString(),
+                nodeId: node.id,
+                nodeLabel: node.label,
+                severity: 'info',
+                message: `На МСЭ ${node.label} изменен статус правила ${rule.name}: ${rule.status === 'active' ? 'АКТИВНО' : 'НЕАКТИВНО'}`,
+                acknowledged: false,
+            };
+            this.alerts.unshift(alert);
+            this.emit('topology-changed', { nodes: this.nodes, edges: this.edges });
+            this.emit('new-alert', alert);
+        }
+    }
+    simulateThreat(nodeId) {
+        const node = this.nodes.find((n) => n.id === nodeId);
+        if (!node || node.status === 'offline' || node.type !== 'firewall')
+            return;
+        const attackers = ['198.51.100.45', '203.0.113.110', '185.220.101.99', '45.143.203.5'];
+        const attacker = attackers[Math.floor(Math.random() * attackers.length)];
+        const types = ['DDoS Attack', 'Port Scan', 'Brute Force', 'Malware Traffic', 'SQL Injection'];
+        const threatType = types[Math.floor(Math.random() * types.length)];
+        const targetPort = threatType === 'Brute Force' ? '22' : threatType === 'SQL Injection' ? '80' : 'Any';
+        let actionTaken = 'Log Only';
+        if (node.rules) {
+            const hasDeny = node.rules.some((r) => r.status === 'active' &&
+                r.action === 'DENY' &&
+                (r.port === targetPort || r.port === 'Any'));
+            if (hasDeny) {
+                actionTaken = 'Blocked';
+            }
+            else if (Math.random() > 0.3) {
+                actionTaken = 'Blocked';
+            }
+        }
+        if (!node.threats)
+            node.threats = [];
+        const newThreat = {
+            id: `t-${Date.now()}`,
+            timestamp: new Date().toISOString(),
+            source: attacker,
+            target: `${node.ip}:${targetPort}`,
+            threatType,
+            severity: threatType === 'DDoS Attack' ? 'high' : 'medium',
+            actionTaken,
+        };
+        node.threats.unshift(newThreat);
+        if (node.threats.length > 20) {
+            node.threats.pop();
+        }
+        if (newThreat.severity === 'high' || actionTaken === 'Log Only') {
+            const alertId = `a-threat-${Date.now()}`;
+            const alert = {
+                id: alertId,
+                timestamp: new Date().toISOString(),
+                nodeId: node.id,
+                nodeLabel: node.label,
+                severity: newThreat.severity === 'high' ? 'critical' : 'warning',
+                message: `ОБНАРУЖЕНА УГРОЗА БЕЗОПАСНОСТИ: ${threatType} с IP ${attacker} на МСЭ ${node.label} (${actionTaken === 'Blocked' ? 'ЗАБЛОКИРОВАНО' : 'ПРОПУЩЕНО'})!`,
+                acknowledged: false,
+            };
+            this.alerts.unshift(alert);
+            this.emit('new-alert', alert);
+        }
+        const originalCpu = node.cpu;
+        node.cpu = Math.min(99, originalCpu + 40);
+        this.emit('topology-changed', { nodes: this.nodes, edges: this.edges });
     }
     connectNodes(payload) {
         const { source, target, bandwidth } = payload;
@@ -249,14 +425,67 @@ class NetworkState extends events_1.EventEmitter {
             const trafficDelta = Math.floor(Math.random() * (baseTraffic * 0.2)) - Math.floor(baseTraffic * 0.1);
             node.traffic = Math.max(1, Math.floor(node.traffic + trafficDelta));
             // Node statuses based on load thresholds
-            if (node.cpu > 90 || node.temp > 75) {
+            if (node.cpu > this.thresholds.cpuCritical || node.temp > this.thresholds.tempLimit) {
                 node.status = 'error';
             }
-            else if (node.cpu > 80 || node.temp > 65 || node.ram > 85) {
+            else if (node.cpu > this.thresholds.cpuWarning ||
+                node.temp > this.thresholds.tempLimit - 10 ||
+                node.ram > this.thresholds.ramWarning) {
                 node.status = 'warning';
             }
             else {
                 node.status = 'online';
+            }
+            // If it is a firewall, occasionally simulate a threat in the background
+            if (node.type === 'firewall' && Math.random() < 0.05) {
+                const attackers = [
+                    '198.51.100.45',
+                    '203.0.113.110',
+                    '185.220.101.99',
+                    '45.143.203.5',
+                    '8.8.8.8',
+                ];
+                const attacker = attackers[Math.floor(Math.random() * attackers.length)];
+                const types = ['Port Scan', 'Brute Force', 'Malware Traffic', 'SQL Injection'];
+                const threatType = types[Math.floor(Math.random() * types.length)];
+                const targetPort = threatType === 'Brute Force' ? '22' : threatType === 'SQL Injection' ? '80' : 'Any';
+                let actionTaken = 'Blocked'; // Firewalls block by default
+                // Simple rule check
+                if (node.rules) {
+                    const matchingRule = node.rules.find((r) => r.status === 'active' && (r.port === targetPort || r.port === 'Any'));
+                    if (matchingRule) {
+                        actionTaken = matchingRule.action === 'ALLOW' ? 'Log Only' : 'Blocked';
+                    }
+                }
+                if (!node.threats)
+                    node.threats = [];
+                const newThreat = {
+                    id: `t-${Date.now()}`,
+                    timestamp: new Date().toISOString(),
+                    source: attacker,
+                    target: `${node.ip}:${targetPort}`,
+                    threatType,
+                    severity: Math.random() > 0.7 ? 'medium' : 'low',
+                    actionTaken,
+                };
+                node.threats.unshift(newThreat);
+                if (node.threats.length > 20) {
+                    node.threats.pop();
+                }
+                // Log Only means the threat traffic was allowed, warn the admin
+                if (actionTaken === 'Log Only') {
+                    const alert = {
+                        id: `a-threat-bg-${Date.now()}`,
+                        timestamp: new Date().toISOString(),
+                        nodeId: node.id,
+                        nodeLabel: node.label,
+                        severity: 'warning',
+                        message: `Подозрительная активность: ${threatType} с IP ${attacker} на МСЭ ${node.label} не заблокирована.`,
+                        acknowledged: false,
+                    };
+                    this.alerts.unshift(alert);
+                    this.emit('new-alert', alert);
+                }
             }
         });
         // Calculate live edge usage based on node traffic updates
@@ -301,6 +530,23 @@ class NetworkState extends events_1.EventEmitter {
                 const baseLat = edge.source.includes('dev') || edge.target.includes('dev') ? 5 : 2;
                 edge.latency = baseLat + (Math.random() > 0.8 ? 1 : 0);
             }
+        });
+        // Накапливаем историю метрик
+        const now = new Date().toISOString();
+        this.nodes.forEach((node) => {
+            const point = {
+                timestamp: now,
+                cpu: node.cpu,
+                ram: node.ram,
+                temp: node.temp,
+                traffic: node.traffic,
+            };
+            const history = this.metricsHistory.get(node.id) || [];
+            history.push(point);
+            if (history.length > NetworkState.HISTORY_LIMIT) {
+                history.shift();
+            }
+            this.metricsHistory.set(node.id, history);
         });
         // Emit the update
         this.emit('metrics-update', {
@@ -349,7 +595,7 @@ class NetworkState extends events_1.EventEmitter {
         else if (roll < 0.85) {
             // Latency / Packet Loss on an edge connected to it
             const nodeEdges = this.edges.filter((e) => e.source === randomNode.id || e.target === randomNode.id);
-            if (nodeEdges.length > 0) {
+            if (nodeEdges.length) {
                 const randomEdge = nodeEdges[Math.floor(Math.random() * nodeEdges.length)];
                 severity = 'warning';
                 message = `Зафиксирована повышенная задержка на канале ${randomNode.label} <-> ${randomEdge.source === randomNode.id
@@ -365,7 +611,7 @@ class NetworkState extends events_1.EventEmitter {
         else {
             // Storage threshold on server
             const servers = this.nodes.filter((n) => n.type === 'server' && n.status !== 'offline');
-            if (servers.length > 0) {
+            if (servers.length) {
                 const server = servers[Math.floor(Math.random() * servers.length)];
                 severity = 'warning';
                 message = `Дисковое пространство на сервере ${server.label} заполнено на ${Math.floor(Math.random() * 5) + 85}%`;
@@ -386,6 +632,134 @@ class NetworkState extends events_1.EventEmitter {
         };
         this.alerts.unshift(newAlert);
         this.emit('new-alert', newAlert);
+    }
+    getMetricsHistory(nodeId) {
+        if (nodeId) {
+            return { [nodeId]: this.metricsHistory.get(nodeId) || [] };
+        }
+        const result = {};
+        this.metricsHistory.forEach((points, id) => {
+            result[id] = points;
+        });
+        return result;
+    }
+    triggerDdos(nodeId) {
+        const node = this.nodes.find((n) => n.id === nodeId);
+        if (!node || node.status === 'offline')
+            return;
+        node.cpu = 99;
+        node.ram = 92;
+        node.status = 'error';
+        this.edges.forEach((edge) => {
+            if (edge.source === nodeId || edge.target === nodeId) {
+                edge.currentUsage = edge.bandwidth * 1000 - 15;
+                edge.status = 'congested';
+                edge.latency = Math.floor(Math.random() * 40) + 110;
+            }
+        });
+        const alertId = `a-ddos-${Date.now()}`;
+        const alert = {
+            id: alertId,
+            timestamp: new Date().toISOString(),
+            nodeId,
+            nodeLabel: node.label,
+            severity: 'critical',
+            message: `КРИТИЧЕСКОЕ СОБЫТИЕ: Обнаружена DDoS-атака на устройство ${node.label} (${node.ip})! Нагрузка CPU 99%!`,
+            acknowledged: false,
+        };
+        this.alerts.unshift(alert);
+        this.emit('topology-changed', { nodes: this.nodes, edges: this.edges });
+        this.emit('new-alert', alert);
+    }
+    triggerOverheat(nodeId) {
+        const node = this.nodes.find((n) => n.id === nodeId);
+        if (!node || node.status === 'offline')
+            return;
+        node.temp = 85;
+        node.cpu = Math.max(node.cpu, 75);
+        node.status = 'error';
+        const alertId = `a-heat-${Date.now()}`;
+        const alert = {
+            id: alertId,
+            timestamp: new Date().toISOString(),
+            nodeId,
+            nodeLabel: node.label,
+            severity: 'critical',
+            message: `ОПАСНОСТЬ ПЕРЕГРЕВА: Температура устройства ${node.label} поднялась до 85°C! Вентилятор охлаждения неисправен!`,
+            acknowledged: false,
+        };
+        this.alerts.unshift(alert);
+        this.emit('topology-changed', { nodes: this.nodes, edges: this.edges });
+        this.emit('new-alert', alert);
+    }
+    triggerLatencySpike(edgeId) {
+        const edge = this.edges.find((e) => e.id === edgeId);
+        if (!edge)
+            return;
+        edge.latency = 165;
+        edge.status = 'congested';
+        const srcNode = this.nodes.find((n) => n.id === edge.source);
+        const tgtNode = this.nodes.find((n) => n.id === edge.target);
+        const alertId = `a-lat-${Date.now()}`;
+        const alert = {
+            id: alertId,
+            timestamp: new Date().toISOString(),
+            nodeId: edge.source,
+            nodeLabel: srcNode?.label || 'Link',
+            severity: 'warning',
+            message: `Деградация линка: Зафиксирована высокая задержка (165 мс) на канале ${srcNode?.label || 'Source'} <-> ${tgtNode?.label || 'Target'}.`,
+            acknowledged: false,
+        };
+        this.alerts.unshift(alert);
+        this.emit('topology-changed', { nodes: this.nodes, edges: this.edges });
+        this.emit('new-alert', alert);
+    }
+    recoverAll() {
+        this.nodes.forEach((node) => {
+            if (node.status === 'offline')
+                return;
+            node.cpu = Math.floor(Math.random() * 20) + 10;
+            node.ram = Math.floor(Math.random() * 20) + 30;
+            node.temp = node.type === 'server' ? 42 : 36;
+            node.status = 'online';
+        });
+        this.edges.forEach((edge) => {
+            if (edge.status === 'inactive')
+                return;
+            edge.currentUsage = Math.floor(Math.random() * 40) + 15;
+            edge.latency = edge.source.includes('dev') || edge.target.includes('dev') ? 5 : 2;
+            edge.status = 'active';
+        });
+        const alertId = `a-rec-all-${Date.now()}`;
+        const alert = {
+            id: alertId,
+            timestamp: new Date().toISOString(),
+            nodeId: '',
+            nodeLabel: 'Система',
+            severity: 'info',
+            message: `Все аварийные метрики узлов и каналов успешно возвращены в штатный режим.`,
+            acknowledged: false,
+        };
+        this.alerts.unshift(alert);
+        this.emit('topology-changed', { nodes: this.nodes, edges: this.edges });
+        this.emit('new-alert', alert);
+    }
+    setTopology(payload) {
+        this.nodes = JSON.parse(JSON.stringify(payload.nodes));
+        this.edges = JSON.parse(JSON.stringify(payload.edges));
+        const alertId = `a-set-top-${Date.now()}`;
+        const alert = {
+            id: alertId,
+            timestamp: new Date().toISOString(),
+            nodeId: '',
+            nodeLabel: 'Система',
+            severity: 'info',
+            message: `Топология сети успешно восстановлена из резервной копии JSON.`,
+            acknowledged: false,
+        };
+        this.alerts.unshift(alert);
+        this.emit('topology-changed', { nodes: this.nodes, edges: this.edges });
+        this.emit('new-alert', alert);
     }
     cleanup() {
         for (const timeout of this.rebootsInProgress.values()) {

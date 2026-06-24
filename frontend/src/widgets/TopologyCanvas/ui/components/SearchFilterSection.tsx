@@ -8,6 +8,7 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '@/app/providers/store';
+import styles from '../../TopologyCanvas.module.scss';
 import { HEATMAP_METRICS } from '../constants';
 
 export const SearchFilterSection: FC = () => {
@@ -22,14 +23,9 @@ export const SearchFilterSection: FC = () => {
         placeholder="Поиск..."
         value={searchQuery}
         onChange={(e) => dispatch(setSearchQuery(e.target.value))}
-        prefix={<SearchOutlined style={{ color: 'var(--text-muted)' }} />}
+        prefix={<SearchOutlined className={styles.searchIcon} />}
         allowClear
-        style={{
-          width: '140px',
-          marginRight: '4px',
-          backgroundColor: 'var(--input-bg)',
-          borderColor: 'var(--border-color)',
-        }}
+        className={styles.searchInput}
       />
 
       <Tooltip title={hideClients ? 'Показать клиентов' : 'Скрыть клиентов'}>
@@ -37,17 +33,17 @@ export const SearchFilterSection: FC = () => {
           onClick={() => dispatch(toggleHideClients())}
           type={hideClients ? 'primary' : 'default'}
           icon={hideClients ? <EyeOutlined /> : <EyeInvisibleOutlined />}
-          style={{ fontSize: '0.8rem', height: '32px' }}
+          className={styles.toolbarBtn}
         >
           Клиенты
         </Button>
       </Tooltip>
 
-      <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Теплокарта:</span>
+      <span className={styles.label}>Теплокарта:</span>
       <Select
         value={heatmapMetric}
         onChange={(val) => dispatch(setHeatmapMetric(val))}
-        style={{ width: '110px', height: '32px' }}
+        className={styles.select}
         options={HEATMAP_METRICS}
       />
     </>

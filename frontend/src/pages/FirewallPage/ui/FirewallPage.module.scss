@@ -1,0 +1,120 @@
+.spinnerWrapper {
+  height: 100%;
+}
+
+.resultLayout {
+  height: 100%;
+  background: transparent !important;
+  padding: 24px;
+}
+
+.pageLayout {
+  height: 100%;
+  background: transparent !important;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.headerRow {
+  margin-bottom: 20px;
+}
+
+.backBtn {
+  background: var(--bg-panel) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+.titleText {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.infoCard {
+  background: var(--bg-panel) !important;
+  border-color: var(--border-color) !important;
+  border-radius: 8px !important;
+  margin-bottom: 24px !important;
+
+  :global(.ant-card-body) {
+    padding: 20px !important;
+  }
+}
+
+.deviceName {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.deviceDesc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.metaCol {
+  min-width: 100px;
+}
+
+.metaLabel {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.metaValue {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  font-family: monospace;
+}
+
+.metaColBordered {
+  border-left: 1px solid var(--border-color);
+  padding-left: 16px;
+  min-width: 120px;
+}
+
+.statusColBordered {
+  border-left: 1px solid var(--border-color);
+  padding-left: 16px;
+}
+
+.statusLabel {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.statusTag {
+  margin: 0 !important;
+}
+
+.offlineAlert {
+  background: rgba(239, 68, 68, 0.08) !important;
+  border-color: rgba(239, 68, 68, 0.25) !important;
+  border-radius: 8px !important;
+  color: var(--text-primary) !important;
+
+  :global(.ant-alert-message),
+  :global(.ant-alert-description) {
+    color: var(--text-primary) !important;
+  }
+}
+
+.tabsCard {
+  background: var(--bg-panel) !important;
+  border-color: var(--border-color) !important;
+  border-radius: 8px !important;
+  flex: 1 !important;
+
+  :global(.ant-card-body) {
+    padding: 20px !important;
+  }
+}
+
+.tabContent {
+  padding-top: 12px;
+}

@@ -37,6 +37,12 @@ export class NetworkState extends EventEmitter {
       telemetryInterval: 5000,
       noiseLevel: 5,
     };
+    // Initialize firewall configs
+    this.nodes.forEach((node) => {
+      if (node.type === 'firewall') {
+        this.updateFirewallConfig(node);
+      }
+    });
   }
 
   public rebootNode(nodeId: string): void {
@@ -152,6 +158,9 @@ export class NetworkState extends EventEmitter {
     type?: NetworkNode['type'];
     ip?: string;
     mac?: string;
+    vendor?: string;
+    model?: string;
+    version?: string;
   }): void {
     const newNode: NetworkNode = {
       id: payload.id || `n-${Date.now()}`,
@@ -164,7 +173,15 @@ export class NetworkState extends EventEmitter {
       ram: 10,
       temp: 30,
       traffic: 0,
+      vendor: payload.vendor || 'Generic',
+      model: payload.model || 'Device Model',
+      version: payload.version || 'v1.0.0',
+      rules: payload.type === 'firewall' ? [] : undefined,
+      threats: payload.type === 'firewall' ? [] : undefined,
     };
+    if (newNode.type === 'firewall') {
+      this.updateFirewallConfig(newNode);
+    }
     this.nodes.push(newNode);
 
     // Info alert
@@ -181,6 +198,215 @@ export class NetworkState extends EventEmitter {
 
     this.emit('topology-changed', { nodes: this.nodes, edges: this.edges });
     this.emit('new-alert', alert);
+  }
+
+  public updateNode(
+    nodeId: string,
+    payload: {
+      label?: string;
+      ip?: string;
+      mac?: string;
+      vendor?: string;
+      model?: string;
+      version?: string;
+    },
+  ): void {
+    const node = this.nodes.find((n) => n.id === nodeId);
+    if (!node) return;
+
+    const oldLabel = node.label;
+    if (payload.label !== undefined) node.label = payload.label;
+    if (payload.ip !== undefined) node.ip = payload.ip;
+    if (payload.mac !== undefined) node.mac = payload.mac;
+    if (payload.vendor !== undefined) node.vendor = payload.vendor;
+    if (payload.model !== undefined) node.model = payload.model;
+    if (payload.version !== undefined) node.version = payload.version;
+
+    if (node.type === 'firewall') {
+      this.updateFirewallConfig(node);
+    }
+
+    // Add info alert
+    const alert: NetworkAlert = {
+      id: `a-update-${Date.now()}`,
+      timestamp: new Date().toISOString(),
+      nodeId: node.id,
+      nodeLabel: node.label,
+      severity: 'info',
+      message: `Изменены параметры устройства ${oldLabel}: имя=${node.label}, IP=${node.ip}, MAC=${node.mac}, Вендор=${node.vendor}, Модель=${node.model}, Версия=${node.version}`,
+      acknowledged: false,
+    };
+    this.alerts.unshift(alert);
+
+    // Update any alerts that might reference this node's old label
+    this.alerts.forEach((a) => {
+      if (a.nodeId === nodeId) {
+        a.nodeLabel = node.label;
+      }
+    });
+
+    this.emit('topology-changed', { nodes: this.nodes, edges: this.edges });
+    this.emit('new-alert', alert);
+  }
+
+  public addFirewallRule(
+    nodeId: string,
+    rule: {
+      name: string;
+      source: string;
+      destination: string;
+      port: string;
+      protocol: 'TCP' | 'UDP' | 'ICMP' | 'ANY';
+      action: 'ALLOW' | 'DENY';
+    },
+  ): void {
+    const node = this.nodes.find((n) => n.id === nodeId);
+    if (node?.type !== 'firewall') return;
+
+    if (!node.rules) node.rules = [];
+
+    const newRule = {
+      id: `r-${Date.now()}`,
+      ...rule,
+      status: 'active' as const,
+    };
+    node.rules.push(newRule);
+    this.updateFirewallConfig(node);
+
+    const alert: NetworkAlert = {
+      id: `a-rule-add-${Date.now()}`,
+      timestamp: new Date().toISOString(),
+      nodeId: node.id,
+      nodeLabel: node.label,
+      severity: 'info',
+      message: `На МСЭ ${node.label} добавлено новое правило: ${rule.name} (${rule.protocol} ${rule.source} -> ${rule.destination}:${rule.port} [${rule.action}])`,
+      acknowledged: false,
+    };
+    this.alerts.unshift(alert);
+
+    this.emit('topology-changed', { nodes: this.nodes, edges: this.edges });
+    this.emit('new-alert', alert);
+  }
+
+  public deleteFirewallRule(nodeId: string, ruleId: string): void {
+    const node = this.nodes.find((n) => n.id === nodeId);
+    if (!node?.rules) return;
+
+    const ruleIndex = node.rules.findIndex((r) => r.id === ruleId);
+    if (ruleIndex !== -1) {
+      const rule = node.rules[ruleIndex];
+      node.rules.splice(ruleIndex, 1);
+      this.updateFirewallConfig(node);
+
+      const alert: NetworkAlert = {
+        id: `a-rule-del-${Date.now()}`,
+        timestamp: new Date().toISOString(),
+        nodeId: node.id,
+        nodeLabel: node.label,
+        severity: 'info',
+        message: `На МСЭ ${node.label} удалено правило: ${rule.name}`,
+        acknowledged: false,
+      };
+      this.alerts.unshift(alert);
+
+      this.emit('topology-changed', { nodes: this.nodes, edges: this.edges });
+      this.emit('new-alert', alert);
+    }
+  }
+
+  public toggleFirewallRule(nodeId: string, ruleId: string): void {
+    const node = this.nodes.find((n) => n.id === nodeId);
+    if (!node?.rules) return;
+
+    const rule = node.rules.find((r) => r.id === ruleId);
+    if (rule) {
+      rule.status = rule.status === 'active' ? 'inactive' : 'active';
+      this.updateFirewallConfig(node);
+
+      const alert: NetworkAlert = {
+        id: `a-rule-toggle-${Date.now()}`,
+        timestamp: new Date().toISOString(),
+        nodeId: node.id,
+        nodeLabel: node.label,
+        severity: 'info',
+        message: `На МСЭ ${node.label} изменен статус правила ${rule.name}: ${rule.status === 'active' ? 'АКТИВНО' : 'НЕАКТИВНО'}`,
+        acknowledged: false,
+      };
+      this.alerts.unshift(alert);
+
+      this.emit('topology-changed', { nodes: this.nodes, edges: this.edges });
+      this.emit('new-alert', alert);
+    }
+  }
+
+  public simulateThreat(nodeId: string): void {
+    const node = this.nodes.find((n) => n.id === nodeId);
+    if (!node || node.status === 'offline' || node.type !== 'firewall') return;
+
+    const attackers = ['198.51.100.45', '203.0.113.110', '185.220.101.99', '45.143.203.5'];
+    const attacker = attackers[Math.floor(Math.random() * attackers.length)];
+    const types: (
+      | 'DDoS Attack'
+      | 'Port Scan'
+      | 'Brute Force'
+      | 'Malware Traffic'
+      | 'SQL Injection'
+    )[] = ['DDoS Attack', 'Port Scan', 'Brute Force', 'Malware Traffic', 'SQL Injection'];
+    const threatType = types[Math.floor(Math.random() * types.length)];
+    const targetPort =
+      threatType === 'Brute Force' ? '22' : threatType === 'SQL Injection' ? '80' : 'Any';
+    let actionTaken: 'Blocked' | 'Log Only' = 'Log Only';
+
+    if (node.rules) {
+      const hasDeny = node.rules.some(
+        (r) =>
+          r.status === 'active' &&
+          r.action === 'DENY' &&
+          (r.port === targetPort || r.port === 'Any'),
+      );
+      if (hasDeny) {
+        actionTaken = 'Blocked';
+      } else if (Math.random() > 0.3) {
+        actionTaken = 'Blocked';
+      }
+    }
+
+    if (!node.threats) node.threats = [];
+
+    const newThreat = {
+      id: `t-${Date.now()}`,
+      timestamp: new Date().toISOString(),
+      source: attacker,
+      target: `${node.ip}:${targetPort}`,
+      threatType,
+      severity: threatType === 'DDoS Attack' ? ('high' as const) : ('medium' as const),
+      actionTaken,
+    };
+
+    node.threats.unshift(newThreat);
+    if (node.threats.length > 20) {
+      node.threats.pop();
+    }
+
+    if (newThreat.severity === 'high' || actionTaken === 'Log Only') {
+      const alertId = `a-threat-${Date.now()}`;
+      const alert: NetworkAlert = {
+        id: alertId,
+        timestamp: new Date().toISOString(),
+        nodeId: node.id,
+        nodeLabel: node.label,
+        severity: newThreat.severity === 'high' ? 'critical' : 'warning',
+        message: `ОБНАРУЖЕНА УГРОЗА БЕЗОПАСНОСТИ: ${threatType} с IP ${attacker} на МСЭ ${node.label} (${actionTaken === 'Blocked' ? 'ЗАБЛОКИРОВАНО' : 'ПРОПУЩЕНО'})!`,
+        acknowledged: false,
+      };
+      this.alerts.unshift(alert);
+      this.emit('new-alert', alert);
+    }
+
+    const originalCpu = node.cpu;
+    node.cpu = Math.min(99, originalCpu + 40);
+
+    this.emit('topology-changed', { nodes: this.nodes, edges: this.edges });
   }
 
   public connectNodes(payload: { source: string; target: string; bandwidth?: number }): void {
@@ -331,6 +557,70 @@ export class NetworkState extends EventEmitter {
       } else {
         node.status = 'online';
       }
+
+      // If it is a firewall, occasionally simulate a threat in the background
+      if (node.type === 'firewall' && Math.random() < 0.05) {
+        const attackers = [
+          '198.51.100.45',
+          '203.0.113.110',
+          '185.220.101.99',
+          '45.143.203.5',
+          '8.8.8.8',
+        ];
+        const attacker = attackers[Math.floor(Math.random() * attackers.length)];
+        const types: (
+          | 'DDoS Attack'
+          | 'Port Scan'
+          | 'Brute Force'
+          | 'Malware Traffic'
+          | 'SQL Injection'
+        )[] = ['Port Scan', 'Brute Force', 'Malware Traffic', 'SQL Injection'];
+        const threatType = types[Math.floor(Math.random() * types.length)];
+        const targetPort =
+          threatType === 'Brute Force' ? '22' : threatType === 'SQL Injection' ? '80' : 'Any';
+
+        let actionTaken: 'Blocked' | 'Log Only' = 'Blocked'; // Firewalls block by default
+
+        // Simple rule check
+        if (node.rules) {
+          const matchingRule = node.rules.find(
+            (r) => r.status === 'active' && (r.port === targetPort || r.port === 'Any'),
+          );
+          if (matchingRule) {
+            actionTaken = matchingRule.action === 'ALLOW' ? 'Log Only' : 'Blocked';
+          }
+        }
+
+        if (!node.threats) node.threats = [];
+        const newThreat = {
+          id: `t-${Date.now()}`,
+          timestamp: new Date().toISOString(),
+          source: attacker,
+          target: `${node.ip}:${targetPort}`,
+          threatType,
+          severity: Math.random() > 0.7 ? ('medium' as const) : ('low' as const),
+          actionTaken,
+        };
+        node.threats.unshift(newThreat);
+        if (node.threats.length > 20) {
+          node.threats.pop();
+        }
+
+        // Log Only means the threat traffic was allowed, warn the admin
+        if (actionTaken === 'Log Only') {
+          const alert: NetworkAlert = {
+            id: `a-threat-bg-${Date.now()}`,
+            timestamp: new Date().toISOString(),
+            nodeId: node.id,
+            nodeLabel: node.label,
+            severity: 'warning',
+            message: `Подозрительная активность: ${threatType} с IP ${attacker} на МСЭ ${node.label} не заблокирована.`,
+            acknowledged: false,
+          };
+          this.alerts.unshift(alert);
+          this.emit('new-alert', alert);
+        }
+      }
     });
 
     // Calculate live edge usage based on node traffic updates
@@ -446,7 +736,7 @@ export class NetworkState extends EventEmitter {
       const nodeEdges = this.edges.filter(
         (e) => e.source === randomNode.id || e.target === randomNode.id,
       );
-      if (nodeEdges.length > 0) {
+      if (nodeEdges.length) {
         const randomEdge = nodeEdges[Math.floor(Math.random() * nodeEdges.length)];
         severity = 'warning';
         message = `Зафиксирована повышенная задержка на канале ${randomNode.label} <-> ${
@@ -462,7 +752,7 @@ export class NetworkState extends EventEmitter {
     } else {
       // Storage threshold on server
       const servers = this.nodes.filter((n) => n.type === 'server' && n.status !== 'offline');
-      if (servers.length > 0) {
+      if (servers.length) {
         const server = servers[Math.floor(Math.random() * servers.length)];
         severity = 'warning';
         message = `Дисковое пространство на сервере ${server.label} заполнено на ${Math.floor(Math.random() * 5) + 85}%`;
@@ -613,6 +903,11 @@ export class NetworkState extends EventEmitter {
 
   public setTopology(payload: { nodes: NetworkNode[]; edges: NetworkEdge[] }): void {
     this.nodes = JSON.parse(JSON.stringify(payload.nodes));
+    this.nodes.forEach((node) => {
+      if (node.type === 'firewall') {
+        this.updateFirewallConfig(node);
+      }
+    });
     this.edges = JSON.parse(JSON.stringify(payload.edges));
 
     const alertId = `a-set-top-${Date.now()}`;
@@ -629,6 +924,70 @@ export class NetworkState extends EventEmitter {
 
     this.emit('topology-changed', { nodes: this.nodes, edges: this.edges });
     this.emit('new-alert', alert);
+  }
+
+  private updateFirewallConfig(node: NetworkNode): void {
+    if (node.type !== 'firewall') return;
+    node.firewallConfig = this.generateFirewallConfig(node);
+  }
+
+  private generateFirewallConfig(node: NetworkNode): string {
+    const rules = node.rules || [];
+    if (rules.length === 0) {
+      return '# Правила фильтрации отсутствуют';
+    }
+
+    const vendor = node.vendor || 'Generic';
+    const lowerVendor = vendor.toLowerCase();
+    if (lowerVendor.includes('cisco')) {
+      return [
+        `! Cisco ASA Configuration for Access-list OUTSIDE_IN`,
+        `! Target device IP: ${rules[0]?.destination || '10.0.0.1'}`,
+        ...rules.map((rule) => {
+          const statusPrefix = rule.status === 'inactive' ? 'inactive ' : '';
+          const proto = rule.protocol.toLowerCase();
+          const action = rule.action.toLowerCase() === 'allow' ? 'permit' : 'deny';
+          const src = rule.source.toLowerCase() === 'any' ? 'any' : `host ${rule.source}`;
+          const dst = rule.destination.toLowerCase() === 'any' ? 'any' : `host ${rule.destination}`;
+          const port = rule.port.toLowerCase() === 'any' ? '' : ` eq ${rule.port}`;
+          return `access-list OUTSIDE_IN extended ${statusPrefix}${action} ${proto} ${src} ${dst}${port}`;
+        }),
+      ].join('\n');
+    }
+
+    if (lowerVendor.includes('check point') || lowerVendor.includes('checkpoint')) {
+      const jsonStructure = {
+        uid: `policy-${node.id}`,
+        name: 'Standard Access Control',
+        type: 'access-policy',
+        rules: rules.map((r, index) => ({
+          rule_number: index + 1,
+          uid: r.id,
+          name: r.name,
+          source: r.source,
+          destination: r.destination,
+          service: r.port === 'Any' ? 'Any' : `${r.protocol.toLowerCase()}/${r.port}`,
+          action: r.action === 'ALLOW' ? 'Accept' : 'Drop',
+          enabled: r.status === 'active',
+          install_on: 'firewall-gateway',
+        })),
+      };
+      return JSON.stringify(jsonStructure, null, 2);
+    }
+
+    // Default to iptables
+    return [
+      `# Generated iptables rules for vendor: ${vendor}`,
+      ...rules.map((rule) => {
+        const proto = rule.protocol !== 'ANY' ? `-p ${rule.protocol.toLowerCase()}` : '';
+        const port = rule.port !== 'Any' ? `--dport ${rule.port}` : '';
+        const src = rule.source !== 'Any' ? `-s ${rule.source}` : '';
+        const dst = rule.destination !== 'Any' ? `-d ${rule.destination}` : '';
+        const action = rule.action === 'ALLOW' ? 'ACCEPT' : 'DROP';
+        const activeComment = rule.status === 'inactive' ? '# [DISABLED] ' : '';
+        return `${activeComment}iptables -A INPUT ${proto} ${src} ${dst} ${port} -j ${action}`;
+      }),
+    ].join('\n');
   }
 
   public cleanup(): void {

@@ -1,0 +1,39 @@
+.selectionGlow {
+  filter: blur(3px);
+}
+
+.baseEdge {
+  stroke: var(--edge-stroke);
+  stroke-width: var(--edge-stroke-width);
+  transition: stroke 0.5s, stroke-width 0.3s;
+}
+
+.flowPath {
+  animation: dash var(--flow-animation-speed, 3s) linear infinite;
+  filter: drop-shadow(0px 0px 3px var(--flow-color));
+  pointer-events: none;
+}
+
+.particle {
+  filter: drop-shadow(0px 0px 4px var(--flow-color));
+}
+
+.badgeRect {
+  filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+.badgeText {
+  font-size: 8px;
+  font-family: monospace;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+@keyframes dash {
+  from {
+    stroke-dashoffset: 28;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}

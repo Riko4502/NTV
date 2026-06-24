@@ -1,6 +1,6 @@
 import { BulbFilled, BulbOutlined } from '@ant-design/icons';
 import { Badge, Button, Flex, Layout, Tooltip } from 'antd';
-import { Activity, Bell, Menu, Sliders } from 'lucide-react';
+import { Activity, Bell, Menu } from 'lucide-react';
 
 import { type FC, useState } from 'react';
 import { toggleAlerts, toggleTheme, useAppDispatch, useAppSelector } from '@/app/providers/store';
@@ -9,7 +9,6 @@ import styles from './HeaderStats.module.scss';
 import { useNocStats } from './hooks/useNocStats';
 import { BurgerMenuDrawer } from './ui/BurgerMenuDrawer';
 import { NetworkHealth } from './ui/NetworkHealth';
-import { SimulatorPanel } from './ui/SimulatorPanel';
 
 export const HeaderStats: FC = () => {
   const dispatch = useAppDispatch();
@@ -19,7 +18,6 @@ export const HeaderStats: FC = () => {
   const { data } = useStreamTopologyQuery();
 
   const [menuOpen, setMenuOpen] = useState(false);
-  const [simulatorOpen, setSimulatorOpen] = useState(false);
 
   const nodes = data?.nodes || [];
   const edges = data?.edges || [];
@@ -48,17 +46,6 @@ export const HeaderStats: FC = () => {
         <div className={styles.networkHealthWrapper}>
           <NetworkHealth />
         </div>
-
-        <div className={styles.divider} />
-
-        <Tooltip title="Симулятор инцидентов">
-          <Button
-            type="text"
-            icon={<Sliders size={18} />}
-            onClick={() => setSimulatorOpen(true)}
-            className={styles.headerButton}
-          />
-        </Tooltip>
 
         <Tooltip
           title={theme === 'dark' ? 'Переключить на светлую тему' : 'Переключить на тёмную тему'}
@@ -97,9 +84,6 @@ export const HeaderStats: FC = () => {
         theme={theme}
         stats={stats}
       />
-
-      {/* Network incident simulator panel */}
-      <SimulatorPanel open={simulatorOpen} onClose={() => setSimulatorOpen(false)} />
     </Layout.Header>
   );
 };

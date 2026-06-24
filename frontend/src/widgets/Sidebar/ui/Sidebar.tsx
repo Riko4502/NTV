@@ -1,12 +1,18 @@
 import { Button, Tooltip } from 'antd';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, LogOut } from 'lucide-react';
 import { type FC, useState } from 'react';
+import { logout, useAppDispatch } from '@/app/providers/store';
 import { NAV_ITEMS } from '../constants';
 import { SidebarItem } from './components';
 import styles from './Sidebar.module.scss';
 
 export const Sidebar: FC = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const dispatch = useAppDispatch();
+
+  const handleLogout = () => {
+    dispatch(logout());
+  };
 
   const navLinks = NAV_ITEMS.map((item) => (
     <SidebarItem key={item.id} {...item} collapsed={collapsed} />
@@ -18,6 +24,21 @@ export const Sidebar: FC = () => {
         {!collapsed && <span className={styles.sectionTitle}>Навигация</span>}
 
         {navLinks}
+      </div>
+
+      <div className={styles.logoutSection}>
+        <Tooltip title="Выйти из системы" placement="right">
+          <Button
+            type="text"
+            icon={<LogOut size={16} />}
+            onClick={handleLogout}
+            className={styles.logoutButton}
+            danger
+            block={!collapsed}
+          >
+            {!collapsed && <span className={styles.logoutText}>Выйти</span>}
+          </Button>
+        </Tooltip>
       </div>
 
       <div className={styles.collapseToggleWrapper}>

@@ -1,0 +1,200 @@
+.dashboardContainer {
+  padding: 24px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.headerCard {
+  background: var(--bg-panel) !important;
+  border-color: var(--border-color) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+}
+
+.titleText {
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.descText {
+  margin: 4px 0 0 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.spaceWrap {
+  flex-wrap: wrap !important;
+}
+
+.reloadBtn {
+  border-radius: 6px !important;
+}
+
+.labelText {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.updateSelect {
+  width: 90px !important;
+}
+
+.periodSelect {
+  width: 170px !important;
+}
+
+.datePicker {
+  width: 320px !important;
+}
+
+.devicesSelect {
+  min-width: 240px !important;
+  max-width: 300px !important;
+}
+
+/* Summary Cards styles */
+.summaryCard {
+  background: var(--bg-panel) !important;
+  border-color: var(--border-color) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+}
+
+.minCard {
+  border-left: 4px solid #52c41a !important;
+}
+
+.maxCard {
+  border-left: 4px solid #ff4d4f !important;
+}
+
+.avgCard {
+  border-left: 4px solid #1677ff !important;
+}
+
+.flexContainer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.iconWrapper {
+  background: var(--icon-bg-color);
+  padding: 8px;
+  border-radius: 8px;
+  color: var(--icon-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex1 {
+  flex: 1;
+}
+
+.metaLabel {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.statValue {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.suffix {
+  font-size: 0.9rem;
+  font-weight: 400;
+  margin-left: 2px;
+}
+
+.subText {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* Analytics Chart styles */
+.chartCard {
+  background: var(--bg-panel) !important;
+  border-color: var(--border-color) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+
+  :global(.ant-card-body) {
+    padding: 20px !important;
+  }
+}
+
+.tabs {
+  margin-bottom: 16px !important;
+}
+
+.tabLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.chartWrapper {
+  height: 320px;
+  width: 100%;
+  position: relative;
+}
+
+.emptyIcon {
+  font-size: 24px !important;
+}
+
+/* Grid & Cards styles */
+.gridContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.metricCard {
+  background: var(--bg-card) !important;
+  border-color: var(--border-color) !important;
+  border-radius: 8px !important;
+  border-left: 4px solid var(--border-color-left) !important;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.cardTitleText {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.cardIpText {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-family: monospace;
+}
+
+.metricsGrid {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  font-size: 0.8rem;
+}
+
+.metricItemRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.metricIcon {
+  color: var(--text-muted);
+}

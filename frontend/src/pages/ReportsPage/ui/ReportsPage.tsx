@@ -4,6 +4,7 @@ import { ExportReportCard } from './components/ExportReportCard';
 import { SlaKpis } from './components/SlaKpis';
 import { SlaTable } from './components/SlaTable';
 import { useReports } from './hooks/useReports';
+import styles from './ReportsPage.module.scss';
 
 export const ReportsPage: FC = () => {
   const {
@@ -17,24 +18,10 @@ export const ReportsPage: FC = () => {
   } = useReports();
 
   return (
-    <Layout
-      style={{ height: '100%', background: 'transparent', padding: '24px', overflowY: 'auto' }}
-    >
-      <div className="print-only-header" style={{ display: 'none' }}>
-        <h1
-          style={{
-            fontSize: '28px',
-            fontWeight: 700,
-            marginBottom: '8px',
-            textAlign: 'center',
-            color: '#000',
-          }}
-        >
-          Отчет о доступности и эффективности сети NOC
-        </h1>
-        <p style={{ textAlign: 'center', marginBottom: '24px', color: '#555', fontSize: '14px' }}>
-          Дата генерации: {new Date().toLocaleString()}
-        </p>
+    <Layout className={styles.pageLayout}>
+      <div className={styles.printOnlyHeader}>
+        <h1 className={styles.printTitle}>Отчет о доступности и эффективности сети NOC</h1>
+        <p className={styles.printSub}>Дата генерации: {new Date().toLocaleString()}</p>
       </div>
 
       <SlaKpis averageSla={averageSla} activeIncidents={activeIncidents} />

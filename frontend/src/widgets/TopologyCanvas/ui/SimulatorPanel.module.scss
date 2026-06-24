@@ -1,0 +1,98 @@
+.drawerBody {
+  padding: 20px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+  background: var(--bg-panel) !important;
+}
+
+.drawerHeader {
+  background: var(--bg-panel) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+}
+
+.divider {
+  margin: 8px 0 !important;
+  border-color: var(--border-color) !important;
+}
+
+.sectionHeader {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.listContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+}
+
+.card {
+  background: var(--bg-card) !important;
+  border-color: var(--border-color) !important;
+
+  :global(.ant-card-body) {
+    padding: 12px !important;
+  }
+}
+
+.nodeTitle {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+.nodeIp {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-family: monospace;
+}
+
+.triggerBtn {
+  flex: 1;
+  font-size: 0.75rem !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.overheatBtn {
+  flex: 1;
+  font-size: 0.75rem !important;
+  border-color: #d46b08 !important;
+  color: #d46b08 !important;
+  background: rgba(212, 107, 8, 0.08) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  &:hover, &:focus {
+    border-color: #ff9c6e !important;
+    color: #ff9c6e !important;
+    background: rgba(212, 107, 8, 0.15) !important;
+  }
+}
+
+.edgeTitle {
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+  word-break: break-all;
+}
+
+.latencyBtn {
+  width: 100%;
+  font-size: 0.75rem !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}

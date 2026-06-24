@@ -1,16 +1,23 @@
 import { AppstoreOutlined, FullscreenOutlined, SettingOutlined } from '@ant-design/icons';
 import { Button, Dropdown, type MenuProps, Tooltip } from 'antd';
+import { Sliders } from 'lucide-react';
 import type { FC } from 'react';
 import { setLayoutDirection, useAppDispatch, useAppSelector } from '@/app/providers/store';
 import type { LayoutDirection } from '@/shared/libs';
+import styles from '../../TopologyCanvas.module.scss';
 import { LAYOUT_DIRECTIONS } from '../constants';
 
 interface LayoutSectionProps {
   onApplyLayout: (direction: LayoutDirection) => void;
   onFitView: () => void;
+  setSimulatorOpen: (open: boolean) => void;
 }
 
-export const LayoutSection: FC<LayoutSectionProps> = ({ onApplyLayout, onFitView }) => {
+export const LayoutSection: FC<LayoutSectionProps> = ({
+  onApplyLayout,
+  onFitView,
+  setSimulatorOpen,
+}) => {
   const dispatch = useAppDispatch();
   const layoutDirection = useAppSelector((state) => state.ui.layoutDirection);
 
@@ -18,7 +25,7 @@ export const LayoutSection: FC<LayoutSectionProps> = ({ onApplyLayout, onFitView
     return {
       key: direction.value,
       label: direction.label,
-      icon: <direction.icon style={{ color: 'var(--text-secondary)' }} />,
+      icon: <direction.icon className={styles.menuIcon} />,
       onClick: () => {
         dispatch(setLayoutDirection(direction.value));
         onApplyLayout(direction.value);
@@ -32,19 +39,23 @@ export const LayoutSection: FC<LayoutSectionProps> = ({ onApplyLayout, onFitView
         <Button
           onClick={() => onApplyLayout(layoutDirection)}
           icon={<AppstoreOutlined />}
-          style={{ fontSize: '0.8rem', height: '32px' }}
+          className={styles.toolbarBtn}
         />
       </Tooltip>
 
       <Dropdown menu={{ items }} trigger={['click']}>
-        <Button icon={<SettingOutlined />} style={{ fontSize: '0.8rem', height: '32px' }} />
+        <Button icon={<SettingOutlined />} className={styles.toolbarBtn} />
       </Dropdown>
 
       <Tooltip title="Вписать всю сеть в экран">
+        <Button onClick={onFitView} icon={<FullscreenOutlined />} className={styles.toolbarBtn} />
+      </Tooltip>
+
+      <Tooltip title="Симулятор инцидентов">
         <Button
-          onClick={onFitView}
-          icon={<FullscreenOutlined />}
-          style={{ fontSize: '0.8rem', height: '32px' }}
+          icon={<Sliders size={16} />}
+          onClick={() => setSimulatorOpen(true)}
+          className={styles.toolbarBtn}
         />
       </Tooltip>
     </>

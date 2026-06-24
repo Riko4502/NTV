@@ -1,0 +1,19 @@
+.pageLayout {
+  height: 100%;
+  background: transparent !important;
+}
+
+.contentWrapper {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+
+.drawer {
+  background: var(--bg-panel) !important;
+  border-left: 1px solid var(--border-color) !important;
+}
+
+.drawerBody {
+  padding: 0 !important;
+}

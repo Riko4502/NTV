@@ -31,12 +31,11 @@ export const DeviceDetails: FC<DeviceDetailsProps> = (props) => {
   const isOffline = status === 'offline';
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
+    <div className={styles.detailsRoot}>
       <div className={styles.panelBody}>
         <DeviceMetaCard {...props} />
-
         {!isOffline ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div className={styles.metricsContainer}>
             <DeviceMetricChartCard
               title="Нагрузка на Процессор (CPU)"
               value={cpu}
@@ -71,12 +70,7 @@ export const DeviceDetails: FC<DeviceDetailsProps> = (props) => {
             type="error"
             showIcon
             icon={<WarningOutlined />}
-            style={{
-              background: 'rgba(239, 68, 68, 0.08)',
-              borderColor: 'rgba(239, 68, 68, 0.25)',
-              borderRadius: '8px',
-              color: 'var(--text-primary)',
-            }}
+            className={styles.offlineAlert}
           />
         )}
 

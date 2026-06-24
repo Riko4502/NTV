@@ -7,8 +7,9 @@ import {
   usePingNodeMutation,
   useRebootNodeMutation,
   useStreamTopologyQuery,
+  useUpdateNodeMutation,
 } from '@/shared/api';
-import type { AddNodePayload } from '@/shared/libs';
+import type { AddNodePayload, DeviceData } from '@/shared/libs';
 import { makeDeviceColumns } from '../makeDeviceColumns';
 
 export const useDevices = () => {
@@ -19,6 +20,9 @@ export const useDevices = () => {
   const [rebootNode] = useRebootNodeMutation();
   const [deleteNode] = useDeleteNodeMutation();
   const [addNode] = useAddNodeMutation();
+  const [updateNode] = useUpdateNodeMutation();
+
+  const [editingDevice, setEditingDevice] = useState<DeviceData | null>(null);
 
   const [searchText, setSearchText] = useState('');
   const [selectedType, setSelectedType] = useState<string>('all');
@@ -35,7 +39,11 @@ export const useDevices = () => {
   const filteredNodes = useMemo(() => {
     return nodes.filter((node) => {
       const matchesSearch =
-        node.label.toLowerCase().includes(searchText.toLowerCase()) || node.ip.includes(searchText);
+        node.label.toLowerCase().includes(searchText.toLowerCase()) ||
+        node.ip.includes(searchText) ||
+        node.vendor?.toLowerCase().includes(searchText.toLowerCase()) ||
+        node.model?.toLowerCase().includes(searchText.toLowerCase()) ||
+        node.version?.toLowerCase().includes(searchText.toLowerCase());
 
       const matchesType = selectedType === 'all' || node.type === selectedType;
       const matchesStatus = selectedStatus === 'all' || node.status === selectedStatus;
@@ -174,6 +182,36 @@ export const useDevices = () => {
     }
   }, []);
 
+  const handleEdit = useCallback((device: DeviceData) => {
+    setEditingDevice(device);
+  }, []);
+
+  const handleEditSubmit = async (values: {
+    label: string;
+    ip: string;
+    mac: string;
+    vendor: string;
+    model: string;
+    version: string;
+  }) => {
+    if (!editingDevice) return;
+    try {
+      await updateNode({ nodeId: editingDevice.id, ...values }).unwrap();
+      notification.success({
+        message: 'Параметры изменены',
+        description: `Параметры устройства ${values.label} успешно сохранены`,
+        placement: 'bottomRight',
+      });
+      setEditingDevice(null);
+    } catch (_err) {
+      notification.error({
+        message: 'Ошибка сохранения',
+        description: 'Не удалось сохранить параметры устройства',
+        placement: 'bottomRight',
+      });
+    }
+  };
+
   const columns = useMemo(
     () =>
       makeDeviceColumns({
@@ -182,8 +220,9 @@ export const useDevices = () => {
         handlePing,
         handleReboot,
         handleDelete,
+        handleEdit,
       }),
-    [pingingNodeId, isEditMode, handlePing, handleReboot, handleDelete],
+    [pingingNodeId, isEditMode, handlePing, handleReboot, handleDelete, handleEdit],
   );
 
   return {
@@ -205,5 +244,8 @@ export const useDevices = () => {
     handleBulkDelete,
     handleAddNodeSubmit,
     handleTableChange,
+    editingDevice,
+    setEditingDevice,
+    handleEditSubmit,
   };
 };

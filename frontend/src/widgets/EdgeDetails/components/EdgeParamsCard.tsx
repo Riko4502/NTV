@@ -1,6 +1,7 @@
 import { Card, Flex, Tag } from 'antd';
-import type { FC } from 'react';
+import type { CSSProperties, FC } from 'react';
 import type { ConnectionEdgeStatus } from '@/entities/connection/model/types';
+import styles from '../EdgeDetails.module.scss';
 
 interface EdgeParamsCardProps {
   statusLabel: string;
@@ -20,52 +21,29 @@ export const EdgeParamsCard: FC<EdgeParamsCardProps> = ({
   return (
     <Card
       size="small"
-      title={
-        <span
-          style={{
-            fontSize: '0.85rem',
-            fontWeight: 600,
-            color: 'var(--text-secondary)',
-            textTransform: 'uppercase',
-            letterSpacing: '0.5px',
-          }}
-        >
-          Параметры соединения
-        </span>
-      }
-      style={{
-        background: 'var(--bg-card)',
-        borderColor: 'var(--border-color)',
-        borderRadius: '8px',
-      }}
-      styles={{
-        body: { padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px' },
-      }}
+      title={<span className={styles.cardTitle}>Параметры соединения</span>}
+      className={styles.card}
     >
       <Flex justify="space-between" align="center">
-        <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Статус:</span>
+        <span className={styles.paramLabel}>Статус:</span>
         <Tag color={tagColor}>{statusLabel}</Tag>
       </Flex>
 
       <Flex justify="space-between" align="center">
-        <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-          Пропускная способность:
-        </span>
-        <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-primary)' }}>
-          {bandwidth} Gbps
-        </span>
+        <span className={styles.paramLabel}>Пропускная способность:</span>
+        <span className={styles.paramValue}>{bandwidth} Gbps</span>
       </Flex>
 
       <Flex justify="space-between" align="center">
-        <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-          Задержка (Latency):
-        </span>
+        <span className={styles.paramLabel}>Задержка (Latency):</span>
         <span
-          style={{
-            fontSize: '0.85rem',
-            fontWeight: 600,
-            color: status === 'congested' ? 'var(--color-error)' : 'var(--color-success)',
-          }}
+          className={styles.latencyValue}
+          style={
+            {
+              '--latency-color':
+                status === 'congested' ? 'var(--color-error)' : 'var(--color-success)',
+            } as CSSProperties
+          }
         >
           {latency} ms
         </span>

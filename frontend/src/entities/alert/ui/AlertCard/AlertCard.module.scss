@@ -1,0 +1,57 @@
+.alertCard {
+  border: var(--alert-border, 1px solid var(--border-color)) !important;
+  background-color: var(--alert-bg, rgba(255, 255, 255, 0.01)) !important;
+  border-radius: 8px !important;
+  margin-bottom: 10px !important;
+  transition: all 0.2s !important;
+  box-shadow: var(--alert-shadow, none) !important;
+}
+
+.header {
+  margin-bottom: 8px;
+}
+
+.severityText {
+  color: var(--severity-color);
+  font-weight: 600;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  :global(.ant-typography) {
+    color: inherit;
+    font-weight: inherit;
+    font-size: inherit;
+  }
+}
+
+.timeText {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.messageText {
+  font-size: 0.8rem;
+  color: var(--text-primary);
+  line-height: 1.4;
+  display: block;
+}
+
+.footer {
+  margin-top: 4px;
+}
+
+.nodeLabel {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+
+.nodeValue {
+  font-family: monospace;
+  color: var(--text-primary);
+}
+
+.successIcon {
+  color: var(--color-success) !important;
+}

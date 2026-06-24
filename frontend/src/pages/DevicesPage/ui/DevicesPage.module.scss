@@ -1,0 +1,89 @@
+.pageLayout {
+  height: 100%;
+  background: transparent !important;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.table {
+  background: var(--bg-panel) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 8px !important;
+  overflow: hidden;
+}
+
+.labelWrapper {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.subRow {
+  margin-top: 4px !important;
+}
+
+.ipSpan {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-family: monospace;
+}
+
+.vendorSpan {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.editBtn {
+  color: var(--text-secondary) !important;
+}
+
+.filterHeader {
+  flex-wrap: wrap !important;
+  gap: 12px !important;
+  margin-bottom: 20px !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+.inputsWrapper {
+  flex-wrap: wrap !important;
+  gap: 12px !important;
+  align-items: center !important;
+}
+
+.searchInput {
+  width: 220px !important;
+  height: 32px !important;
+}
+
+.searchIcon {
+  color: var(--text-muted);
+}
+
+.selectInput {
+  width: 150px !important;
+  height: 32px !important;
+}
+
+.actionBtn {
+  height: 32px !important;
+}
+
+.selectedBadge {
+  background-color: var(--bg-panel) !important;
+  padding: 4px 12px !important;
+  border-radius: 6px !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+.selectedCount {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.bulkBtn {
+  font-size: 0.8rem !important;
+}
+
+.modalBody {
+  padding-top: 12px !important;
+}

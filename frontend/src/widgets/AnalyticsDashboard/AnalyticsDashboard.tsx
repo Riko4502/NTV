@@ -5,6 +5,7 @@ import { type FC, useCallback, useMemo, useState } from 'react';
 import { useStreamTopologyQuery } from '@/shared/api';
 import { useMetricsHistory } from '@/shared/api/useMetricsHistory';
 import { Spinner } from '@/shared/ui';
+import styles from './AnalyticsDashboard.module.scss';
 import { AnalyticsChart } from './components/AnalyticsChart';
 import { AnalyticsHeader } from './components/AnalyticsHeader';
 import { AnalyticsSummary } from './components/AnalyticsSummary';
@@ -97,15 +98,7 @@ export const AnalyticsDashboard: FC<AnalyticsDashboardProps> = ({ initialNodeId 
   }
 
   return (
-    <Flex
-      vertical
-      gap="20px"
-      style={{
-        padding: '24px',
-        height: '100%',
-        overflowY: 'auto',
-      }}
-    >
+    <Flex vertical gap="20px" className={styles.dashboardContainer}>
       <AnalyticsHeader
         selectedNodeIds={selectedNodeIds}
         onChange={handleSelectAll}
@@ -131,7 +124,7 @@ export const AnalyticsDashboard: FC<AnalyticsDashboardProps> = ({ initialNodeId 
         chartData={chartData}
         chartColorScheme={chartColorScheme}
         timePeriod={timePeriod}
-        hasSelectedDevices={selectedNodeIds.length > 0}
+        hasSelectedDevices={!!selectedNodeIds.length}
         showThreshold={showThreshold}
       />
 

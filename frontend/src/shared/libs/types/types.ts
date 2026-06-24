@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+
 export type Priority = 'high' | 'medium' | 'low';
 
 export type AlertType = 'critical' | 'warning' | 'info';
@@ -9,3 +11,8 @@ export type LayoutDirection = 'TB' | 'LR';
 export type Status = 'online' | 'warning' | 'error' | 'offline';
 
 export type StatusStyle = { color: string; glow: string; label: string };
+
+export type Option<T = string> = {
+  label: string | ReactNode;
+  value: T;
+};

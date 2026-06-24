@@ -1,5 +1,6 @@
 import { Provider } from 'react-redux';
 import { RouterProvider } from 'react-router-dom';
+import { ErrorBoundary } from '@/shared/ui';
 import { store } from './providers/store';
 import './styles/index.scss';
 import { type FC, useMemo } from 'react';
@@ -14,7 +15,9 @@ export const App: FC<AppProps> = ({ basename }) => {
 
   return (
     <Provider store={store}>
-      <RouterProvider router={router} />
+      <ErrorBoundary>
+        <RouterProvider router={router} />
+      </ErrorBoundary>
     </Provider>
   );
 };

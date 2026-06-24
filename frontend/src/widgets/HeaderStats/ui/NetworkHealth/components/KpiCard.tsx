@@ -1,5 +1,5 @@
 import { Card, Statistic } from 'antd';
-import type { FC, ReactNode } from 'react';
+import type { CSSProperties, FC, ReactNode } from 'react';
 import styles from './KpiCard.module.scss';
 
 interface KpiCardProps {
@@ -12,14 +12,16 @@ interface KpiCardProps {
 
 export const KpiCard: FC<KpiCardProps> = ({ title, value, valueColor, prefix, suffix }) => {
   return (
-    <Card size="small" className={styles.kpiCard} styles={{ body: { padding: '4px 10px' } }}>
+    <Card size="small" className={styles.kpiCard}>
       <Statistic
         className={styles.statistic}
         title={<span className={styles.title}>{title}</span>}
         value={value}
-        style={{
-          color: valueColor || 'var(--text-primary)',
-        }}
+        style={
+          {
+            '--kpi-value-color': valueColor,
+          } as CSSProperties
+        }
         prefix={prefix}
         suffix={suffix}
       />

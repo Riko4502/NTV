@@ -8,9 +8,11 @@ import { DeviceNode } from '@/entities/device';
 import { matchesQuery } from '@/shared/libs/utils';
 import { Spinner } from '@/shared/ui';
 import { useTopologySync } from './hooks/useTopologySync';
+import styles from './TopologyCanvas.module.scss';
 import { AddEdgeModal } from './ui/AddEdgeModal';
 import { AddNodeModal } from './ui/AddNodeModal';
 import { CanvasToolbar } from './ui/CanvasToolbar';
+import { SimulatorPanel } from './ui/SimulatorPanel';
 
 // Register custom components outside to avoid re-renders
 const nodeTypes = {
@@ -48,6 +50,8 @@ const CanvasInner: FC = () => {
     fitView,
   } = useTopologySync();
 
+  const [simulatorOpen, setSimulatorOpen] = useState(false);
+
   const searchQuery = useAppSelector((state) => state.ui.searchQuery);
   const theme = useAppSelector((state) => state.ui.theme);
   const hideClients = useAppSelector((state) => state.ui.hideClients);
@@ -84,12 +88,12 @@ const CanvasInner: FC = () => {
     );
   }, [edges, nodes, hideClients]);
 
-  if (isLoading || !data || data.nodes.length === 0) {
+  if (isLoading || !data || !data.nodes.length) {
     return <Spinner loading={true} tip="Инициализация сетевого холста..." />;
   }
 
   return (
-    <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+    <div className={styles.canvasContainer}>
       <ReactFlow
         nodes={filteredNodes}
         edges={filteredEdges}
@@ -110,19 +114,17 @@ const CanvasInner: FC = () => {
         <Background color={gridColor} gap={24} size={2} />
       </ReactFlow>
 
-      {/* Floating Canvas Controls Toolbar overlay */}
       <CanvasToolbar
         onOpenAddNode={() => setIsAddNodeOpen(true)}
         onApplyLayout={applyLayout}
         onFitView={() => fitView({ padding: 0.1, duration: 600 })}
         nodesData={data.nodes}
         edgesData={data.edges}
+        setSimulatorOpen={setSimulatorOpen}
       />
 
-      {/* Add Node Modal */}
       <AddNodeModal open={isAddNodeOpen} onClose={() => setIsAddNodeOpen(false)} />
 
-      {/* Add Edge Modal */}
       {connectModalData && (
         <AddEdgeModal
           open={!!connectModalData}
@@ -133,12 +135,8 @@ const CanvasInner: FC = () => {
         />
       )}
 
-      <style>{`
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-      `}</style>
+      {/* Network incident simulator panel */}
+      <SimulatorPanel open={simulatorOpen} onClose={() => setSimulatorOpen(false)} />
     </div>
   );
 };

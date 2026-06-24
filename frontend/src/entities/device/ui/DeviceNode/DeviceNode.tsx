@@ -94,25 +94,26 @@ export const DeviceNode: FC<DeviceNodeProps> = memo(
     return (
       <div
         className={`${styles.customNode} glass-panel ${selected ? styles.selected : ''}`}
-        style={{
-          border: selected ? `1.5px solid ${displayColor}` : `1px solid var(--border-color)`,
-          backgroundColor: 'var(--bg-card)',
-          boxShadow: selected
-            ? `0 0 20px ${displayGlow}, inset 0 0 8px ${displayGlow}`
-            : '0 8px 32px 0 var(--panel-shadow)',
-        }}
+        style={
+          {
+            '--node-border': selected ? `1.5px solid ${displayColor}` : undefined,
+            '--node-shadow': selected
+              ? `0 0 20px ${displayGlow}, inset 0 0 8px ${displayGlow}`
+              : undefined,
+          } as CSSProperties
+        }
       >
         <Handle
           type="target"
           position={Position.Top}
           isConnectable={isEditMode}
-          style={{ opacity: isEditMode ? 1 : 0, transition: 'opacity 0.2s' }}
+          className={`${styles.handle} ${isEditMode ? styles.editable : ''}`}
         />
         <Handle
           type="target"
           position={Position.Left}
           isConnectable={isEditMode}
-          style={{ opacity: isEditMode ? 1 : 0, transition: 'opacity 0.2s' }}
+          className={`${styles.handle} ${isEditMode ? styles.editable : ''}`}
         />
 
         {/* Status glowing ring indicator */}
@@ -120,67 +121,43 @@ export const DeviceNode: FC<DeviceNodeProps> = memo(
           className={styles.pulseRing}
           style={
             {
-              backgroundColor: displayColor,
+              '--pulse-bg-color': displayColor,
               '--pulse-color': displayGlow,
             } as CSSProperties
           }
         />
 
         {/* Device Icon */}
-        <div
-          style={{
-            color: displayColor,
-            backgroundColor: `var(--btn-secondary-bg)`,
-            padding: '10px',
-            borderRadius: '50%',
-            marginBottom: '8px',
-            boxShadow: `inset 0 0 10px rgba(0, 0, 0, 0.05)`,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            border: `1px solid var(--border-color)`,
-          }}
+        <Flex
+          align="center"
+          justify="center"
+          className={styles.iconWrapper}
+          style={
+            {
+              '--icon-color': displayColor,
+            } as CSSProperties
+          }
         >
           <Icon size={20} />
-        </div>
+        </Flex>
 
         {/* Device Name */}
-        <div
-          style={{
-            fontWeight: 600,
-            fontSize: '0.85rem',
-            color: 'var(--text-primary)',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            width: '100%',
-            marginBottom: '2px',
-          }}
-        >
-          {label}
-        </div>
+        <div className={styles.deviceName}>{label}</div>
 
         {/* Device IP */}
-        <div
-          style={{
-            fontSize: '0.7rem',
-            color: 'var(--text-secondary)',
-            fontFamily: 'monospace',
-            marginBottom: '8px',
-          }}
-        >
-          {ip}
-        </div>
+        <div className={styles.deviceIp}>{ip}</div>
 
         {/* Device CPU utilization bar (if online) */}
         {status !== 'offline' ? (
-          <div style={{ width: '100%', marginTop: '4px' }}>
-            <Flex
-              justify="space-between"
-              style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginBottom: '3px' }}
-            >
+          <div className={styles.cpuContainer}>
+            <Flex justify="space-between" className={styles.cpuHeader}>
               <span>CPU</span>
-              <span style={{ color: getSeverityColor(cpu) }}>{cpu}%</span>
+              <span
+                className={styles.cpuValue}
+                style={{ '--cpu-color': getSeverityColor(cpu) } as CSSProperties}
+              >
+                {cpu}%
+              </span>
             </Flex>
             <Progress percent={cpu} strokeColor={getSeverityColor(cpu)} showInfo={false} />
             {isCpuHistory && (
@@ -188,7 +165,7 @@ export const DeviceNode: FC<DeviceNodeProps> = memo(
                 <svg
                   width={sparklineWidth}
                   height={sparklineHeight}
-                  style={{ overflow: 'visible' }}
+                  className={styles.sparklineSvg}
                 >
                   <title>История CPU</title>
                   <polyline
@@ -196,23 +173,14 @@ export const DeviceNode: FC<DeviceNodeProps> = memo(
                     stroke={color}
                     strokeWidth="1.5"
                     points={sparklinePoints}
-                    style={{ transition: 'points 0.3s ease' }}
+                    className={styles.sparklinePolyline}
                   />
                 </svg>
               </div>
             )}
           </div>
         ) : (
-          <div
-            style={{
-              fontSize: '0.65rem',
-              color: 'var(--text-muted)',
-              marginTop: '8px',
-              letterSpacing: '0.5px',
-            }}
-          >
-            ВЫКЛЮЧЕН
-          </div>
+          <div className={styles.offlineText}>ВЫКЛЮЧЕН</div>
         )}
 
         {/* Source handles — visible and connectable only in edit mode */}
@@ -220,13 +188,13 @@ export const DeviceNode: FC<DeviceNodeProps> = memo(
           type="source"
           position={Position.Bottom}
           isConnectable={isEditMode}
-          style={{ opacity: isEditMode ? 1 : 0, transition: 'opacity 0.2s' }}
+          className={`${styles.handle} ${isEditMode ? styles.editable : ''}`}
         />
         <Handle
           type="source"
           position={Position.Right}
           isConnectable={isEditMode}
-          style={{ opacity: isEditMode ? 1 : 0, transition: 'opacity 0.2s' }}
+          className={`${styles.handle} ${isEditMode ? styles.editable : ''}`}
         />
       </div>
     );

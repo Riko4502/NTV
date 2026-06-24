@@ -1,5 +1,7 @@
 import { Button, Form, Modal, Select } from 'antd';
 import type { FC } from 'react';
+import styles from './AddEdgeModal.module.scss';
+import { SPEED_OPTIONS } from './constants';
 
 interface AddEdgeModalProps {
   open: boolean;
@@ -29,14 +31,12 @@ export const AddEdgeModal: FC<AddEdgeModalProps> = ({
       open={open}
       onCancel={onClose}
       footer={null}
-      style={{ borderRadius: '12px', overflow: 'hidden' }}
-      styles={{
-        body: {
-          padding: '12px 0 0 0',
-        },
+      className={styles.modal}
+      classNames={{
+        body: styles.modalBody,
       }}
     >
-      <div style={{ marginBottom: '16px', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+      <div className={styles.description}>
         Установка связи между узлами: <strong>{sourceLabel}</strong> и{' '}
         <strong>{targetLabel}</strong>
       </div>
@@ -47,18 +47,11 @@ export const AddEdgeModal: FC<AddEdgeModalProps> = ({
           label="Тип линии / Пропускная способность"
           rules={[{ required: true }]}
         >
-          <Select
-            options={[
-              { label: '1 Gbps (Медный кабель Cat6)', value: 1 },
-              { label: '10 Gbps (Оптический кабель Multi-mode)', value: 10 },
-              { label: '40 Gbps (Оптическая магистраль QSFP)', value: 40 },
-              { label: '100 Gbps (Core Backbone QSFP28)', value: 100 },
-            ]}
-          />
+          <Select options={SPEED_OPTIONS} />
         </Form.Item>
 
-        <Form.Item style={{ marginBottom: 0, textAlign: 'right' }}>
-          <Button style={{ marginRight: 8 }} onClick={onClose}>
+        <Form.Item className={styles.formFooter}>
+          <Button className={styles.cancelBtn} onClick={onClose}>
             Отмена
           </Button>
           <Button type="primary" htmlType="submit">

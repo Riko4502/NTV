@@ -1,24 +1,18 @@
 import { SettingOutlined } from '@ant-design/icons';
 import { Card, Form, Slider } from 'antd';
 import type { FC } from 'react';
+import styles from '../SettingsPage.module.scss';
 
 export const ThresholdsCard: FC = () => {
   return (
     <Card
       title={
-        <span
-          style={{
-            color: 'var(--text-primary)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-          }}
-        >
+        <span className={styles.thresholdTitle}>
           <SettingOutlined />
           Пороговые лимиты NOC (Thresholds)
         </span>
       }
-      style={{ background: 'var(--bg-panel)', borderColor: 'var(--border-color)' }}
+      className={styles.card}
     >
       <Form.Item label="Порог предупреждения CPU (%)" name="cpuWarning">
         <Slider min={50} max={90} marks={{ 50: '50%', 80: '80%', 90: '90%' }} />

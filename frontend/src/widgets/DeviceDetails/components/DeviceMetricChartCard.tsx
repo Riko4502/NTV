@@ -1,7 +1,8 @@
 import { Card, Flex } from 'antd';
 import type { LucideIcon } from 'lucide-react';
-import type { FC } from 'react';
+import type { CSSProperties, FC } from 'react';
 import { Area, AreaSeries, AreaSparklineChart, Gradient, Line } from 'reaviz';
+import styles from '../DeviceDetails.module.scss';
 
 interface DeviceMetricChartCardProps {
   title: string;
@@ -24,21 +25,20 @@ export const DeviceMetricChartCard: FC<DeviceMetricChartCardProps> = ({
   const chartData = history.map((val, idx) => ({ key: idx, data: val }));
 
   return (
-    <Card
-      size="small"
-      style={{
-        background: 'var(--bg-card)',
-        borderColor: 'var(--border-color)',
-        borderRadius: '8px',
-      }}
-      styles={{ body: { padding: '12px' } }}
-    >
-      <Flex justify="space-between" align="center" style={{ marginBottom: '8px' }}>
-        <Flex align="center" gap="6px" style={{ fontSize: '0.85rem', fontWeight: 600 }}>
-          <Icon size={14} style={{ color: chartColor }} />
+    <Card size="small" className={styles.card}>
+      <Flex justify="space-between" align="center" className={styles.chartHeaderFlex}>
+        <Flex align="center" gap="6px" className={styles.titleFlex}>
+          <Icon
+            size={14}
+            className={styles.metricIcon}
+            style={{ '--icon-color': chartColor } as CSSProperties}
+          />
           <span>{title}</span>
         </Flex>
-        <span style={{ fontSize: '0.9rem', fontWeight: 600, color: chartColor }}>
+        <span
+          className={styles.metricValue}
+          style={{ '--metric-color': chartColor } as CSSProperties}
+        >
           {value}
           {suffix}
         </span>
@@ -58,11 +58,7 @@ export const DeviceMetricChartCard: FC<DeviceMetricChartCardProps> = ({
           }
         />
       ) : (
-        <Flex
-          align="center"
-          justify="center"
-          style={{ height: '64px', fontSize: '0.8rem', color: 'var(--text-muted)' }}
-        >
+        <Flex align="center" justify="center" className={styles.emptyChartFlex}>
           Накапливаем метрики...
         </Flex>
       )}

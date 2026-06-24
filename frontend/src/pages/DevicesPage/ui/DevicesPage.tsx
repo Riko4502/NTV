@@ -1,7 +1,9 @@
 import { Layout, Table } from 'antd';
 import type { FC } from 'react';
+import { EditDeviceModal } from '@/widgets/DeviceDetails/components/EditDeviceModal';
 import { AddDeviceModal } from './components/AddDeviceModal';
 import { DevicesFilterHeader } from './components/DevicesFilterHeader';
+import styles from './DevicesPage.module.scss';
 import { useDevices } from './hooks/useDevices';
 
 export const DevicesPage: FC = () => {
@@ -24,12 +26,13 @@ export const DevicesPage: FC = () => {
     handleBulkDelete,
     handleAddNodeSubmit,
     handleTableChange,
+    editingDevice,
+    setEditingDevice,
+    handleEditSubmit,
   } = useDevices();
 
   return (
-    <Layout
-      style={{ height: '100%', background: 'transparent', padding: '24px', overflowY: 'auto' }}
-    >
+    <Layout className={styles.pageLayout}>
       <DevicesFilterHeader
         searchText={searchText}
         onSearchTextChange={setSearchText}
@@ -53,12 +56,7 @@ export const DevicesPage: FC = () => {
         rowKey="id"
         onChange={handleTableChange}
         pagination={{ pageSize }}
-        style={{
-          background: 'var(--bg-panel)',
-          border: '1px solid var(--border-color)',
-          borderRadius: '8px',
-          overflow: 'hidden',
-        }}
+        className={styles.table}
       />
 
       <AddDeviceModal
@@ -70,6 +68,15 @@ export const DevicesPage: FC = () => {
         form={form}
         onFinish={handleAddNodeSubmit}
       />
+
+      {editingDevice && (
+        <EditDeviceModal
+          isOpen={!!editingDevice}
+          onCancel={() => setEditingDevice(null)}
+          device={editingDevice}
+          onFinish={handleEditSubmit}
+        />
+      )}
     </Layout>
   );
 };

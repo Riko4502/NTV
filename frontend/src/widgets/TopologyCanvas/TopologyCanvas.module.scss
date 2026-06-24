@@ -17,3 +17,71 @@
     border-color: var(--border-color-active);
   }
 }
+
+.toolbarWrapper {
+  flex-wrap: wrap !important;
+  padding: 8px 12px !important;
+}
+
+.toolbarDivider {
+  width: 1px;
+  height: 20px;
+  background: var(--border-color);
+  margin: 0 4px;
+}
+
+.toolbarBtn {
+  font-size: 0.8rem !important;
+  height: 32px !important;
+
+  &.editActive {
+    font-weight: 600 !important;
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.4) !important;
+  }
+}
+
+.menuIcon {
+  color: var(--text-secondary);
+}
+
+.searchIcon {
+  color: var(--text-muted);
+}
+
+.searchInput {
+  width: 140px;
+  margin-right: 4px;
+  background-color: var(--input-bg) !important;
+  border-color: var(--border-color) !important;
+}
+
+.label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.select {
+  width: 110px;
+  height: 32px;
+}
+
+.hiddenInput {
+  display: none !important;
+}
+
+.canvasContainer {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+

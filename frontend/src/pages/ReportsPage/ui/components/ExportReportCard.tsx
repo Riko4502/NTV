@@ -1,6 +1,7 @@
 import { DownloadOutlined, LineChartOutlined, PrinterOutlined } from '@ant-design/icons';
-import { Button, Card } from 'antd';
+import { Button, Card, Flex } from 'antd';
 import type { FC } from 'react';
+import styles from '../ReportsPage.module.scss';
 
 interface ExportReportCardProps {
   downloadingPdf: boolean;
@@ -18,22 +19,15 @@ export const ExportReportCard: FC<ExportReportCardProps> = ({
   return (
     <Card
       title={
-        <span
-          style={{
-            color: 'var(--text-primary)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-          }}
-        >
+        <Flex align="center" gap={8}>
           <LineChartOutlined />
           Отчетность и Экспорт
-        </span>
+        </Flex>
       }
-      style={{ background: 'var(--bg-panel)', borderColor: 'var(--border-color)' }}
+      className={styles.exportCard}
     >
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-        <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+      <Flex gap="12px">
+        <div className={styles.exportDesc}>
           Выгрузите текущие показатели эффективности NOC для отчетности перед руководством или для
           внешнего аудита.
         </div>
@@ -43,20 +37,14 @@ export const ExportReportCard: FC<ExportReportCardProps> = ({
           icon={<PrinterOutlined />}
           loading={downloadingPdf}
           onClick={onDownloadPdf}
-          style={{ width: '100%', height: '40px', fontWeight: 600 }}
         >
           Печать отчета (PDF)
         </Button>
 
-        <Button
-          icon={<DownloadOutlined />}
-          loading={downloadingCsv}
-          onClick={onDownloadCsv}
-          style={{ width: '100%', height: '40px' }}
-        >
+        <Button icon={<DownloadOutlined />} loading={downloadingCsv} onClick={onDownloadCsv}>
           Экспорт SLA в CSV
         </Button>
-      </div>
+      </Flex>
     </Card>
   );
 };

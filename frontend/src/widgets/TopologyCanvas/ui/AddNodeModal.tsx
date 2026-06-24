@@ -1,15 +1,9 @@
 import { Form, Input, Modal, Select } from 'antd';
-
 import type { FC } from 'react';
 import { useAddNodeMutation } from '@/shared/api';
-
-const DEVICE_TYPE_OPTIONS = [
-  { value: 'router', label: 'Маршрутизатор' },
-  { value: 'switch', label: 'Коммутатор' },
-  { value: 'server', label: 'Сервер' },
-  { value: 'client', label: 'Хост / ПК' },
-  { value: 'firewall', label: 'Межсетевой экран' },
-];
+import type { AddNodePayload } from '@/shared/libs';
+import styles from './AddNodeModal.module.scss';
+import { DEVICE_TYPE_OPTIONS } from './constants';
 
 interface AddNodeModalProps {
   open: boolean;
@@ -17,18 +11,14 @@ interface AddNodeModalProps {
 }
 
 export const AddNodeModal: FC<AddNodeModalProps> = ({ open, onClose }) => {
-  const [form] = Form.useForm();
+  const [form] = Form.useForm<AddNodePayload>();
   const [addNode] = useAddNodeMutation();
 
   const handleAdd = () => {
     form
       .validateFields()
-      .then(async (values: { label: string; type: string; ip?: string }) => {
-        await addNode({
-          label: values.label,
-          type: values.type as 'router' | 'switch' | 'server' | 'client' | 'firewall',
-          ip: values.ip || undefined,
-        }).unwrap();
+      .then(async (values) => {
+        await addNode(values).unwrap();
         form.resetFields();
         onClose();
       })
@@ -46,11 +36,11 @@ export const AddNodeModal: FC<AddNodeModalProps> = ({ open, onClose }) => {
       }}
       okText="Добавить"
       cancelText="Отмена"
-      styles={{
-        container: { background: 'var(--bg-panel)', border: '1px solid var(--border-color)' },
+      classNames={{
+        container: styles.modalContainer,
       }}
     >
-      <Form form={form} layout="vertical" style={{ marginTop: 16 }}>
+      <Form form={form} layout="vertical" className={styles.form}>
         <Form.Item
           name="label"
           label="Название устройства"

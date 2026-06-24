@@ -2,19 +2,12 @@ import { Layout } from 'antd';
 
 import type { FC } from 'react';
 import { AnalyticsDashboard } from '@/widgets/AnalyticsDashboard';
+import styles from './AnalyticsPage.module.scss';
 
 export const AnalyticsPage: FC = () => {
   return (
-    <Layout style={{ height: '100%', background: 'transparent' }}>
-      <Layout.Content
-        style={{
-          position: 'relative',
-          height: '100%',
-          overflow: 'hidden',
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
+    <Layout className={styles.pageLayout}>
+      <Layout.Content className={styles.contentWrapper}>
         <AnalyticsDashboard />
       </Layout.Content>
     </Layout>

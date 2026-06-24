@@ -1,6 +1,7 @@
 import { Table } from 'antd';
 import type { FC } from 'react';
 import { makeReportColumns } from '../makeReportColumns';
+import styles from '../ReportsPage.module.scss';
 
 interface SlaTableProps {
   slaData: Array<{
@@ -20,12 +21,7 @@ export const SlaTable: FC<SlaTableProps> = ({ slaData }) => {
       columns={makeReportColumns}
       pagination={false}
       size="middle"
-      style={{
-        background: 'var(--bg-panel)',
-        border: '1px solid var(--border-color)',
-        borderRadius: '8px',
-        overflow: 'hidden',
-      }}
+      className={styles.table}
     />
   );
 };

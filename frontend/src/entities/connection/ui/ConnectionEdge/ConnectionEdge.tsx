@@ -1,7 +1,8 @@
 import type { EdgeProps } from '@xyflow/react';
 import { BaseEdge, getBezierPath } from '@xyflow/react';
-import { type FC, memo } from 'react';
+import { type CSSProperties, type FC, memo } from 'react';
 import type { ConnectionEdgeStatus, EdgeBase } from '../../model/types';
+import styles from './ConnectionEdge.module.scss';
 
 // Map load to color
 const getEdgeColors = (status: ConnectionEdgeStatus, usageMbps: number, bandwidthGbps: number) => {
@@ -93,7 +94,7 @@ export const ConnectionEdge: FC<EdgeProps<EdgeBase>> = memo(
             stroke={edgeStyles.flowColor}
             strokeWidth={baseStrokeWidth + 4}
             opacity={0.3}
-            style={{ filter: 'blur(3px)' }}
+            className={styles.selectionGlow}
           />
         )}
 
@@ -101,12 +102,14 @@ export const ConnectionEdge: FC<EdgeProps<EdgeBase>> = memo(
         <BaseEdge
           path={edgePath}
           markerEnd={markerEnd}
-          style={{
-            ...style,
-            stroke: selected ? edgeStyles.flowColor : edgeStyles.color,
-            strokeWidth: baseStrokeWidth,
-            transition: 'stroke 0.5s, stroke-width 0.3s',
-          }}
+          style={
+            {
+              ...style,
+              '--edge-stroke': selected ? edgeStyles.flowColor : edgeStyles.color,
+              '--edge-stroke-width': baseStrokeWidth,
+            } as CSSProperties
+          }
+          className={styles.baseEdge}
         />
 
         {/* Dynamic Animated Flow Path overlay */}
@@ -118,17 +121,20 @@ export const ConnectionEdge: FC<EdgeProps<EdgeBase>> = memo(
               stroke={edgeStyles.flowColor}
               strokeWidth={flowStrokeWidth}
               strokeDasharray="6, 8"
-              style={{
-                animation: `dash ${edgeStyles.animationSpeed} linear infinite`,
-                filter: `drop-shadow(0px 0px 3px ${edgeStyles.flowColor})`,
-                pointerEvents: 'none',
-              }}
+              className={styles.flowPath}
+              style={
+                {
+                  '--flow-animation-speed': edgeStyles.animationSpeed,
+                  '--flow-color': edgeStyles.flowColor,
+                } as CSSProperties
+              }
             />
             {/* Staggered Packet flow particles */}
             <circle
               r={isCoreLink ? 3.5 : 2.5}
               fill={edgeStyles.flowColor}
-              style={{ filter: `drop-shadow(0px 0px 4px ${edgeStyles.flowColor})` }}
+              className={styles.particle}
+              style={{ '--flow-color': edgeStyles.flowColor } as CSSProperties}
             >
               <animateMotion
                 dur={edgeStyles.animationSpeed}
@@ -139,7 +145,8 @@ export const ConnectionEdge: FC<EdgeProps<EdgeBase>> = memo(
             <circle
               r={isCoreLink ? 3.5 : 2.5}
               fill={edgeStyles.flowColor}
-              style={{ filter: `drop-shadow(0px 0px 4px ${edgeStyles.flowColor})` }}
+              className={styles.particle}
+              style={{ '--flow-color': edgeStyles.flowColor } as CSSProperties}
             >
               <animateMotion
                 dur={edgeStyles.animationSpeed}
@@ -151,7 +158,8 @@ export const ConnectionEdge: FC<EdgeProps<EdgeBase>> = memo(
             <circle
               r={isCoreLink ? 3.5 : 2.5}
               fill={edgeStyles.flowColor}
-              style={{ filter: `drop-shadow(0px 0px 4px ${edgeStyles.flowColor})` }}
+              className={styles.particle}
+              style={{ '--flow-color': edgeStyles.flowColor } as CSSProperties}
             >
               <animateMotion
                 dur={edgeStyles.animationSpeed}
@@ -173,19 +181,14 @@ export const ConnectionEdge: FC<EdgeProps<EdgeBase>> = memo(
               fill="var(--bg-panel)"
               stroke="var(--border-color)"
               strokeWidth={1}
-              style={{ filter: 'drop-shadow(0px 2px 4px rgba(0,0,0,0.5))' }}
+              className={styles.badgeRect}
             />
             <text
               x={35}
               y={13}
               textAnchor="middle"
               fill="var(--text-primary)"
-              style={{
-                fontSize: '8px',
-                fontFamily: 'monospace',
-                fontWeight: 600,
-                pointerEvents: 'none',
-              }}
+              className={styles.badgeText}
             >
               {bandwidth}G | {currentUsage}M
             </text>

@@ -108,10 +108,70 @@ export const {
   setHeatmapMetric,
 } = uiSlice.actions;
 
+export interface AuthState {
+  isAuthenticated: boolean;
+  username: string | null;
+  error: string | null;
+}
+
+const getInitialAuthState = (): AuthState => {
+  if (typeof window !== 'undefined') {
+    const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+    const username = localStorage.getItem('username');
+    return {
+      isAuthenticated,
+      username: isAuthenticated ? username : null,
+      error: null,
+    };
+  }
+  return {
+    isAuthenticated: false,
+    username: null,
+    error: null,
+  };
+};
+
+const authSlice = createSlice({
+  name: 'auth',
+  initialState: getInitialAuthState(),
+  reducers: {
+    loginSuccess: (state, action: PayloadAction<string>) => {
+      state.isAuthenticated = true;
+      state.username = action.payload;
+      state.error = null;
+      localStorage.setItem('isAuthenticated', 'true');
+      localStorage.setItem('username', action.payload);
+    },
+    loginFailure: (state, action: PayloadAction<string>) => {
+      state.isAuthenticated = false;
+      state.username = null;
+      state.error = action.payload;
+      localStorage.removeItem('isAuthenticated');
+      localStorage.removeItem('username');
+    },
+    logout: (state) => {
+      state.isAuthenticated = false;
+      state.username = null;
+      state.error = null;
+      localStorage.removeItem('isAuthenticated');
+      localStorage.removeItem('username');
+    },
+    clearError: (state) => {
+      state.error = null;
+    },
+  },
+});
+
+export const { loginSuccess, loginFailure, logout, clearError } = authSlice.actions;
+
+export const uiReducer = uiSlice.reducer;
+export const authReducer = authSlice.reducer;
+
 export const store = configureStore({
   reducer: {
     [topologyApi.reducerPath]: topologyApi.reducer,
-    ui: uiSlice.reducer,
+    ui: uiReducer,
+    auth: authReducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(topologyApi.middleware),
 });

@@ -18,6 +18,7 @@ import {
 } from 'reaviz';
 import { getDateTimeString } from '@/shared/libs/utils';
 import { EmptyState } from '@/shared/ui';
+import styles from '../AnalyticsDashboard.module.scss';
 import { METRICS_ITEMS, PERIOD_CONFIG, PERIOD_MINUTES } from '../constants';
 import type { MetricType } from '../types';
 
@@ -113,14 +114,14 @@ export const AnalyticsChart: FC<AnalyticsChartProps> = ({
     for (let t = start; t <= limitTime; t += stepMs) {
       ticks.push(new Date(t));
     }
-    return ticks.length > 0 ? ticks : undefined;
+    return ticks.length ? ticks : undefined;
   }, [chartData, timePeriod]);
 
   const tabItems = useMemo(() => {
     return METRICS_ITEMS.map((item) => ({
       key: item.id,
       label: (
-        <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+        <span className={styles.tabLabel}>
           <item.icon size={16} /> {item.label}
         </span>
       ),
@@ -153,36 +154,28 @@ export const AnalyticsChart: FC<AnalyticsChartProps> = ({
   }, [chartData, chartColorScheme, showThreshold, activeTab, xAxisDomain]);
 
   return (
-    <Card
-      style={{
-        background: 'var(--bg-panel)',
-        borderColor: 'var(--border-color)',
-        borderRadius: '12px',
-        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
-      }}
-      styles={{ body: { padding: '20px' } }}
-    >
+    <Card className={styles.chartCard}>
       <Tabs
         activeKey={activeTab}
         onChange={onTabChange as (key: string) => void}
-        style={{ marginBottom: '16px' }}
+        className={styles.tabs}
         items={tabItems}
       />
 
       {!hasSelectedDevices ? (
         <EmptyState
-          icon={<BarChartOutlined style={{ fontSize: '24px' }} />}
+          icon={<BarChartOutlined className={styles.emptyIcon} />}
           title="Устройства не выбраны"
           description="Пожалуйста, выберите одно или несколько устройств в панели выше для отображения графиков."
         />
       ) : !chartData.length ? (
         <EmptyState
-          icon={<BarChartOutlined style={{ fontSize: '24px' }} />}
+          icon={<BarChartOutlined className={styles.emptyIcon} />}
           title="Нет данных за выбранный период"
           description="За выбранный временной интервал телеметрия отсутствует. Попробуйте выбрать другой диапазон или подождите накопления данных."
         />
       ) : (
-        <div style={{ height: '320px', width: '100%', position: 'relative' }}>
+        <div className={styles.chartWrapper}>
           <AreaChart
             height={320}
             data={displayChartData}

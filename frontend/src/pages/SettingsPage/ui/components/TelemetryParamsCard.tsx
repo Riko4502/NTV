@@ -1,31 +1,25 @@
 import { SecurityScanOutlined } from '@ant-design/icons';
-import { Card, Form, InputNumber, Slider } from 'antd';
+import { Card, Flex, Form, InputNumber, Slider } from 'antd';
 import type { FC } from 'react';
+import styles from '../SettingsPage.module.scss';
 
 export const TelemetryParamsCard: FC = () => {
   return (
     <Card
       title={
-        <span
-          style={{
-            color: 'var(--text-primary)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-          }}
-        >
+        <Flex align="center" gap={8}>
           <SecurityScanOutlined />
           Параметры сбора телеметрии
-        </span>
+        </Flex>
       }
-      style={{ background: 'var(--bg-panel)', borderColor: 'var(--border-color)' }}
+      className={styles.card}
     >
       <Form.Item
         label="Интервал опроса телеметрии устройств (ms)"
         name="telemetryInterval"
         rules={[{ required: true, message: 'Укажите интервал' }]}
       >
-        <InputNumber min={1000} max={30000} step={1000} style={{ width: '200px' }} />
+        <InputNumber min={1000} max={30000} step={1000} className={styles.inputNumber} />
       </Form.Item>
 
       <Form.Item label="Максимальный уровень колебания шума показаний (%)" name="noiseLevel">

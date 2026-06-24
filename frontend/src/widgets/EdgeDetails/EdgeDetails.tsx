@@ -8,6 +8,7 @@ import { EdgeActionsCard } from './components/EdgeActionsCard';
 import { EdgeParamsCard } from './components/EdgeParamsCard';
 import { EdgeTrafficCard } from './components/EdgeTrafficCard';
 import { EdgeVisualLinkCard } from './components/EdgeVisualLinkCard';
+import styles from './EdgeDetails.module.scss';
 
 interface EdgeDetailsProps {
   edge: ConnectionEdgeDto;
@@ -54,15 +55,7 @@ export const EdgeDetails: FC<EdgeDetailsProps> = ({ edge, nodes, onClose }) => {
   };
 
   return (
-    <Flex
-      gap={20}
-      vertical
-      style={{
-        height: '100%',
-        padding: '20px',
-        overflowY: 'auto',
-      }}
-    >
+    <Flex gap={20} vertical className={styles.detailsContainer}>
       <EdgeVisualLinkCard
         sourceNode={sourceNode}
         targetNode={targetNode}

@@ -2,6 +2,7 @@ import { DownloadOutlined } from '@ant-design/icons';
 import { Button, Tooltip } from 'antd';
 
 import type { FC } from 'react';
+import styles from '../AnalyticsDashboard.module.scss';
 import type { MetricType } from '../types';
 import { exportToCsv } from '../utils/exportUtils';
 
@@ -32,9 +33,7 @@ export const AnalyticsExportButton: FC<AnalyticsExportButtonProps> = ({ chartDat
         icon={<DownloadOutlined />}
         disabled={!hasData}
         onClick={() => exportToCsv(chartData, activeTab)}
-        style={{
-          borderRadius: '6px',
-        }}
+        className={styles.reloadBtn}
       >
         Экспорт
       </Button>

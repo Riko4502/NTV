@@ -2,6 +2,7 @@ import { CheckCircleOutlined } from '@ant-design/icons';
 import { Button, Tag } from 'antd';
 import type { NetworkAlertData } from '@/entities/alert/model/types';
 import type { AlertType } from '@/shared/libs';
+import styles from './AlertsPage.module.scss';
 import { SEVERITY_TAGS } from './constants';
 
 interface MakeAlerColumns {
@@ -32,11 +33,7 @@ export const makeAlerColumns = ({ handleAck, onNodeClick }: MakeAlerColumns) => 
     render: (text: string, record: NetworkAlertData) => {
       if (!record.nodeId) return 'Система';
       return (
-        <Button
-          type="link"
-          style={{ padding: 0, height: 'auto', fontWeight: 500 }}
-          onClick={() => onNodeClick(record.nodeId)}
-        >
+        <Button type="link" className={styles.deviceBtn} onClick={() => onNodeClick(record.nodeId)}>
           {text}
         </Button>
       );
@@ -56,9 +53,7 @@ export const makeAlerColumns = ({ handleAck, onNodeClick }: MakeAlerColumns) => 
     title: 'Сообщение',
     dataIndex: 'message',
     key: 'message',
-    render: (text: string) => (
-      <span style={{ color: 'var(--text-primary)', wordBreak: 'break-word' }}>{text}</span>
-    ),
+    render: (text: string) => <span className={styles.msgText}>{text}</span>,
   },
   {
     title: 'Статус',
@@ -72,7 +67,7 @@ export const makeAlerColumns = ({ handleAck, onNodeClick }: MakeAlerColumns) => 
         <Button
           type="text"
           size="small"
-          icon={<CheckCircleOutlined style={{ color: 'var(--color-success)' }} />}
+          icon={<CheckCircleOutlined className={styles.checkIcon} />}
           onClick={() => handleAck(record.id)}
         >
           Подтвердить

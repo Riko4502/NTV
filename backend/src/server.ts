@@ -60,6 +60,40 @@ app.delete('/api/nodes/:id', (req, res) => {
   res.json({ success: true });
 });
 
+app.put('/api/nodes/:id', (req, res) => {
+  const { label, ip, mac, vendor, model, version } = req.body;
+  networkState.updateNode(req.params.id, { label, ip, mac, vendor, model, version });
+  res.json({ success: true });
+});
+
+app.post('/api/nodes/:id/firewall/rules', (req, res) => {
+  const { name, source, destination, port, protocol, action } = req.body;
+  networkState.addFirewallRule(req.params.id, {
+    name,
+    source,
+    destination,
+    port,
+    protocol,
+    action,
+  });
+  res.json({ success: true });
+});
+
+app.delete('/api/nodes/:id/firewall/rules/:ruleId', (req, res) => {
+  networkState.deleteFirewallRule(req.params.id, req.params.ruleId);
+  res.json({ success: true });
+});
+
+app.post('/api/nodes/:id/firewall/rules/:ruleId/toggle', (req, res) => {
+  networkState.toggleFirewallRule(req.params.id, req.params.ruleId);
+  res.json({ success: true });
+});
+
+app.post('/api/nodes/:id/firewall/threats/simulate', (req, res) => {
+  networkState.simulateThreat(req.params.id);
+  res.json({ success: true });
+});
+
 app.post('/api/nodes/:id/reboot', (req, res) => {
   networkState.rebootNode(req.params.id);
   res.json({ success: true });

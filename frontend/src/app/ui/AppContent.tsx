@@ -6,6 +6,7 @@ import { HeaderStats } from '@/widgets/HeaderStats';
 import { Sidebar } from '@/widgets/Sidebar';
 import { toggleAlerts, useAppDispatch, useAppSelector } from '../providers/store';
 import { getAntdThemeConfig } from '../styles/themeConfig';
+import styles from './AppContent.module.scss';
 
 export const AppContent: FC = () => {
   const dispatch = useAppDispatch();
@@ -22,25 +23,12 @@ export const AppContent: FC = () => {
 
   return (
     <ConfigProvider theme={getAntdThemeConfig(theme)}>
-      <Layout
-        style={{
-          minHeight: '100vh',
-          height: '100vh',
-          overflow: 'hidden',
-          background: 'transparent',
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
+      <Layout className={styles.layoutRoot}>
         <HeaderStats />
 
-        <Layout
-          style={{ flexDirection: 'row', flex: 1, overflow: 'hidden', background: 'transparent' }}
-        >
+        <Layout className={styles.layoutInner}>
           <Sidebar />
-          <Layout.Content
-            style={{ flex: 1, overflow: 'hidden', position: 'relative', background: 'transparent' }}
-          >
+          <Layout.Content className={styles.content}>
             {isLoading ? <Spin /> : <Outlet />}
           </Layout.Content>
         </Layout>
@@ -52,8 +40,7 @@ export const AppContent: FC = () => {
           onClose={() => dispatch(toggleAlerts())}
           open={isAlertsOpen}
           size={480}
-          styles={{ body: { padding: 0 } }}
-          style={{ background: 'var(--bg-panel)', borderRight: '1px solid var(--border-color)' }}
+          className={styles.drawer}
         >
           <AlertsPanel />
         </Drawer>

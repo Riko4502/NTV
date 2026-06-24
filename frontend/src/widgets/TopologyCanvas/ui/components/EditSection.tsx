@@ -2,6 +2,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import { Button, Tooltip } from 'antd';
 import type { FC } from 'react';
 import { toggleEditMode, useAppDispatch, useAppSelector } from '@/app/providers/store';
+import styles from '../../TopologyCanvas.module.scss';
 
 interface EditSectionProps {
   onOpenAddNode: () => void;
@@ -20,12 +21,7 @@ export const EditSection: FC<EditSectionProps> = ({ onOpenAddNode }) => {
           onClick={() => dispatch(toggleEditMode())}
           type={isEditMode ? 'primary' : 'default'}
           danger={isEditMode}
-          style={{
-            fontSize: '0.8rem',
-            height: '32px',
-            fontWeight: isEditMode ? 600 : 400,
-            boxShadow: isEditMode ? '0 0 10px rgba(239, 68, 68, 0.4)' : undefined,
-          }}
+          className={`${styles.toolbarBtn} ${isEditMode ? styles.editActive : ''}`}
         >
           {isEditMode ? 'Отмена' : 'Редактировать'}
         </Button>
@@ -37,7 +33,7 @@ export const EditSection: FC<EditSectionProps> = ({ onOpenAddNode }) => {
             onClick={onOpenAddNode}
             icon={<PlusOutlined />}
             type="primary"
-            style={{ fontSize: '0.8rem', height: '32px' }}
+            className={styles.toolbarBtn}
           >
             Добавить узел
           </Button>

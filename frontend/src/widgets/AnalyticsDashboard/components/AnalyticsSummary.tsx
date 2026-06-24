@@ -1,8 +1,9 @@
 import { Card, Col, Row } from 'antd';
 import { Activity, ArrowDown, ArrowUp } from 'lucide-react';
 
-import type { FC } from 'react';
+import type { CSSProperties, FC } from 'react';
 import { getDateTimeString } from '@/shared/libs/utils';
+import styles from '../AnalyticsDashboard.module.scss';
 import { useAnalyticsSummary } from '../hooks/useAnalyticsSummary';
 import type { MetricType } from '../types';
 
@@ -37,37 +38,26 @@ export const AnalyticsSummary: FC<AnalyticsSummaryProps> = ({ chartData, activeT
   return (
     <Row gutter={[16, 16]}>
       <Col xs={24} sm={8}>
-        <Card
-          size="small"
-          style={{
-            background: 'var(--bg-panel)',
-            borderColor: 'var(--border-color)',
-            borderRadius: '12px',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
-            borderLeft: '4px solid #52c41a',
-          }}
-          styles={{ body: { padding: '16px' } }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <Card size="small" className={`${styles.summaryCard} ${styles.minCard}`}>
+          <div className={styles.flexContainer}>
             <div
-              style={{
-                background: 'rgba(82, 196, 26, 0.1)',
-                padding: '8px',
-                borderRadius: '8px',
-                color: '#52c41a',
-              }}
+              className={styles.iconWrapper}
+              style={
+                {
+                  '--icon-bg-color': 'rgba(82, 196, 26, 0.1)',
+                  '--icon-color': '#52c41a',
+                } as CSSProperties
+              }
             >
               <ArrowDown size={20} />
             </div>
-            <div style={{ flex: 1 }}>
-              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Минимум</span>
-              <div style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+            <div className={styles.flex1}>
+              <span className={styles.metaLabel}>Минимум</span>
+              <div className={styles.statValue}>
                 {summary.min.value}
-                <span style={{ fontSize: '0.9rem', fontWeight: 400, marginLeft: '2px' }}>
-                  {suffix}
-                </span>
+                <span className={styles.suffix}>{suffix}</span>
               </div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '4px' }}>
+              <div className={styles.subText}>
                 {summary.min.device} • {getDateTimeString(summary.min.timestamp)}
               </div>
             </div>
@@ -76,37 +66,26 @@ export const AnalyticsSummary: FC<AnalyticsSummaryProps> = ({ chartData, activeT
       </Col>
 
       <Col xs={24} sm={8}>
-        <Card
-          size="small"
-          style={{
-            background: 'var(--bg-panel)',
-            borderColor: 'var(--border-color)',
-            borderRadius: '12px',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
-            borderLeft: '4px solid #ff4d4f',
-          }}
-          styles={{ body: { padding: '16px' } }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <Card size="small" className={`${styles.summaryCard} ${styles.maxCard}`}>
+          <div className={styles.flexContainer}>
             <div
-              style={{
-                background: 'rgba(255, 77, 79, 0.1)',
-                padding: '8px',
-                borderRadius: '8px',
-                color: '#ff4d4f',
-              }}
+              className={styles.iconWrapper}
+              style={
+                {
+                  '--icon-bg-color': 'rgba(255, 77, 79, 0.1)',
+                  '--icon-color': '#ff4d4f',
+                } as CSSProperties
+              }
             >
               <ArrowUp size={20} />
             </div>
-            <div style={{ flex: 1 }}>
-              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Максимум</span>
-              <div style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+            <div className={styles.flex1}>
+              <span className={styles.metaLabel}>Максимум</span>
+              <div className={styles.statValue}>
                 {summary.max.value}
-                <span style={{ fontSize: '0.9rem', fontWeight: 400, marginLeft: '2px' }}>
-                  {suffix}
-                </span>
+                <span className={styles.suffix}>{suffix}</span>
               </div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '4px' }}>
+              <div className={styles.subText}>
                 {summary.max.device} • {getDateTimeString(summary.max.timestamp)}
               </div>
             </div>
@@ -115,41 +94,26 @@ export const AnalyticsSummary: FC<AnalyticsSummaryProps> = ({ chartData, activeT
       </Col>
 
       <Col xs={24} sm={8}>
-        <Card
-          size="small"
-          style={{
-            background: 'var(--bg-panel)',
-            borderColor: 'var(--border-color)',
-            borderRadius: '12px',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
-            borderLeft: '4px solid #1677ff',
-          }}
-          styles={{ body: { padding: '16px' } }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <Card size="small" className={`${styles.summaryCard} ${styles.avgCard}`}>
+          <div className={styles.flexContainer}>
             <div
-              style={{
-                background: 'rgba(22, 119, 255, 0.1)',
-                padding: '8px',
-                borderRadius: '8px',
-                color: '#1677ff',
-              }}
+              className={styles.iconWrapper}
+              style={
+                {
+                  '--icon-bg-color': 'rgba(22, 119, 255, 0.1)',
+                  '--icon-color': '#1677ff',
+                } as CSSProperties
+              }
             >
               <Activity size={20} />
             </div>
-            <div style={{ flex: 1 }}>
-              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                Среднее значение
-              </span>
-              <div style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+            <div className={styles.flex1}>
+              <span className={styles.metaLabel}>Среднее значение</span>
+              <div className={styles.statValue}>
                 {summary.avg}
-                <span style={{ fontSize: '0.9rem', fontWeight: 400, marginLeft: '2px' }}>
-                  {suffix}
-                </span>
+                <span className={styles.suffix}>{suffix}</span>
               </div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-                За выбранный временной интервал
-              </div>
+              <div className={styles.subText}>За выбранный временной интервал</div>
             </div>
           </div>
         </Card>

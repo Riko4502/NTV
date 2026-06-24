@@ -28,9 +28,9 @@ const calculateNodeSlaData = (node: Node, history: MetricPoint[]) => {
   let onlineCount = 0;
   let offlineCount = 0;
 
-  if (history.length > 0) {
+  if (history.length) {
     for (const pt of history) {
-      if (pt.cpu > 0) {
+      if (pt.cpu) {
         onlineCount++;
       } else {
         offlineCount++;
@@ -45,7 +45,7 @@ const calculateNodeSlaData = (node: Node, history: MetricPoint[]) => {
   }
 
   const totalCount = onlineCount + offlineCount;
-  const rawSla = totalCount > 0 ? (onlineCount / totalCount) * 100 : 100;
+  const rawSla = totalCount ? (onlineCount / totalCount) * 100 : 100;
   const sla = Number(rawSla.toFixed(2));
 
   let status: 'excellent' | 'good' | 'warning' = 'excellent';

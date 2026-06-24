@@ -1,0 +1,100 @@
+.logoWrapper {
+  background-color: rgba(59, 130, 246, 0.1);
+  border: 1px solid var(--color-primary);
+  border-radius: 8px;
+  padding: 6px;
+  color: var(--color-primary);
+  box-shadow: 0 0 10px var(--color-primary-glow);
+}
+
+.logoText {
+  font-size: 0.65rem;
+  color: var(--color-primary);
+  letter-spacing: 2px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.sectionTitle {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.drawerNavLink {
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 10px 16px;
+  border-radius: 8px;
+  color: var(--text-secondary);
+  transition: all 0.2s ease-in-out;
+  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    color: var(--text-primary);
+    background-color: rgba(120, 120, 120, 0.08);
+  }
+
+  &.drawerNavLinkActive {
+    color: var(--color-primary);
+    background-color: rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.25);
+    font-weight: 600;
+  }
+}
+
+.navIcon {
+  margin-right: 8px;
+}
+
+.searchInput {
+  width: 100%;
+  max-width: 400px;
+  height: 36px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+
+.gridStats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.statCard {
+  background: var(--bg-card) !important;
+  border-color: var(--border-color) !important;
+}
+
+.cardLabel {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  display: block;
+}
+
+.cardValue {
+  font-size: 1rem;
+  color: var(--value-color, var(--text-primary));
+}
+
+.actionsWrapper {
+  margin-top: auto;
+}
+
+.actionBtn {
+  width: 100%;
+  justify-content: flex-start;
+  display: flex;
+  align-items: center;
+}
+
+.mobileOnly {
+  @media (min-width: 993px) {
+    display: none !important;
+  }
+}

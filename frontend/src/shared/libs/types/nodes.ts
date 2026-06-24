@@ -6,4 +6,7 @@ export interface AddNodePayload {
   type?: DeviceType;
   ip?: string;
   mac?: string;
+  vendor?: string;
+  model?: string;
+  version?: string;
 }

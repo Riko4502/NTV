@@ -1,6 +1,7 @@
 import { ReloadOutlined } from '@ant-design/icons';
 import { Button, Card } from 'antd';
 import type { FC } from 'react';
+import styles from '../SettingsPage.module.scss';
 
 interface RecoveryCardProps {
   onResetSimulation: () => void;
@@ -8,17 +9,8 @@ interface RecoveryCardProps {
 
 export const RecoveryCard: FC<RecoveryCardProps> = ({ onResetSimulation }) => {
   return (
-    <Card
-      title="Системное восстановление"
-      style={{ background: 'var(--bg-panel)', borderColor: 'var(--border-color)' }}
-    >
-      <div
-        style={{
-          marginBottom: '16px',
-          color: 'var(--text-secondary)',
-          fontSize: '0.85rem',
-        }}
-      >
+    <Card title="Системное восстановление" className={styles.card}>
+      <div className={styles.descText}>
         Если симуляция инцидентов перегрузила сеть и вы хотите вернуть все метрики к базовым зеленым
         значениям:
       </div>

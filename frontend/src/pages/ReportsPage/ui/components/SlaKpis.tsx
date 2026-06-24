@@ -1,5 +1,6 @@
 import { Card, Col, Flex, Progress, Row } from 'antd';
-import type { FC } from 'react';
+import type { CSSProperties, FC } from 'react';
+import styles from '../ReportsPage.module.scss';
 
 interface SlaKpisProps {
   averageSla: number;
@@ -8,16 +9,9 @@ interface SlaKpisProps {
 
 export const SlaKpis: FC<SlaKpisProps> = ({ averageSla, activeIncidents }) => {
   return (
-    <Row gutter={[20, 20]} style={{ marginBottom: '24px' }}>
+    <Row gutter={[20, 20]} className={styles.kpisRow}>
       <Col xs={24} md={8}>
-        <Card
-          style={{
-            background: 'var(--bg-panel)',
-            borderColor: 'var(--border-color)',
-            height: '100%',
-          }}
-          styles={{ body: { padding: '20px' } }}
-        >
+        <Card className={styles.kpiCard}>
           <Flex align="center" gap="20px">
             <Progress
               type="circle"
@@ -27,33 +21,15 @@ export const SlaKpis: FC<SlaKpisProps> = ({ averageSla, activeIncidents }) => {
               format={(percent) => `${percent}%`}
             />
             <div>
-              <span
-                style={{
-                  fontSize: '0.8rem',
-                  color: 'var(--text-muted)',
-                  display: 'block',
-                  textTransform: 'uppercase',
-                }}
-              >
-                Глобальный Uptime SLA
-              </span>
-              <span style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-                Доступность сети
-              </span>
+              <span className={styles.kpiLabel}>Глобальный Uptime SLA</span>
+              <span className={styles.kpiValue}>Доступность сети</span>
             </div>
           </Flex>
         </Card>
       </Col>
 
       <Col xs={24} md={8}>
-        <Card
-          style={{
-            background: 'var(--bg-panel)',
-            borderColor: 'var(--border-color)',
-            height: '100%',
-          }}
-          styles={{ body: { padding: '20px' } }}
-        >
+        <Card className={styles.kpiCard}>
           <Flex align="center" gap="20px">
             <Progress
               type="circle"
@@ -63,66 +39,38 @@ export const SlaKpis: FC<SlaKpisProps> = ({ averageSla, activeIncidents }) => {
               format={() => '4.8м'}
             />
             <div>
-              <span
-                style={{
-                  fontSize: '0.8rem',
-                  color: 'var(--text-muted)',
-                  display: 'block',
-                  textTransform: 'uppercase',
-                }}
-              >
-                Среднее время ремонта (MTTR)
-              </span>
-              <span style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-                Быстрое восстановление
-              </span>
+              <span className={styles.kpiLabel}>Среднее время ремонта (MTTR)</span>
+              <span className={styles.kpiValue}>Быстрое восстановление</span>
             </div>
           </Flex>
         </Card>
       </Col>
 
       <Col xs={24} md={8}>
-        <Card
-          style={{
-            background: 'var(--bg-panel)',
-            borderColor: 'var(--border-color)',
-            height: '100%',
-          }}
-          styles={{ body: { padding: '20px' } }}
-        >
+        <Card className={styles.kpiCard}>
           <Flex align="center" gap="20px">
             <Flex
-              style={{
-                width: '70px',
-                height: '70px',
-                borderRadius: '50%',
-                backgroundColor:
-                  activeIncidents > 0 ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: activeIncidents > 0 ? 'var(--color-error)' : 'var(--color-success)',
-                fontSize: '1.5rem',
-                fontWeight: 700,
-                border: `1px solid ${
-                  activeIncidents > 0 ? 'rgba(239, 68, 68, 0.3)' : 'rgba(16, 185, 129, 0.3)'
-                }`,
-              }}
+              className={styles.incidentsCircle}
+              style={
+                {
+                  '--incidents-bg-color': activeIncidents
+                    ? 'rgba(239, 68, 68, 0.1)'
+                    : 'rgba(16, 185, 129, 0.1)',
+                  '--incidents-color': activeIncidents
+                    ? 'var(--color-error)'
+                    : 'var(--color-success)',
+                  '--incidents-border-color': activeIncidents
+                    ? 'rgba(239, 68, 68, 0.3)'
+                    : 'rgba(16, 185, 129, 0.3)',
+                } as CSSProperties
+              }
             >
               {activeIncidents}
             </Flex>
             <div>
-              <span
-                style={{
-                  fontSize: '0.8rem',
-                  color: 'var(--text-muted)',
-                  display: 'block',
-                  textTransform: 'uppercase',
-                }}
-              >
-                Активные инциденты
-              </span>
-              <span style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-                {activeIncidents > 0 ? 'Требуется реакция' : 'Всё работает штатно'}
+              <span className={styles.kpiLabel}>Активные инциденты</span>
+              <span className={styles.kpiValue}>
+                {activeIncidents ? 'Требуется реакция' : 'Всё работает штатно'}
               </span>
             </div>
           </Flex>

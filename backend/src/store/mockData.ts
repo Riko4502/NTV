@@ -13,6 +13,9 @@ export const initialNodes: NetworkNode[] = [
     ram: 25,
     temp: 38,
     traffic: 450,
+    vendor: 'Cisco',
+    model: 'ISR 4431',
+    version: 'v17.3.1',
   },
   {
     id: 'fw-01',
@@ -25,6 +28,71 @@ export const initialNodes: NetworkNode[] = [
     ram: 42,
     temp: 41,
     traffic: 448,
+    vendor: 'Fortinet',
+    model: 'FortiGate 100F',
+    version: 'v7.2.4',
+    rules: [
+      {
+        id: 'r-1',
+        name: 'Allow HTTP/HTTPS Web',
+        source: 'Any',
+        destination: '10.0.3.10',
+        port: '80, 443',
+        protocol: 'TCP',
+        action: 'ALLOW',
+        status: 'active',
+      },
+      {
+        id: 'r-2',
+        name: 'Block External SSH',
+        source: 'Any',
+        destination: 'Any',
+        port: '22',
+        protocol: 'TCP',
+        action: 'DENY',
+        status: 'active',
+      },
+      {
+        id: 'r-3',
+        name: 'Allow Internal DB Traffic',
+        source: '10.0.2.0/24',
+        destination: '10.0.3.20',
+        port: '5432',
+        protocol: 'TCP',
+        action: 'ALLOW',
+        status: 'active',
+      },
+      {
+        id: 'r-4',
+        name: 'Block Untrusted UDP',
+        source: 'Any',
+        destination: 'Any',
+        port: 'Any',
+        protocol: 'UDP',
+        action: 'DENY',
+        status: 'inactive',
+      },
+    ],
+    threats: [
+      {
+        id: 't-1',
+        timestamp: new Date(Date.now() - 300000).toISOString(),
+        source: '185.220.101.4',
+        target: '192.168.100.2:22',
+        threatType: 'Brute Force',
+        severity: 'medium',
+        actionTaken: 'Blocked',
+      },
+      {
+        id: 't-2',
+        timestamp: new Date(Date.now() - 120000).toISOString(),
+        source: '45.143.203.12',
+        target: '192.168.100.2:80',
+        threatType: 'SQL Injection',
+        severity: 'high',
+        actionTaken: 'Blocked',
+      },
+    ],
   },
   {
     id: 'cr-01',
@@ -37,6 +105,9 @@ export const initialNodes: NetworkNode[] = [
     ram: 31,
     temp: 45,
     traffic: 890,
+    vendor: 'Cisco',
+    model: 'Catalyst 8500',
+    version: 'v17.6.1a',
   },
 
   // Distribution Tier
@@ -51,6 +122,9 @@ export const initialNodes: NetworkNode[] = [
     ram: 19,
     temp: 34,
     traffic: 410,
+    vendor: 'Huawei',
+    model: 'CloudEngine 6850',
+    version: 'V200R019',
   },
   {
     id: 'ds-02',
@@ -63,6 +137,9 @@ export const initialNodes: NetworkNode[] = [
     ram: 17,
     temp: 32,
     traffic: 380,
+    vendor: 'Huawei',
+    model: 'CloudEngine 6850',
+    version: 'V200R019',
   },
 
   // Access Tier
@@ -77,6 +154,9 @@ export const initialNodes: NetworkNode[] = [
     ram: 14,
     temp: 30,
     traffic: 85,
+    vendor: 'Eltex',
+    model: 'MES2424',
+    version: 'v1.1.48',
   },
   {
     id: 'as-02',
@@ -89,6 +169,9 @@ export const initialNodes: NetworkNode[] = [
     ram: 12,
     temp: 29,
     traffic: 60,
+    vendor: 'Eltex',
+    model: 'MES2424',
+    version: 'v1.1.48',
   },
   {
     id: 'as-03',
@@ -101,6 +184,9 @@ export const initialNodes: NetworkNode[] = [
     ram: 28,
     temp: 37,
     traffic: 620,
+    vendor: 'Eltex',
+    model: 'MES3324F',
+    version: 'v4.0.15',
   },
 
   // Server Tier (connected to Server Switch as-03)
@@ -115,6 +201,9 @@ export const initialNodes: NetworkNode[] = [
     ram: 58,
     temp: 48,
     traffic: 220,
+    vendor: 'Dell',
+    model: 'PowerEdge R740',
+    version: 'Ubuntu 22.04 LTS',
   },
   {
     id: 'srv-db-01',
@@ -127,6 +216,9 @@ export const initialNodes: NetworkNode[] = [
     ram: 72,
     temp: 52,
     traffic: 150,
+    vendor: 'Dell',
+    model: 'PowerEdge R740',
+    version: 'RHEL 9.1',
   },
   {
     id: 'srv-mail-01',
@@ -139,6 +231,9 @@ export const initialNodes: NetworkNode[] = [
     ram: 48,
     temp: 44,
     traffic: 80,
+    vendor: 'HP',
+    model: 'ProLiant DL360 Gen10',
+    version: 'Windows Server 2022',
   },
   {
     id: 'srv-nas-01',
@@ -151,6 +246,9 @@ export const initialNodes: NetworkNode[] = [
     ram: 30,
     temp: 39,
     traffic: 170,
+    vendor: 'Supermicro',
+    model: 'SYS-6019U',
+    version: 'TrueNAS Core 13.0',
   },
 
   // Client Tier (connected to Access Switches as-01 and as-02)
@@ -165,6 +263,9 @@ export const initialNodes: NetworkNode[] = [
     ram: 22,
     temp: 33,
     traffic: 15,
+    vendor: 'Lenovo',
+    model: 'ThinkPad T14',
+    version: 'Windows 11 Pro 23H2',
   },
   {
     id: 'pc-dev-02',
@@ -177,6 +278,9 @@ export const initialNodes: NetworkNode[] = [
     ram: 18,
     temp: 31,
     traffic: 10,
+    vendor: 'Apple',
+    model: 'MacBook Pro M2',
+    version: 'macOS Sonoma 14.2',
   },
   {
     id: 'pc-fin-01',
@@ -189,6 +293,9 @@ export const initialNodes: NetworkNode[] = [
     ram: 12,
     temp: 28,
     traffic: 5,
+    vendor: 'Lenovo',
+    model: 'ThinkCentre M70q',
+    version: 'Windows 10 Enterprise',
   },
   {
     id: 'pc-hr-01',
@@ -201,6 +308,9 @@ export const initialNodes: NetworkNode[] = [
     ram: 10,
     temp: 27,
     traffic: 2,
+    vendor: 'Lenovo',
+    model: 'ThinkCentre M70q',
+    version: 'Windows 10 Enterprise',
   },
   {
     id: 'ap-01',
@@ -213,6 +323,9 @@ export const initialNodes: NetworkNode[] = [
     ram: 35,
     temp: 36,
     traffic: 58,
+    vendor: 'Cisco',
+    model: 'Catalyst 9115AX',
+    version: 'v16.12.5s',
   },
 ];
 

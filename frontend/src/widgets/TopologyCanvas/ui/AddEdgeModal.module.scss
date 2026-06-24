@@ -1,0 +1,27 @@
+.modal {
+  :global(.ant-modal-content) {
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    background: var(--bg-panel) !important;
+    border: 1px solid var(--border-color) !important;
+  }
+}
+
+.modalBody {
+  padding: 12px 0 0 0 !important;
+}
+
+.description {
+  margin-bottom: 16px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.formFooter {
+  margin-bottom: 0 !important;
+  text-align: right;
+}
+
+.cancelBtn {
+  margin-right: 8px !important;
+}

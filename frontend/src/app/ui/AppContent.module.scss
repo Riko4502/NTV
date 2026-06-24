@@ -1,0 +1,31 @@
+.layoutRoot {
+  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
+  background: transparent !important;
+  display: flex;
+  flex-direction: column;
+}
+
+.layoutInner {
+  flex-direction: row !important;
+  flex: 1;
+  overflow: hidden;
+  background: transparent !important;
+}
+
+.content {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  background: transparent !important;
+}
+
+.drawer {
+  background: var(--bg-panel) !important;
+  border-right: 1px solid var(--border-color) !important;
+
+  :global(.ant-drawer-body) {
+    padding: 0 !important;
+  }
+}

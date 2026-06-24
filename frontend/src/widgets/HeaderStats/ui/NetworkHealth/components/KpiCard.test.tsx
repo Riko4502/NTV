@@ -30,6 +30,7 @@ describe('KpiCard Component', () => {
     render(<KpiCard title="Colored" value="99" valueColor="rgb(255, 0, 0)" />);
 
     const valueElement = screen.getByText('99');
-    expect(valueElement).toHaveStyle('color: rgb(255, 0, 0)');
+    const container = valueElement.closest('.ant-statistic') || valueElement;
+    expect(container).toHaveStyle({ '--kpi-value-color': 'rgb(255, 0, 0)' });
   });
 });

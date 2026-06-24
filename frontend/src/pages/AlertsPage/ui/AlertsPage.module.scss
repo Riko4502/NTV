@@ -1,0 +1,56 @@
+.pageLayout {
+  height: 100%;
+  background: transparent !important;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.headerRow {
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.searchInput {
+  width: 260px !important;
+  height: 32px !important;
+}
+
+.searchIcon {
+  color: var(--text-muted);
+}
+
+.severitySelect {
+  width: 160px !important;
+  height: 32px !important;
+}
+
+.statusSelect {
+  width: 160px !important;
+  height: 32px !important;
+}
+
+.actionBtn {
+  height: 32px !important;
+}
+
+.alertsTable {
+  background: var(--bg-panel) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 8px !important;
+  overflow: hidden;
+}
+
+.deviceBtn {
+  padding: 0 !important;
+  height: auto !important;
+  font-weight: 500 !important;
+}
+
+.msgText {
+  color: var(--text-primary);
+  word-break: break-word;
+}
+
+.checkIcon {
+  color: var(--color-success);
+}

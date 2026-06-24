@@ -3,6 +3,7 @@ import { Button, Dropdown, type MenuProps } from 'antd';
 import { type FC, useRef } from 'react';
 import { useSetTopologyMutation } from '@/shared/api';
 import type { ConnectionEdgeDto, DeviceData } from '@/shared/libs';
+import styles from '../../TopologyCanvas.module.scss';
 import { FILE_OPERATIONS } from '../constants';
 
 interface BackupSectionProps {
@@ -23,7 +24,7 @@ export const BackupSection: FC<BackupSectionProps> = ({ nodesData, edgesData }) 
     const url = URL.createObjectURL(blob);
     const downloadAnchor = document.createElement('a');
     downloadAnchor.href = url;
-    downloadAnchor.download = 'topology.json';
+    downloadAnchor.download = `${new Date().toISOString()}_topology.json`;
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
     document.body.removeChild(downloadAnchor);
@@ -58,7 +59,7 @@ export const BackupSection: FC<BackupSectionProps> = ({ nodesData, edgesData }) 
   const items: MenuProps['items'] = FILE_OPERATIONS.map((item) => {
     return {
       ...item,
-      icon: <item.icon style={{ color: 'var(--text-secondary)' }} />,
+      icon: <item.icon className={styles.menuIcon} />,
       onClick: item.key === 'export-json' ? handleExport : handleImportClick,
     };
   });
@@ -66,10 +67,7 @@ export const BackupSection: FC<BackupSectionProps> = ({ nodesData, edgesData }) 
   return (
     <>
       <Dropdown menu={{ items }} trigger={['click']}>
-        <Button
-          icon={<EllipsisOutlined size={20} />}
-          style={{ fontSize: '0.8rem', height: '32px' }}
-        />
+        <Button icon={<EllipsisOutlined size={20} />} className={styles.toolbarBtn} />
       </Dropdown>
 
       <input
@@ -77,7 +75,7 @@ export const BackupSection: FC<BackupSectionProps> = ({ nodesData, edgesData }) 
         ref={fileInputRef}
         onChange={handleImportFile}
         accept=".json"
-        style={{ display: 'none' }}
+        className={styles.hiddenInput}
       />
     </>
   );

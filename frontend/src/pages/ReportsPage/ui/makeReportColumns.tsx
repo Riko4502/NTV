@@ -1,5 +1,7 @@
 import { Tag } from 'antd';
+import type { CSSProperties } from 'react';
 import { SLA_COLOR_RULES, STATUS } from './constants';
+import styles from './ReportsPage.module.scss';
 
 const getSlaColor = (sla: number) => {
   const rule = SLA_COLOR_RULES.find((r) => r.check(sla));
@@ -13,10 +15,8 @@ export const makeReportColumns = [
     key: 'label',
     render: (text: string, record: { ip: string }) => (
       <div>
-        <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{text}</div>
-        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontFamily: 'monospace' }}>
-          {record.ip}
-        </span>
+        <div className={styles.deviceName}>{text}</div>
+        <span className={styles.deviceIp}>{record.ip}</span>
       </div>
     ),
   },
@@ -26,16 +26,18 @@ export const makeReportColumns = [
     key: 'sla',
     render: (sla: number) => {
       const color = getSlaColor(sla);
-      return <span style={{ fontWeight: 600, color }}>{sla}%</span>;
+      return (
+        <span className={styles.slaValue} style={{ '--sla-color': color } as CSSProperties}>
+          {sla}%
+        </span>
+      );
     },
   },
   {
     title: 'Время простоя (Downtime)',
     dataIndex: 'downtime',
     key: 'downtime',
-    render: (downtime: string) => (
-      <span style={{ fontFamily: 'monospace', color: 'var(--text-secondary)' }}>{downtime}</span>
-    ),
+    render: (downtime: string) => <span className={styles.downtimeValue}>{downtime}</span>,
   },
   {
     title: 'Статус SLA',

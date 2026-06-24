@@ -1,12 +1,12 @@
 import { BulbFilled, BulbOutlined, SearchOutlined } from '@ant-design/icons';
 import { Button, Card, Drawer, Flex, Input } from 'antd';
 import { Activity, Bell } from 'lucide-react';
-import type { FC } from 'react';
+import type { CSSProperties, FC } from 'react';
 import { NavLink } from 'react-router-dom';
 import { setSearchQuery, toggleAlerts, toggleTheme, useAppDispatch } from '@/app/providers/store';
 import type { Theme } from '@/shared/libs';
 import { NAV_ITEMS } from '@/widgets/Sidebar/constants';
-import styles from '../HeaderStats.module.scss';
+import styles from './BurgerMenuDrawer.module.scss';
 
 interface BurgerMenuDrawerProps {
   open: boolean;
@@ -59,17 +59,7 @@ export const BurgerMenuDrawer: FC<BurgerMenuDrawerProps> = ({
     >
       {/* Navigation links in drawer */}
       <Flex vertical gap="12px">
-        <span
-          style={{
-            fontSize: '0.75rem',
-            fontWeight: 600,
-            color: 'var(--text-muted)',
-            textTransform: 'uppercase',
-            letterSpacing: '1px',
-          }}
-        >
-          Навигация
-        </span>
+        <span className={styles.sectionTitle}>Навигация</span>
         {NAV_ITEMS.map((item) => (
           <NavLink
             key={item.id}
@@ -79,7 +69,7 @@ export const BurgerMenuDrawer: FC<BurgerMenuDrawerProps> = ({
               `${styles.drawerNavLink} ${isActive ? styles.drawerNavLinkActive : ''}`
             }
           >
-            <item.icon size={16} style={{ marginRight: '8px' }} />
+            <item.icon size={16} className={styles.navIcon} />
             {item.label}
           </NavLink>
         ))}
@@ -87,17 +77,7 @@ export const BurgerMenuDrawer: FC<BurgerMenuDrawerProps> = ({
 
       {/* Mobile Search */}
       <Flex vertical gap="8px" className={styles.mobileOnly}>
-        <span
-          style={{
-            fontSize: '0.75rem',
-            fontWeight: 600,
-            color: 'var(--text-muted)',
-            textTransform: 'uppercase',
-            letterSpacing: '1px',
-          }}
-        >
-          Поиск
-        </span>
+        <span className={styles.sectionTitle}>Поиск</span>
         <Input
           placeholder="Поиск устройств..."
           value={searchQuery}
@@ -110,69 +90,37 @@ export const BurgerMenuDrawer: FC<BurgerMenuDrawerProps> = ({
 
       {/* Mobile KPIs */}
       <Flex vertical gap="12px" className={styles.mobileOnly}>
-        <span
-          style={{
-            fontSize: '0.75rem',
-            fontWeight: 600,
-            color: 'var(--text-muted)',
-            textTransform: 'uppercase',
-            letterSpacing: '1px',
-          }}
-        >
-          Статус сети
-        </span>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-          <Card
-            size="small"
-            style={{ background: 'var(--bg-card)', borderColor: 'var(--border-color)' }}
-          >
-            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block' }}>
-              Здоровье
-            </span>
+        <span className={styles.sectionTitle}>Статус сети</span>
+        <div className={styles.gridStats}>
+          <Card size="small" className={styles.statCard}>
+            <span className={styles.cardLabel}>Здоровье</span>
             <strong
-              style={{
-                fontSize: '1rem',
-                color: stats.health > 80 ? 'var(--color-success)' : 'var(--color-warning)',
-              }}
+              className={styles.cardValue}
+              style={
+                {
+                  '--value-color':
+                    stats.health > 80 ? 'var(--color-success)' : 'var(--color-warning)',
+                } as CSSProperties
+              }
             >
               {stats.health}%
             </strong>
           </Card>
-          <Card
-            size="small"
-            style={{ background: 'var(--bg-card)', borderColor: 'var(--border-color)' }}
-          >
-            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block' }}>
-              Трафик
-            </span>
-            <strong style={{ fontSize: '1rem' }}>{stats.trafficGbps} Gbps</strong>
+          <Card size="small" className={styles.statCard}>
+            <span className={styles.cardLabel}>Трафик</span>
+            <strong className={styles.cardValue}>{stats.trafficGbps} Gbps</strong>
           </Card>
         </div>
       </Flex>
 
       {/* Mobile quick actions */}
-      <Flex vertical gap="12px" style={{ marginTop: 'auto' }} className={styles.mobileOnly}>
-        <span
-          style={{
-            fontSize: '0.75rem',
-            fontWeight: 600,
-            color: 'var(--text-muted)',
-            textTransform: 'uppercase',
-            letterSpacing: '1px',
-          }}
-        >
-          Панель управления
-        </span>
+      <Flex vertical gap="12px" className={`${styles.mobileOnly} ${styles.actionsWrapper}`}>
+        <span className={styles.sectionTitle}>Панель управления</span>
         <Button
           type="default"
           icon={theme === 'dark' ? <BulbOutlined /> : <BulbFilled />}
           onClick={() => dispatch(toggleTheme())}
-          style={{
-            width: '100%',
-            justifyContent: 'flex-start',
-            display: 'flex',
-            alignItems: 'center',
-          }}
+          className={styles.actionBtn}
         >
           Тема: {theme === 'dark' ? 'Темная' : 'Светлая'}
         </Button>
@@ -184,12 +132,7 @@ export const BurgerMenuDrawer: FC<BurgerMenuDrawerProps> = ({
             dispatch(toggleAlerts());
             onClose();
           }}
-          style={{
-            width: '100%',
-            justifyContent: 'flex-start',
-            display: 'flex',
-            alignItems: 'center',
-          }}
+          className={styles.actionBtn}
         >
           Лог событий ({stats.activeIncidents})
         </Button>

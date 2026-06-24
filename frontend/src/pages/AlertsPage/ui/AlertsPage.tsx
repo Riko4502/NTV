@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { selectNode, useAppDispatch } from '@/app/providers/store';
 import { paths } from '@/app/router/paths';
 import { useAckAlertMutation, useClearAlertsMutation, useStreamTopologyQuery } from '@/shared/api';
+import styles from './AlertsPage.module.scss';
 import { ALERT_SEVERITY_OPTIONS, STATUS_OPTIONS } from './constants';
 import { makeAlerColumns } from './makeAlerColumns';
 
@@ -133,36 +134,29 @@ export const AlertsPage: FC = () => {
   );
 
   return (
-    <Layout
-      style={{ height: '100%', background: 'transparent', padding: '24px', overflowY: 'auto' }}
-    >
-      <Flex
-        wrap="wrap"
-        justify="space-between"
-        align="center"
-        style={{ gap: '12px', marginBottom: '20px' }}
-      >
+    <Layout className={styles.pageLayout}>
+      <Flex wrap="wrap" justify="space-between" align="center" className={styles.headerRow}>
         <Flex gap={12} wrap="wrap">
           <Input
             placeholder="Поиск по сообщению или устройству..."
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
-            prefix={<SearchOutlined style={{ color: 'var(--text-muted)' }} />}
-            style={{ width: '260px', height: '32px' }}
+            prefix={<SearchOutlined className={styles.searchIcon} />}
+            className={styles.searchInput}
             allowClear
           />
 
           <Select
             value={selectedSeverity}
             onChange={setSelectedSeverity}
-            style={{ width: '160px', height: '32px' }}
+            className={styles.severitySelect}
             options={ALERT_SEVERITY_OPTIONS}
           />
 
           <Select
             value={selectedStatus}
             onChange={setSelectedStatus}
-            style={{ width: '160px', height: '32px' }}
+            className={styles.statusSelect}
             options={STATUS_OPTIONS}
           />
         </Flex>
@@ -172,7 +166,7 @@ export const AlertsPage: FC = () => {
             icon={<CheckCircleOutlined />}
             onClick={handleAckAll}
             disabled={isDisabledAlerts}
-            style={{ height: '32px' }}
+            className={styles.actionBtn}
           >
             Подтвердить все
           </Button>
@@ -181,7 +175,7 @@ export const AlertsPage: FC = () => {
             icon={<DownloadOutlined />}
             onClick={handleExportJson}
             disabled={isDisabledAlerts}
-            style={{ height: '32px' }}
+            className={styles.actionBtn}
           >
             Экспорт JSON
           </Button>
@@ -191,7 +185,7 @@ export const AlertsPage: FC = () => {
             icon={<DeleteOutlined />}
             onClick={handleClear}
             disabled={isDisabledAlerts}
-            style={{ height: '32px' }}
+            className={styles.actionBtn}
           >
             Очистить
           </Button>
@@ -203,12 +197,7 @@ export const AlertsPage: FC = () => {
         columns={columns}
         rowKey="id"
         pagination={{ pageSize: 10 }}
-        style={{
-          background: 'var(--bg-panel)',
-          border: '1px solid var(--border-color)',
-          borderRadius: '8px',
-          overflow: 'hidden',
-        }}
+        className={styles.alertsTable}
         locale={{
           emptyText: <Empty image={<AlertOutlined />} description="Инциденты отсутствуют" />,
         }}

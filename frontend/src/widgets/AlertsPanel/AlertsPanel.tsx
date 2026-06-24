@@ -71,8 +71,8 @@ export const AlertsPanel: FC = () => {
   };
 
   return (
-    <Flex align="center" gap="10px" vertical style={{ height: '100%', overflow: 'hidden' }}>
-      <div style={{ padding: '16px', width: '100%' }}>
+    <Flex align="center" gap="10px" vertical className={styles.panelRoot}>
+      <div className={styles.filterWrapper}>
         <Segmented
           options={ALERT_FILTER_OPTIONS}
           value={activeFilter}
@@ -91,32 +91,15 @@ export const AlertsPanel: FC = () => {
           />
         ) : (
           <EmptyState
-            icon={<AlertTriangle size={24} style={{ opacity: 0.3 }} />}
+            icon={<AlertTriangle size={24} className={styles.emptyIcon} />}
             title="Инциденты отсутствуют"
           />
         )}
       </div>
 
       {!!alerts.length && (
-        <Flex
-          style={{
-            width: '100%',
-            padding: '12px 16px',
-            borderTop: '1px solid var(--border-color)',
-            display: 'flex',
-            gap: '8px',
-          }}
-        >
-          <Button
-            onClick={handleAckAll}
-            icon={<CheckOutlined />}
-            style={{
-              flex: 1,
-              height: '36px',
-              fontSize: '0.8rem',
-              borderColor: 'var(--border-color)',
-            }}
-          >
+        <Flex className={styles.panelFooter}>
+          <Button onClick={handleAckAll} icon={<CheckOutlined />} className={styles.ackAllBtn}>
             Подтвердить все
           </Button>
 
@@ -124,7 +107,7 @@ export const AlertsPanel: FC = () => {
             onClick={handleClear}
             danger
             icon={<DeleteOutlined />}
-            style={{ height: '36px' }}
+            className={styles.clearBtn}
             title="Очистить всю историю лога"
           />
         </Flex>

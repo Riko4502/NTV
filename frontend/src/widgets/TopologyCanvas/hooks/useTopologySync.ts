@@ -86,7 +86,7 @@ export const useTopologySync = () => {
     const nodeCount = data.nodes.length;
     const edgeCount = data.edges.length;
     if (
-      nodes.length > 0 &&
+      nodes.length &&
       (nodeCount !== prevNodeCountRef.current || edgeCount !== prevEdgeCountRef.current)
     ) {
       prevNodeCountRef.current = nodeCount;

@@ -1,8 +1,12 @@
 export type RouteKey =
   | 'root'
+  | 'login'
   | 'dashboard'
   | 'analytics'
   | 'devices'
   | 'alerts'
   | 'settings'
-  | 'reports';
+  | 'reports'
+  | 'firewall'
+  | 'forbidden'
+  | 'notFound';
