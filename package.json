@@ -15,7 +15,8 @@
     "test:e2e:ui": "playwright test --ui",
     "prepare": "husky",
     "typecheck": "npm run typecheck --prefix backend && npm run typecheck --prefix frontend",
-    "build": "npm run build --prefix frontend"
+    "build": "npm run build --prefix frontend && npm run build --prefix backend",
+    "start": "node backend/dist/server.js"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.0",
