@@ -1,4 +1,4 @@
-import type { FC, ReactNode } from 'react';
+import type { FC, ReactElement, ReactNode } from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAppSelector } from '../providers/store';
 import { paths } from './paths';
@@ -15,5 +15,5 @@ export const RequireAuth: FC<RequireAuthProps> = ({ children }) => {
     return <Navigate to={paths.login} replace state={{ from: location }} />;
   }
 
-  return children ? (children as JSX.Element) : <Outlet />;
+  return children ? (children as ReactElement) : <Outlet />;
 };

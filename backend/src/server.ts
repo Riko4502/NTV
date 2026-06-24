@@ -163,10 +163,7 @@ app.get('/api/metrics/history', (req, res) => {
   res.json(history);
 });
 
-httpServer.listen(PORT, () => {
-  console.log(`Topology simulation server is running on http://localhost:${PORT}`);
-  console.log(`WebSocket server is running on ws://localhost:${PORT}`);
-});
+httpServer.listen(PORT);
 
 // Handle graceful shutdown
 process.on('SIGTERM', () => {

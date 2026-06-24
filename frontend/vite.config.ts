@@ -25,6 +25,17 @@ export default defineConfig({
   server: {
     open: true,
     port: 3000,
+    proxy: {
+      '/api': {
+        target: `${process.env.VITE_API_URL}`,
+        changeOrigin: true,
+      },
+      'ws://base.invalid/': {
+        target: `${process.env.VITE_WS_URL}`,
+        changeOrigin: true,
+        ws: true,
+      },
+    },
   },
 
   build: {
