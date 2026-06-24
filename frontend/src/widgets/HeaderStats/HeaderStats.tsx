@@ -37,9 +37,7 @@ export const HeaderStats: FC = () => {
         <Flex align="center" justify="center" className={styles.logoWrapper}>
           <Activity size={20} />
         </Flex>
-        <Flex vertical>
-          <span className={styles.logoText}>TOPOLOGY MONITOR</span>
-        </Flex>
+        <span data-testid="header-title" className={styles.logoText}>TOPOLOGY MONITOR</span>
       </Flex>
 
       <Flex className="kpi-container" justify="flex-end" align="center" gap="10px">

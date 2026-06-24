@@ -35,8 +35,8 @@ export const BurgerMenuDrawer: FC<BurgerMenuDrawerProps> = ({
         <Flex align="center" gap="10px">
           <Flex align="center" justify="center" className={styles.logoWrapper}>
             <Activity size={20} />
+            <span data-testid="header-title" className={styles.logoText}>TOPOLOGY MONITOR</span>
           </Flex>
-          <span className={styles.logoText}>TOPOLOGY MONITOR</span>
         </Flex>
       }
       placement="left"

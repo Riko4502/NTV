@@ -10,7 +10,7 @@ test.describe('NOC Network Topology Viewer E2E Tests', () => {
 
   test('should display the main header and logo', async ({ page }) => {
     // Проверка видимости названия в заголовке
-    const headerTitle = page.locator('text=TOPOLOGY MONITOR');
+    const headerTitle = page.locator('[data-testid="header-title"]');
     await expect(headerTitle).toBeVisible();
   });
 

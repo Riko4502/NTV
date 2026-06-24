@@ -63,11 +63,6 @@ describe('DeviceActionsCard Component', () => {
 
     expect(screen.getByText('История пинг-тестов:')).toBeInTheDocument();
 
-    // There should be 4 dots (tooltips are created by Antd around them)
-    // Ant Design's Tooltip wraps the elements. We can check by selecting elements with help cursor or check matching count of tooltips
-    // Since we mock or render tooltips, let's verify that the dots are rendered.
-    // They are simple divs with borderRadius 50%.
-    // In happy-dom/testing-library, they are divs inside the container.
     const container = screen.getByText('История пинг-тестов:').nextSibling;
     expect(container?.childNodes.length).toBe(4);
   });
