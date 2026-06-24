@@ -11,7 +11,7 @@
       "routePrefix": "/_/backend",
       "framework": "node",
       "builder": "@vercel/node",
-      "runtime": "nodejs22.x",
+      "runtime": "22.x",
       "entrypoint": "src/server.ts"
     }
   },
