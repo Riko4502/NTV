@@ -8,7 +8,12 @@ export default defineConfig({
   workers: 1,
   reporter: 'line',
   timeout: 60000, // global timeout per test
-  globalSetup: require.resolve('./playwright.global-setup'),
+  webServer: {
+    command: 'npm run dev',
+    url: 'http://localhost:3000',
+    timeout: 120000,
+    reuseExistingServer: false,
+  },
   use: {
     baseURL: 'http://localhost:3000',
     trace: 'on-first-retry',
