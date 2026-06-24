@@ -8,7 +8,11 @@
     },
     "backend": {
       "root": "backend",
-      "routePrefix": "/_/backend"
+      "routePrefix": "/_/backend",
+      "framework": "node",
+      "builder": "@vercel/node",
+      "runtime": "nodejs20.x",
+      "entrypoint": "src/server.ts"
     }
   },
   "env": {
