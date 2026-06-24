@@ -11,32 +11,6 @@
       "routePrefix": "/_/backend"
     }
   },
-  "builds": [
-    {
-      "src": "frontend/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "frontend/dist"
-      }
-    },
-    {
-      "src": "backend/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "backend/dist"
-      }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/frontend/$1"
-    },
-    {
-      "src": "/_/backend/(.*)",
-      "dest": "/backend/$1"
-    }
-  ],
   "env": {
     "API_URL": "https://api.example.com"
   }
