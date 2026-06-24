@@ -1,15 +1,16 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { logout } from '@/app/providers/store';
-import type { NetworkAlertData } from '../../entities/alert/model/types';
-import type { ConnectionEdgeDto } from '../../entities/connection/model/types';
-import type { NodeDto } from '../../entities/device/model/types';
-import type {
-  AddNodePayload,
-  ConnectionEdgeStatus,
-  FirewallRuleFormData,
-  LoginRequest,
-  LoginResponse,
-  Status,
+import type { NetworkAlertData } from '@/entities/alert/model/types';
+import type { ConnectionEdgeDto } from '@/entities/connection/model/types';
+import type { NodeDto } from '@/entities/device/model/types';
+import {
+  type AddNodePayload,
+  type ConnectionEdgeStatus,
+  type FirewallRuleFormData,
+  getWebSocketUrl,
+  type LoginRequest,
+  type LoginResponse,
+  type Status,
 } from '../libs';
 
 export type WsMessageType =
@@ -94,14 +95,13 @@ export const registerWsCallback = (callback: MessageCallback): (() => void) => {
 
 export const topologyApi = createApi({
   reducerPath: 'topologyApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3001/api/' }),
+  baseQuery: fetchBaseQuery({ baseUrl: 'api/' }),
   endpoints: (builder) => ({
     streamTopology: builder.query<TopologyState, void>({
       query: () => 'topology',
 
       async onCacheEntryAdded(_arg, { updateCachedData, cacheDataLoaded, cacheEntryRemoved }) {
-        const socketUrl = 'ws://localhost:3001';
-        ws = new WebSocket(socketUrl);
+        ws = new WebSocket(getWebSocketUrl());
 
         ws.addEventListener('open', () => {
           while (pendingMessages.length > 0) {

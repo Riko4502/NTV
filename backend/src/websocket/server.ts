@@ -5,7 +5,10 @@ import { networkState } from '../store/state';
 import { wsHandlers } from './handlers';
 
 export function initWebSocketServer(server: Server): WebSocketServer {
-  const wss = new WebSocketServer({ server });
+  const wss = new WebSocketServer({
+    server,
+    path: '/ws',
+  });
 
   function broadcast(data: unknown) {
     const message = JSON.stringify(data);

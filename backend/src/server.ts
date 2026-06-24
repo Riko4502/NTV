@@ -13,14 +13,6 @@ app.use(express.json());
 
 const httpServer = createServer(app);
 
-const staticPath = path.resolve(__dirname, '..', '..', 'frontend', 'dist');
-app.use(express.static(staticPath));
-
-// SPA fallback – all non‑API routes return index.html
-app.get('*', (_req, res) => {
-  res.sendFile(path.join(staticPath, 'index.html'));
-});
-
 initWebSocketServer(httpServer);
 app.use('/api', authRouter);
 
@@ -192,4 +184,12 @@ process.on('SIGINT', () => {
   httpServer.close(() => {
     console.log('Server stopped.');
   });
+});
+
+const staticPath = path.resolve(__dirname, '..', '..', 'frontend', 'dist');
+app.use(express.static(staticPath));
+
+// SPA fallback – all non‑API routes return index.html
+app.get('*', (_req, res) => {
+  res.sendFile(path.join(staticPath, 'index.html'));
 });

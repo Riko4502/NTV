@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Install monorepo packages (backend & frontend)
+        run: npm run install:all
+
+      - name: Lint code (Biome)
+        run: npm run lint
+
+      - name: Type-check (backend)
+        run: npm run typecheck --prefix backend
+
+      - name: Type-check (frontend)
+        run: npm run typecheck --prefix frontend
+
+      - name: Run unit tests (backend)
+        run: npm test --prefix backend
+
+      - name: Run unit tests (frontend)
+        run: npm test --prefix frontend
+
+      - name: Build project (frontend & backend)
+        run: npm run build
