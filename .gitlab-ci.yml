@@ -102,17 +102,3 @@ build_backend:
     paths:
       - backend/dist/
     expire_in: 1 week
-
-# Шаг 8: Автодеплой фронтенда на Vercel (только для ветки main)
-# deploy_vercel:
-#   stage: deploy
-#   image: node:20
-#   rules:
-#     - if: $CI_COMMIT_BRANCH == "main"
-#   script:
-#     - npm install -g vercel
-#     - vercel pull --yes --environment=production --token=$VERCEL_TOKEN
-#     - vercel build --prod --token=$VERCEL_TOKEN
-#     - vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
-
-
