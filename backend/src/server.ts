@@ -2,6 +2,7 @@
 import cors from 'cors';
 import express from 'express';
 import { createServer } from 'http';
+import path from 'path';
 import authRouter from './routes/auth';
 import { networkState } from './store/state';
 import { initWebSocketServer } from './websocket/server';
@@ -12,11 +13,18 @@ app.use(express.json());
 
 const httpServer = createServer(app);
 
-// Initialize WebSocket server
+const staticPath = path.resolve(__dirname, '..', '..', 'frontend', 'dist');
+app.use(express.static(staticPath));
+
+// SPA fallback – all non‑API routes return index.html
+app.get('*', (_req, res) => {
+  res.sendFile(path.join(staticPath, 'index.html'));
+});
+
 initWebSocketServer(httpServer);
 app.use('/api', authRouter);
 
-const PORT = 3001;
+const PORT = Number(process.env.PORT) || 3001;
 
 // --- Telemetry Simulation Ticker (runs every 1 second) ---
 const telemetryInterval = setInterval(() => {
