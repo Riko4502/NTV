@@ -1,7 +1,7 @@
 import {
-  Activity,
   FileText,
   type LucideIcon,
+  Map as MapIcon,
   Server,
   Settings,
   ShieldAlert,
@@ -16,7 +16,7 @@ export interface NavItem {
 }
 
 export const NAV_ITEMS: NavItem[] = [
-  { id: 'topology', path: '/', label: 'Топология', icon: Activity },
+  { id: 'topology', path: '/', label: 'Топология', icon: MapIcon },
   { id: 'analytics', path: '/analytics', label: 'Аналитика', icon: TrendingUp },
   { id: 'devices', path: '/devices', label: 'Устройства', icon: Server },
   { id: 'alerts', path: '/alerts', label: 'Инциденты', icon: ShieldAlert },

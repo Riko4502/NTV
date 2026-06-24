@@ -23,11 +23,17 @@
 
   .navLink {
     justify-content: center;
-    padding: 10px;
+    padding: 8px;
+    width: 34px;
+    height: 34px;
   }
 
   .navIcon {
     margin-right: 0;
+  }
+
+  .collapseToggleWrapper {
+    justify-content: center;
   }
 
   .logoutSection {
@@ -48,6 +54,7 @@
 .navSection {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 12px;
   width: 100%;
 }
@@ -63,7 +70,6 @@
 
 .navLink {
   text-decoration: none;
-  font-size: 0.9rem;
   font-weight: 500;
   padding: 10px 16px;
   border-radius: 8px;
@@ -134,7 +140,7 @@
 .collapseToggleWrapper {
   width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   padding-top: 12px;
   border-top: 1px solid var(--border-color);
 }

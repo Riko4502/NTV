@@ -13,6 +13,18 @@ if (import.meta.env.VITE_SENTRY_DSN) {
   });
 }
 
+const loader = document.getElementById('initial-loader');
+
+if (loader) {
+  setTimeout(() => {
+    loader.classList.add('fade-out');
+
+    setTimeout(() => {
+      loader.remove();
+    }, 500);
+  }, 1500);
+}
+
 const root = document.getElementById('root');
 
 if (root) {

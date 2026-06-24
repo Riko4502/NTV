@@ -1,21 +1,26 @@
 import { Button, Tooltip } from 'antd';
 import { ChevronLeft, ChevronRight, LogOut } from 'lucide-react';
-import { type FC, useState } from 'react';
+import type { FC } from 'react';
 import { useLogoutMutation } from '@/shared/api';
+import { useLocalStorage } from '@/shared/hooks';
 import { NAV_ITEMS } from '../constants';
 import { SidebarItem } from './components';
 import styles from './Sidebar.module.scss';
 
 export const Sidebar: FC = () => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useLocalStorage('collapsed', false);
   const [logout] = useLogoutMutation();
 
   const handleLogout = async () => {
     await logout();
   };
 
+  const toggleCollapsed = () => {
+    setCollapsed((prev) => !prev);
+  };
+
   const navLinks = NAV_ITEMS.map((item) => (
-    <SidebarItem key={item.id} {...item} collapsed={collapsed} />
+    <SidebarItem key={item.id} {...item} collapsed={!!collapsed} />
   ));
 
   return (
@@ -46,7 +51,7 @@ export const Sidebar: FC = () => {
           <Button
             type="text"
             icon={collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
-            onClick={() => setCollapsed(!collapsed)}
+            onClick={toggleCollapsed}
             className={styles.collapseButton}
           />
         </Tooltip>
