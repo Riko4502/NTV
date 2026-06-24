@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "NOC Network Topology WebSocket Simulation Server",
   "main": "src/server.ts",
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
     "dev": "nodemon --watch src --ext ts --exec ts-node src/server.ts",
     "build": "tsc",
