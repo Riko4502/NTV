@@ -1,5 +1,5 @@
 import { Alert, Button, Form, Input } from 'antd';
-import { Activity, Lock, Moon, Sun, User } from 'lucide-react';
+import { Lock, Moon, Sun, User } from 'lucide-react';
 import { type FC, useEffect, useState } from 'react';
 import {
   clearError,
@@ -11,6 +11,7 @@ import {
 } from '@/app/providers/store';
 import { useLoginMutation } from '@/shared/api';
 import type { LoginRequest } from '@/shared/libs';
+import { Logo } from '@/shared/ui';
 import styles from './LoginPage.module.scss';
 
 export const LoginPage: FC = () => {
@@ -67,12 +68,9 @@ export const LoginPage: FC = () => {
         />
       </div>
 
-      {/* Login Card */}
       <div className={`${styles.loginCard} glass-panel`}>
         <div className={styles.cardHeader}>
-          <div className={styles.logoWrapper}>
-            <Activity className={styles.logoIcon} size={32} />
-          </div>
+          <Logo size="large" isAnimated className={styles.logo} />
           <h1 className={styles.title}>NTV</h1>
           <p className={styles.subtitle}>Network Topology Viewer</p>
         </div>

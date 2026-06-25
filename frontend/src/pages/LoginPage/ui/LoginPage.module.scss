@@ -107,33 +107,8 @@
   text-align: center;
 }
 
-.logoWrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 60px;
-  height: 60px;
-  border-radius: 16px;
-  background: var(--color-primary-glow);
-  border: 1px solid var(--border-glow-primary);
+.logo {
   margin-bottom: 16px;
-  box-shadow: 0 0 20px 0 var(--color-primary-glow);
-  animation: logoPulse 3s infinite ease-in-out;
-}
-
-@keyframes logoPulse {
-  0%, 100% {
-    box-shadow: 0 0 15px 0 var(--color-primary-glow);
-    transform: scale(1);
-  }
-  50% {
-    box-shadow: 0 0 25px 5px var(--color-primary-glow);
-    transform: scale(1.03);
-  }
-}
-
-.logoIcon {
-  color: var(--color-primary);
 }
 
 .title {

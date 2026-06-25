@@ -1,10 +1,11 @@
 import { BulbFilled, BulbOutlined } from '@ant-design/icons';
 import { Badge, Button, Flex, Layout, Tooltip } from 'antd';
-import { Activity, Bell, Menu } from 'lucide-react';
+import { Bell, Menu } from 'lucide-react';
 
 import { type FC, useState } from 'react';
 import { toggleAlerts, toggleTheme, useAppDispatch, useAppSelector } from '@/app/providers/store';
 import { useStreamTopologyQuery } from '@/shared/api';
+import { Logo } from '@/shared/ui';
 import styles from './HeaderStats.module.scss';
 import { useNocStats } from './hooks/useNocStats';
 import { BurgerMenuDrawer } from './ui/BurgerMenuDrawer';
@@ -34,10 +35,7 @@ export const HeaderStats: FC = () => {
           onClick={() => setMenuOpen(true)}
           className={styles.burgerButton}
         />
-        <Flex align="center" justify="center" className={styles.logoWrapper}>
-          <Activity size={20} />
-        </Flex>
-        <span data-testid="header-title" className={styles.logoText}>TOPOLOGY MONITOR</span>
+        <Logo size="small" title="TOPOLOGY MONITOR" />
       </Flex>
 
       <Flex className="kpi-container" justify="flex-end" align="center" gap="10px">

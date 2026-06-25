@@ -1,6 +1,6 @@
 import { BulbFilled, BulbOutlined, SearchOutlined } from '@ant-design/icons';
 import { Button, Card, Drawer, Flex, Input } from 'antd';
-import { Activity, Bell } from 'lucide-react';
+import { Bell } from 'lucide-react';
 import type { CSSProperties, FC } from 'react';
 import { NavLink } from 'react-router-dom';
 import { setSearchQuery, toggleAlerts, toggleTheme, useAppDispatch } from '@/app/providers/store';
@@ -31,14 +31,6 @@ export const BurgerMenuDrawer: FC<BurgerMenuDrawerProps> = ({
 
   return (
     <Drawer
-      title={
-        <Flex align="center" gap="10px">
-          <Flex align="center" justify="center" className={styles.logoWrapper}>
-            <Activity size={20} />
-            <span data-testid="header-title" className={styles.logoText}>TOPOLOGY MONITOR</span>
-          </Flex>
-        </Flex>
-      }
       placement="left"
       onClose={onClose}
       open={open}
@@ -57,7 +49,6 @@ export const BurgerMenuDrawer: FC<BurgerMenuDrawerProps> = ({
       }}
       size={280}
     >
-      {/* Navigation links in drawer */}
       <Flex vertical gap="12px">
         <span className={styles.sectionTitle}>Навигация</span>
         {NAV_ITEMS.map((item) => (
@@ -75,7 +66,6 @@ export const BurgerMenuDrawer: FC<BurgerMenuDrawerProps> = ({
         ))}
       </Flex>
 
-      {/* Mobile Search */}
       <Flex vertical gap="8px" className={styles.mobileOnly}>
         <span className={styles.sectionTitle}>Поиск</span>
         <Input
@@ -88,7 +78,6 @@ export const BurgerMenuDrawer: FC<BurgerMenuDrawerProps> = ({
         />
       </Flex>
 
-      {/* Mobile KPIs */}
       <Flex vertical gap="12px" className={styles.mobileOnly}>
         <span className={styles.sectionTitle}>Статус сети</span>
         <div className={styles.gridStats}>
@@ -113,7 +102,6 @@ export const BurgerMenuDrawer: FC<BurgerMenuDrawerProps> = ({
         </div>
       </Flex>
 
-      {/* Mobile quick actions */}
       <Flex vertical gap="12px" className={`${styles.mobileOnly} ${styles.actionsWrapper}`}>
         <span className={styles.sectionTitle}>Панель управления</span>
         <Button

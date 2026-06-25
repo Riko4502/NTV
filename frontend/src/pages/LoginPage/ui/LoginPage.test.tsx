@@ -22,12 +22,6 @@ Object.defineProperty(window, 'matchMedia', {
   }),
 });
 
-global.ResizeObserver = class {
-  observe() {}
-  unobserve() {}
-  disconnect() {}
-};
-
 vi.mock('@/shared/api', async () => {
   const actual = await vi.importActual<typeof import('@/shared/api')>('@/shared/api');
   return {

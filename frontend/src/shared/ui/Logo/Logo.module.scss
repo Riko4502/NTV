@@ -1,0 +1,50 @@
+.logoWrapper {
+  background: var(--color-primary-glow);
+  border: 1px solid var(--border-glow-primary);
+  color: var(--color-primary);
+  box-shadow: 0 0 20px 0 var(--color-primary-glow);
+}
+
+.logoText {
+  font-size: 0.65rem;
+  color: var(--color-primary);
+  letter-spacing: 2px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.logoIcon {
+  color: var(--color-primary);
+}
+
+.logoAnimation {
+  animation: logoPulse 3s infinite ease-in-out;
+}
+
+@keyframes logoPulse {
+  0%, 100% {
+    box-shadow: 0 0 15px 0 var(--color-primary-glow);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 25px 5px var(--color-primary-glow);
+    transform: scale(1.03);
+  }
+}
+
+.small {
+  padding: 6px;
+  border-radius: 6px;
+}
+
+.medium {
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.large {
+  padding: 14px;
+  border-radius: 16px;
+  width: 60px;
+  height: 60px;
+}

@@ -1,4 +1,4 @@
 export { EmptyState } from './EmptyState';
-export { ErrorBoundary } from './ErrorBoundary/ErrorBoundary';
-export { RouteErrorFallback } from './ErrorBoundary/RouteErrorFallback';
+export { ErrorBoundary, RouteErrorFallback } from './ErrorBoundary';
+export { Logo } from './Logo';
 export { Spinner } from './Spinner';
